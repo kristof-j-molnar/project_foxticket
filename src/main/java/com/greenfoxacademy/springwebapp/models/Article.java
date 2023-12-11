@@ -2,12 +2,12 @@ package com.greenfoxacademy.springwebapp.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-
 import java.time.Instant;
 
 @Entity
 @Table(name = "Articles")
 public class Article {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
