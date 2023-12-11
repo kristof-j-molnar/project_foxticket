@@ -3,6 +3,8 @@ package com.greenfoxacademy.springwebapp.services;
 import com.greenfoxacademy.springwebapp.dtos.UserRequestDTO;
 import com.greenfoxacademy.springwebapp.models.User;
 
+import java.util.Optional;
+
 public interface UserService {
 
   boolean validatePassword(UserRequestDTO userDTO);
@@ -21,4 +23,6 @@ public interface UserService {
 
   void saveUser(User user);
 
+  Optional<User> findUserByEmail(String email);
 }
+

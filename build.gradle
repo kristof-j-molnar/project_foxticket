@@ -44,9 +44,14 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.26'
     runtimeOnly 'com.h2database:h2:1.4.200'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+    implementation 'javax.xml.bind:jaxb-api:2.3.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2:1.4.200'
-
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
