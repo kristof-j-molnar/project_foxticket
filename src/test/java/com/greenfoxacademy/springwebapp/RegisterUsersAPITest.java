@@ -35,7 +35,7 @@ public class RegisterUsersAPITest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().is(404))
-                .andExpectAll(jsonPath("$['error']").value("Name, email and password are required."));
+                .andExpect(jsonPath("$['error']").value("Name, email and password are required."));
     }
 
     @Test
@@ -46,7 +46,7 @@ public class RegisterUsersAPITest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().is(404))
-                .andExpectAll(jsonPath("$['error']").value("Password must be at least 8 characters."));
+                .andExpect(jsonPath("$['error']").value("Password must be at least 8 characters."));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class RegisterUsersAPITest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().is(404))
-                .andExpectAll(jsonPath("$['error']").value("Email is already taken."));
+                .andExpect(jsonPath("$['error']").value("Email is already taken."));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class RegisterUsersAPITest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().is(404))
-                .andExpectAll(jsonPath("$['error']").value("Name is required."));
+                .andExpect(jsonPath("$['error']").value("Name is required."));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class RegisterUsersAPITest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().is(404))
-                .andExpectAll(jsonPath("$['error']").value("Email is required."));
+                .andExpect(jsonPath("$['error']").value("Email is required."));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class RegisterUsersAPITest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().is(404))
-                .andExpectAll(jsonPath("$['error']").value("Password is required."));
+                .andExpect(jsonPath("$['error']").value("Password is required."));
     }
 
     @Test
@@ -101,6 +101,6 @@ public class RegisterUsersAPITest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().is(200))
-                .andExpectAll(jsonPath("$['email']").value("pistike@gmail.com"));
+                .andExpect(jsonPath("$['email']").value("pistike@gmail.com"));
     }
 }
