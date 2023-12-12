@@ -22,10 +22,14 @@ public class BasicSpringProjectApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
+<<<<<<< HEAD
     User user1 = new User("reka", "ferenczy.reka01@gmail.com", "reka12345", "USER");
     userRepository.save(user1);
 
     User user = new User("user","lacika.com","pass","User");
+=======
+    User user = new User("user", "lacika.com", "pass", "User");
+>>>>>>> 524ae6f (fix the indentations)
     userRepository.save(user);
   }
 }
