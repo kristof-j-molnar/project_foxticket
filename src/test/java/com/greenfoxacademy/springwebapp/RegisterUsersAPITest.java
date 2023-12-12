@@ -25,8 +25,6 @@ public class RegisterUsersAPITest {
     @Autowired
     UserService userService;
 
-    //checkCredentialValidity_WithValidCredentials_ReturnsTrue()
-
     @Test
     void checkCredentialValidity_WithEmptyCredential_ShouldReturnErrorMessage() throws Exception {
         UserRequestDTO userRequestDTO = new UserRequestDTO("", "", "", "USER");
