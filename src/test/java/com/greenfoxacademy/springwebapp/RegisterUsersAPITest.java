@@ -25,10 +25,11 @@ public class RegisterUsersAPITest {
     @Autowired
     UserService userService;
 
+    public ObjectMapper mapper = new ObjectMapper();
+
     @Test
     void checkCredentialValidity_WithEmptyCredential_ShouldReturnErrorMessage() throws Exception {
         UserRequestDTO userRequestDTO = new UserRequestDTO("", "", "", "USER");
-        ObjectMapper mapper = new ObjectMapper();
 
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -40,7 +41,6 @@ public class RegisterUsersAPITest {
     @Test
     void checkPasswordLength_WithPasswordLessThan8Characters_ShouldReturnCorrectErrorMessage() throws Exception {
         UserRequestDTO userRequestDTO = new UserRequestDTO("Julcsi", "jhfkagvf,ah", "hg", "USER");
-        ObjectMapper mapper = new ObjectMapper();
 
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -52,7 +52,6 @@ public class RegisterUsersAPITest {
     @Test
     void checkCorrectEmailValidity_WithAlreadyExistingEmail_ShouldReturnCorrectErrorMessage() throws Exception {
         UserRequestDTO userRequestDTO = new UserRequestDTO("Julcsi", "ferenczy.reka01@gmail.com", "hgjhdfjhfcj", "USER");
-        ObjectMapper mapper = new ObjectMapper();
 
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -64,7 +63,6 @@ public class RegisterUsersAPITest {
     @Test
     void checkNameValidity_WithEmptyName_ShouldReturnCorrectErrorMessage() throws Exception {
         UserRequestDTO userRequestDTO = new UserRequestDTO("", "bdbdbd@gmail.com", "hgjhdfjhfcj", "USER");
-        ObjectMapper mapper = new ObjectMapper();
 
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -76,7 +74,6 @@ public class RegisterUsersAPITest {
     @Test
     void checkEmailValidity_WithEmptyEmailInput_ShouldReturnCOrrectErrorMessage() throws Exception {
         UserRequestDTO userRequestDTO = new UserRequestDTO("hfcfmjgc", "", "hgjhdfjhfcj", "USER");
-        ObjectMapper mapper = new ObjectMapper();
 
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -88,7 +85,6 @@ public class RegisterUsersAPITest {
     @Test
     void checkPasswordValidity_WithEmptyPassword_ShouldReturnCorrectErrorMessage() throws Exception {
         UserRequestDTO userRequestDTO = new UserRequestDTO("hfcfmjgc", "hdhjfj@gmail.com", "", "USER");
-        ObjectMapper mapper = new ObjectMapper();
 
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -100,7 +96,6 @@ public class RegisterUsersAPITest {
     @Test
     void checkCorrectReturnJSONObject_WhenAllInputFieldsAreCorrect_ReturnsTrue() throws Exception {
         UserRequestDTO userRequestDTO = new UserRequestDTO("Pistike", "pistike@gmail.com", "pistike3000", "USER");
-        ObjectMapper mapper = new ObjectMapper();
 
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
