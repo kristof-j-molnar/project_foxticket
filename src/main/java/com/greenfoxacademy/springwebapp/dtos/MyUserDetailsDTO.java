@@ -10,10 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-<<<<<<< HEAD:src/main/java/com/greenfoxacademy/springwebapp/dtos/MyUserDetailsDTO.java
 public class MyUserDetailsDTO implements UserDetails {
-=======
-public class MyUserDetails implements UserDetails {
   private Integer userId;
   private String userName;
   private String email;
@@ -21,37 +18,21 @@ public class MyUserDetails implements UserDetails {
   private Boolean isAdmin;
   private Boolean isVerified;
   private List<GrantedAuthority> roles;
->>>>>>> 524ae6f (fix the indentations):src/main/java/com/greenfoxacademy/springwebapp/dtos/MyUserDetails.java
 
-  public MyUserDetails() {
-  }
-
-<<<<<<< HEAD:src/main/java/com/greenfoxacademy/springwebapp/dtos/MyUserDetailsDTO.java
     public MyUserDetailsDTO() {
     }
 
     public MyUserDetailsDTO(User user) {
-        this.userName = user.getName();
-        this.email = user.getEmail();
-        this.password = user.getPassword();
-        this.roles = Arrays.stream(user.getRole().split(","))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+      this.userId = user.getId();
+      this.userName = user.getName();
+      this.email = user.getEmail();
+      this.password = user.getPassword();
+      this.isVerified = true;
+      this.isAdmin = false;
+      this.roles = Arrays.stream(user.getRole().split(","))
+          .map(SimpleGrantedAuthority::new)
+          .collect(Collectors.toList());
     }
-=======
-  public MyUserDetails(User user) {
-    this.userId = user.getId();
-    this.userName = user.getName();
-    this.email = user.getEmail();
-    this.password = user.getPassword();
-    this.isVerified = true;
-    this.isAdmin = false;
-    this.roles = Arrays.stream(user.getRole().split(","))
-        .map(SimpleGrantedAuthority::new)
-        .collect(Collectors.toList());
-  }
-
->>>>>>> 524ae6f (fix the indentations):src/main/java/com/greenfoxacademy/springwebapp/dtos/MyUserDetails.java
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
