@@ -11,56 +11,74 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MyUserDetails implements UserDetails {
+  private Integer userId;
+  private String userName;
+  private String email;
+  private String password;
+  private Boolean isAdmin;
+  private Boolean isVerified;
+  private List<GrantedAuthority> roles;
 
-    private String userName;
-    private String email;
-    private String password;
-    private List<GrantedAuthority> roles;
+  public MyUserDetails() {
+  }
 
-    public MyUserDetails() {
-    }
+  public MyUserDetails(User user) {
+    this.userId = user.getId();
+    this.userName = user.getName();
+    this.email = user.getEmail();
+    this.password = user.getPassword();
+    this.isVerified = true;
+    this.isAdmin = false;
+    this.roles = Arrays.stream(user.getRole().split(","))
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toList());
+  }
 
-    public MyUserDetails(User user) {
-        this.userName = user.getName();
-        this.email = user.getEmail();
-        this.password = user.getPassword();
-        this.roles = Arrays.stream(user.getRole().split(","))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-    }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return roles;
+  }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
+  @Override
+  public String getPassword() {
+    return password;
+  }
 
-    @Override
-    public String getUsername() {
-        return userName;
-    }
+  @Override
+  public String getUsername() {
+    return userName;
+  }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
+
+  public Integer getUserId() {
+    return userId;
+  }
+
+  public Boolean getIsAdmin() {
+    return isAdmin;
+  }
+
+  public Boolean getIsVerified() {
+    return isVerified;
+  }
 }

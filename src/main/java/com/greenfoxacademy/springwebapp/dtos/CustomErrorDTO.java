@@ -1,13 +1,13 @@
 package com.greenfoxacademy.springwebapp.dtos;
 
 public class CustomErrorDTO {
-    private String error;
+  private String error;
 
-    public CustomErrorDTO(String error) {
-        this.error = error;
-    }
+  public CustomErrorDTO(String error) {
+    this.error = error;
+  }
 
-    public String getError() {
-        return error;
-    }
+  public String getError() {
+    return error;
+  }
 }
