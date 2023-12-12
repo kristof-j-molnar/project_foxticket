@@ -23,7 +23,7 @@ public class BasicSpringProjectApplication implements CommandLineRunner {
   @Override
   public void run(String... args) throws Exception {
     User user1 = new User("reka", "ferenczy.reka01@gmail.com", "reka12345", "USER");
-  userRepository.save(user1);
+    userRepository.save(user1);
 
   }
 }

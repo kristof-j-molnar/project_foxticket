@@ -2,76 +2,23 @@ package com.greenfoxacademy.springwebapp.services;
 
 import com.greenfoxacademy.springwebapp.dtos.UserRequestDTO;
 import com.greenfoxacademy.springwebapp.models.User;
-import com.greenfoxacademy.springwebapp.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+public interface UserService {
 
-@Service
-public class UserService {
-    private UserRepository userRepository;
+  boolean validatePassword(UserRequestDTO userDTO);
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+  boolean validateEmail(UserRequestDTO userDTO);
 
-    public boolean validatePassword(UserRequestDTO userDTO) {
-        if (userDTO.getPassword().isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+  boolean validateName(UserRequestDTO userDTO);
 
-    public boolean validateEmail(UserRequestDTO userDTO) {
-        if (userDTO.getEmail().isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+  boolean validateEmptyDTO(UserRequestDTO userDTO);
 
-    public boolean validateName(UserRequestDTO userDTO) {
-        if (userDTO.getName().isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+  boolean findEmail(String email);
 
-    public boolean validateEmptyDTO(UserRequestDTO userDTO) {
-        if (userDTO.getName().isEmpty() && userDTO.getEmail().isEmpty() && userDTO.getPassword().isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+  boolean checkIfPasswordIsGood(String password);
 
-    public boolean findEmail(String email) {
-        Optional<User> foundUser = userRepository.findUserByEmail(email);
-        if (foundUser.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+  User generateUser(UserRequestDTO userRequestDTO);
 
-    public boolean checkIfPasswordIsGood(String password) {
-        if (!password.isEmpty() && password.length() < 8) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+  void saveUser(User user);
 
-    public User generateUser(UserRequestDTO userRequestDTO) {
-        User newUser = new User(userRequestDTO.getName(), userRequestDTO.getEmail(), userRequestDTO.getPassword(), "USER");
-        return newUser;
-    }
-
-    public void saveUser(User user) {
-        userRepository.save(user);
-    }
 }
