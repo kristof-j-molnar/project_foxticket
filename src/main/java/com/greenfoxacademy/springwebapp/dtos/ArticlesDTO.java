@@ -1,7 +1,6 @@
 package com.greenfoxacademy.springwebapp.dtos;
 
 import com.greenfoxacademy.springwebapp.models.Article;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +14,9 @@ public class ArticlesDTO {
   public ArticlesDTO(List<Article> articles) {
     this();
     this.articles = articles;
-  }
 
+  }
+  
   public List<Article> getArticles() {
     return articles;
   }
@@ -25,3 +25,4 @@ public class ArticlesDTO {
     this.articles = articles;
   }
 }
+

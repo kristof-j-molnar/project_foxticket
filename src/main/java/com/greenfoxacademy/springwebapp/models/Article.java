@@ -70,9 +70,9 @@ public class Article {
   }
 
   public Article(String title, String content) {
+    this();
     this.title = title;
     this.content = content;
-    this.publishDate = LocalDate.now();
   }
 
   public Long getId() {
