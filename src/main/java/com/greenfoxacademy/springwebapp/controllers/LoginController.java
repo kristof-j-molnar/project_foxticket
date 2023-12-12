@@ -17,11 +17,15 @@ import java.util.Optional;
 
 @RestController
 public class LoginController {
-  @Autowired
   private UserRepository userRepository;
 
-  @Autowired
   private JwtUtil jwtUtil;
+
+  @Autowired
+  public LoginController(UserRepository userRepository, JwtUtil jwtUtil) {
+    this.userRepository = userRepository;
+    this.jwtUtil = jwtUtil;
+  }
 
   @PostMapping(path = "/api/users/login")
   public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO) {
