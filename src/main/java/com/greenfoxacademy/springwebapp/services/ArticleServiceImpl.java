@@ -19,6 +19,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
+<<<<<<< HEAD
   public ArticlesDTO generateArticlesDTO() {
     List<Article> articles = articleRepository.findAll();
     return new ArticlesDTO(articles);
@@ -30,3 +31,13 @@ public class ArticleServiceImpl implements ArticleService {
     return new ArticlesDTO(matchingArticles);
   }
 }
+=======
+  public ArticleDTO generateArticleDTO() {
+    List<Article> articles = articleRepository.findAll();
+    ArticleDTO articleDTO = new ArticleDTO();
+    articleDTO.setArticles(articles);
+
+    return articleDTO;
+  }
+}
+>>>>>>> 6af8150 (add styling changes and evironment variables in application.properties)
