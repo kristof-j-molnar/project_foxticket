@@ -14,9 +14,11 @@ import java.util.Map;
 @Service
 public class JwtUtil {
   private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
   public Claims extractAllClaims(String token) {
     return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
   }
+
   public String generateToken(MyUserDetails userDetails) {
     Map<String, Object> claims = new HashMap<>();
     claims.put("userId", userDetails.getUserId());
@@ -39,6 +41,6 @@ public class JwtUtil {
 
     return (userDetails.getUserId().equals(claims.get("userId"))
         && userDetails.getIsAdmin().equals(claims.get("isAdmin"))
-        && userDetails.getIsVerified().equals(claims.get("isVerified")) );
+        && userDetails.getIsVerified().equals(claims.get("isVerified")));
   }
 }

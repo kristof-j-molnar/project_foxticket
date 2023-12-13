@@ -33,11 +33,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     final String authorizationHeader = request.getHeader("Authorization");
     Integer userId = null;
     String jwt = null;
+
     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
       jwt = authorizationHeader.substring(7);
       Claims claims = jwtUtil.extractAllClaims(jwt);
       userId = (Integer) claims.get("userId");
     }
+
     if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
       MyUserDetails userDetails = this.myUserDetailsService.loadUserById(userId);
       if (jwtUtil.validateToken(jwt, userDetails)) {
