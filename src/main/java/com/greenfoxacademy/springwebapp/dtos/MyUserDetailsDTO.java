@@ -19,20 +19,20 @@ public class MyUserDetailsDTO implements UserDetails {
   private Boolean isVerified;
   private List<GrantedAuthority> roles;
 
-    public MyUserDetailsDTO() {
-    }
+  public MyUserDetailsDTO() {
+  }
 
-    public MyUserDetailsDTO(User user) {
-      this.userId = user.getId();
-      this.userName = user.getName();
-      this.email = user.getEmail();
-      this.password = user.getPassword();
-      this.isVerified = true;
-      this.isAdmin = false;
-      this.roles = Arrays.stream(user.getRole().split(","))
-          .map(SimpleGrantedAuthority::new)
-          .collect(Collectors.toList());
-    }
+  public MyUserDetailsDTO(User user) {
+    this.userId = user.getId();
+    this.userName = user.getName();
+    this.email = user.getEmail();
+    this.password = user.getPassword();
+    this.isVerified = true;
+    this.isAdmin = false;
+    this.roles = Arrays.stream(user.getRole().split(","))
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toList());
+  }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -79,5 +79,9 @@ public class MyUserDetailsDTO implements UserDetails {
 
   public Boolean getIsVerified() {
     return isVerified;
+  }
+
+  public String getEmail() {
+    return email;
   }
 }
