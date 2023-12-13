@@ -22,8 +22,8 @@ public class JwtUtil {
   public String generateToken(MyUserDetails userDetails) {
     Map<String, Object> claims = new HashMap<>();
     claims.put("userId", userDetails.getUserId());
-    claims.put("isVerified", userDetails.getIsVerified());
-    claims.put("isAdmin", userDetails.getIsAdmin());
+    claims.put("isVerified", userDetails.isVerified());
+    claims.put("isAdmin", userDetails.isAdmin());
     return createToken(claims);
   }
 
@@ -40,7 +40,7 @@ public class JwtUtil {
         .getBody();
 
     return (userDetails.getUserId().equals(claims.get("userId"))
-        && userDetails.getIsAdmin().equals(claims.get("isAdmin"))
-        && userDetails.getIsVerified().equals(claims.get("isVerified")));
+        && userDetails.isAdmin().equals(claims.get("isAdmin"))
+        && userDetails.isVerified().equals(claims.get("isVerified")));
   }
 }
