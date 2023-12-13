@@ -73,11 +73,11 @@ public class MyUserDetails implements UserDetails {
     return userId;
   }
 
-  public Boolean getIsAdmin() {
+  public Boolean isAdmin() {
     return isAdmin;
   }
 
-  public Boolean getIsVerified() {
+  public Boolean isVerified() {
     return isVerified;
   }
 
