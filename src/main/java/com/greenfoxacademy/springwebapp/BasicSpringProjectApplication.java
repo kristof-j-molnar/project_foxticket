@@ -15,7 +15,6 @@ public class BasicSpringProjectApplication implements CommandLineRunner {
   public BasicSpringProjectApplication(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
-
   public static void main(String[] args) {
     SpringApplication.run(BasicSpringProjectApplication.class, args);
   }
@@ -24,7 +23,6 @@ public class BasicSpringProjectApplication implements CommandLineRunner {
   public void run(String... args) throws Exception {
     User user1 = new User("reka", "ferenczy.reka01@gmail.com", "reka12345", "USER");
     userRepository.save(user1);
-
     User user = new User("user", "lacika.com", "pass", "User");
     userRepository.save(user);
   }

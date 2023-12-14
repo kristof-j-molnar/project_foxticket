@@ -1,6 +1,5 @@
 package com.greenfoxacademy.springwebapp.services;
 
-import com.greenfoxacademy.springwebapp.dtos.MyUserDetails;
 import com.greenfoxacademy.springwebapp.dtos.MyUserDetailsDTO;
 import com.greenfoxacademy.springwebapp.models.User;
 import org.junit.jupiter.api.Test;
