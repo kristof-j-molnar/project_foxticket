@@ -23,13 +23,13 @@ public class MyUserDetailsDTO implements UserDetails {
   }
 
   public MyUserDetailsDTO(User user) {
-    this.userId = user.getId();
-    this.userName = user.getName();
-    this.email = user.getEmail();
-    this.password = user.getPassword();
-    this.isVerified = true;
-    this.isAdmin = false;
-    this.roles = Arrays.stream(user.getRole().split(","))
+    userId = user.getId();
+    userName = user.getName();
+    email = user.getEmail();
+    password = user.getPassword();
+    isVerified = true;
+    isAdmin = false;
+    roles = Arrays.stream(user.getRole().split(","))
         .map(SimpleGrantedAuthority::new)
         .collect(Collectors.toList());
   }
