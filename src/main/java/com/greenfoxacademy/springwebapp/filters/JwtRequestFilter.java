@@ -1,6 +1,6 @@
 package com.greenfoxacademy.springwebapp.filters;
 
-import com.greenfoxacademy.springwebapp.dtos.MyUserDetails;
+import com.greenfoxacademy.springwebapp.dtos.MyUserDetailsDTO;
 import com.greenfoxacademy.springwebapp.services.MyUserDetailsService;
 import com.greenfoxacademy.springwebapp.utilities.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -41,7 +41,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-      MyUserDetails userDetails = this.myUserDetailsService.loadUserById(userId);
+      MyUserDetailsDTO userDetails = this.myUserDetailsService.loadUserById(userId);
       if (jwtUtil.validateToken(jwt, userDetails)) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

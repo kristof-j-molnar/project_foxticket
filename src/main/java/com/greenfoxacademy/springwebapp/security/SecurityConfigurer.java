@@ -30,9 +30,9 @@ public class SecurityConfigurer {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/login"));
+    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**"));
     http.authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("/api/users/login")
+        .requestMatchers("/api/users/**")
         .permitAll()
         .anyRequest()
         .authenticated());

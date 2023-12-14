@@ -17,6 +17,7 @@ public class UserServiceImpl implements UserService {
     this.userRepository = userRepository;
   }
 
+  @Override
   public boolean validatePassword(UserRequestDTO userDTO) {
     if (userDTO.getPassword().isEmpty()) {
       return false;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     }
   }
 
+  @Override
   public boolean validateEmail(UserRequestDTO userDTO) {
     if (userDTO.getEmail().isEmpty()) {
       return false;
@@ -33,6 +35,7 @@ public class UserServiceImpl implements UserService {
     }
   }
 
+  @Override
   public boolean validateName(UserRequestDTO userDTO) {
     if (userDTO.getName().isEmpty()) {
       return false;
@@ -41,6 +44,7 @@ public class UserServiceImpl implements UserService {
     }
   }
 
+  @Override
   public boolean validateEmptyDTO(UserRequestDTO userDTO) {
     if (userDTO.getName().isEmpty() && userDTO.getEmail().isEmpty() && userDTO.getPassword().isEmpty()) {
       return false;
@@ -49,6 +53,7 @@ public class UserServiceImpl implements UserService {
     }
   }
 
+  @Override
   public boolean findEmail(String email) {
     Optional<User> foundUser = userRepository.findUserByEmail(email);
     if (foundUser.isEmpty()) {
@@ -58,6 +63,7 @@ public class UserServiceImpl implements UserService {
     }
   }
 
+  @Override
   public boolean checkIfPasswordIsGood(String password) {
     if (!password.isEmpty() && password.length() < 8) {
       return false;
@@ -66,11 +72,13 @@ public class UserServiceImpl implements UserService {
     }
   }
 
+  @Override
   public User generateUser(UserRequestDTO userRequestDTO) {
     User newUser = new User(userRequestDTO.getName(), userRequestDTO.getEmail(), userRequestDTO.getPassword(), "USER");
     return newUser;
   }
 
+  @Override
   public void saveUser(User user) {
     userRepository.save(user);
   }

@@ -1,7 +1,6 @@
 package com.greenfoxacademy.springwebapp.controllers;
 
 import com.greenfoxacademy.springwebapp.dtos.*;
-import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.services.UserService;
 import com.greenfoxacademy.springwebapp.utilities.JwtUtil;

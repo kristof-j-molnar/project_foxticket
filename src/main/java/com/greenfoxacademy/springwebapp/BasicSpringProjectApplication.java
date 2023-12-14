@@ -25,7 +25,7 @@ public class BasicSpringProjectApplication implements CommandLineRunner {
     User user1 = new User("reka", "ferenczy.reka01@gmail.com", "reka12345", "USER");
     userRepository.save(user1);
 
-    User user = new User("user","lacika.com","pass","User");
+    User user = new User("user", "lacika.com", "pass", "User");
     userRepository.save(user);
   }
 }
