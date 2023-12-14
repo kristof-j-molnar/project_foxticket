@@ -30,7 +30,7 @@ public class LoginControllerTest {
   @Test
   void checkJsonValidity_WithMissingFields_ShouldReturnCustomErrorMessage() throws Exception {
 
-    UserLoginDTO userLoginDTO = new UserLoginDTO(null,null);
+    UserLoginDTO userLoginDTO = new UserLoginDTO(null, null);
 
     mockMvc.perform(post("/api/users/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -42,7 +42,7 @@ public class LoginControllerTest {
   @Test
   void checkJsonValidity_WithMissingPassword_ShouldReturnCustomErrorMessage() throws Exception {
 
-    UserLoginDTO userLoginDTO = new UserLoginDTO("lacika.hu",null);
+    UserLoginDTO userLoginDTO = new UserLoginDTO("lacika.hu", null);
 
     mockMvc.perform(post("/api/users/login")
             .contentType(MediaType.APPLICATION_JSON)

@@ -15,6 +15,7 @@ public class BasicSpringProjectApplication implements CommandLineRunner {
   public BasicSpringProjectApplication(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
+
   public static void main(String[] args) {
     SpringApplication.run(BasicSpringProjectApplication.class, args);
   }
