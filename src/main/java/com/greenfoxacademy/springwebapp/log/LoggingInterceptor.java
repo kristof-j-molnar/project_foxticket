@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Map;
+
 public class LoggingInterceptor implements HandlerInterceptor {
   private static final Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
 
