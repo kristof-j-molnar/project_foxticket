@@ -2,11 +2,6 @@ package com.greenfoxacademy.springwebapp.unit;
 
 import com.greenfoxacademy.springwebapp.dtos.ProductDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductListResponseDTO;
-<<<<<<< HEAD
-=======
-import com.greenfoxacademy.springwebapp.models.Product;
-import com.greenfoxacademy.springwebapp.models.ProductType;
->>>>>>> ae920da (Create unit test for the ProductServiceImp)
 import com.greenfoxacademy.springwebapp.services.ProductServiceImp;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
