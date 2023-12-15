@@ -39,9 +39,6 @@ jacocoTestReport {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.slf4j:slf4j-api:2.0.9'
-    testImplementation 'ch.qos.logback:logback-classic:1.4.14'
-    //implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation ('io.jsonwebtoken:jjwt:0.2')
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
