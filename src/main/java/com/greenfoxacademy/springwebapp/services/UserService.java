@@ -1,7 +1,11 @@
 package com.greenfoxacademy.springwebapp.services;
 
+import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
+import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserRequestDTO;
 import com.greenfoxacademy.springwebapp.models.User;
+
+import java.util.Optional;
 
 public interface UserService {
 
@@ -21,4 +25,8 @@ public interface UserService {
 
   void saveUser(User user);
 
+  Optional<User> findUserByEmail(String email);
+
+  ErrorMessageDTO validateLogin(UserLoginDTO userLoginDTO);
 }
+
