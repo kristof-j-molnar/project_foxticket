@@ -49,21 +49,14 @@ public class UserController {
 
   @PostMapping(path = "/users/login")
   public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO) {
-    if (userLoginDTO.getEmail() == null && userLoginDTO.getPassword() == null) {
-      return ResponseEntity.status(400).body(new ErrorMessageDTO("All fields are required."));
+    ErrorMessageDTO error = userService.validateLogin(userLoginDTO);
+    if (error != null) {
+      return ResponseEntity.status(400).body(error);
     }
-    if (userLoginDTO.getPassword() == null) {
-      return ResponseEntity.status(400).body(new ErrorMessageDTO("Password is required."));
-    }
-    if (userLoginDTO.getEmail() == null) {
-      return ResponseEntity.status(400).body(new ErrorMessageDTO("E-mail is required."));
-    }
-
     Optional<User> optionalUser = userService.findUserByEmail(userLoginDTO.getEmail());
     if (optionalUser.isEmpty() || !optionalUser.get().getPassword().equals(userLoginDTO.getPassword())) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Email or password is incorrect"));
     } else {
-
       User user = optionalUser.get();
       MyUserDetailsDTO myUserDetailsDTO = new MyUserDetailsDTO(user);
       String jwt = jwtUtil.generateToken(myUserDetailsDTO);

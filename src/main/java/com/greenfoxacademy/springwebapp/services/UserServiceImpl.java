@@ -1,5 +1,7 @@
 package com.greenfoxacademy.springwebapp.services;
 
+import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
+import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserRequestDTO;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
@@ -86,5 +88,18 @@ public class UserServiceImpl implements UserService {
   @Override
   public Optional<User> findUserByEmail(String email) {
     return userRepository.findUserByEmail(email);
+  }
+
+  @Override
+  public ErrorMessageDTO validateLogin(UserLoginDTO userLoginDTO) {
+    if (userLoginDTO.getEmail() == null && userLoginDTO.getPassword() == null) {
+      return new ErrorMessageDTO("All fields are required.");
+    } else if (userLoginDTO.getPassword() == null) {
+      return new ErrorMessageDTO("Password is required.");
+    } else if (userLoginDTO.getEmail() == null) {
+      return new ErrorMessageDTO("E-mail is required.");
+    } else {
+      return null;
+    }
   }
 }
