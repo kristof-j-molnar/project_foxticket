@@ -56,11 +56,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
     testImplementation 'junit:junit:4.13.2'
     implementation 'com.h2database:h2:2.2.224'
-<<<<<<< HEAD
     testImplementation 'com.h2database:h2'
     runtimeOnly 'com.h2database:h2'
-=======
->>>>>>> 5dfd25f9f1fba9ee41ce63206a73b47acda5401b
     testImplementation 'org.hamcrest:hamcrest-core:2.2'
     testImplementation 'org.hamcrest:hamcrest:2.2'
 }
