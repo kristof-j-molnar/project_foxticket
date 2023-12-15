@@ -18,8 +18,7 @@ public class Product {
   private int duration;
 
   private String description;
-
-  @JsonIgnoreProperties(ignoreUnknown = true, value = {"id", "productList"})
+  
   @ManyToOne
   private ProductType type;
 
