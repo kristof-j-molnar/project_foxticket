@@ -1,7 +1,8 @@
-package com.greenfoxacademy.springwebapp.services;
+package com.greenfoxacademy.springwebapp.unit;
 
 import com.greenfoxacademy.springwebapp.dtos.MyUserDetailsDTO;
 import com.greenfoxacademy.springwebapp.models.User;
+import com.greenfoxacademy.springwebapp.services.MyUserDetailsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

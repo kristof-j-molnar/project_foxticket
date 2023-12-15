@@ -1,4 +1,4 @@
-package com.greenfoxacademy.springwebapp.controllers;
+package com.greenfoxacademy.springwebapp.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;

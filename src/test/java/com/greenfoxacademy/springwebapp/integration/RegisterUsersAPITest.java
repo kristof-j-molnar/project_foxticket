@@ -1,4 +1,4 @@
-package com.greenfoxacademy.springwebapp;
+package com.greenfoxacademy.springwebapp.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenfoxacademy.springwebapp.dtos.UserRequestDTO;
@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+//@ActiveProfiles("test")
 public class RegisterUsersAPITest {
 
   @Autowired
