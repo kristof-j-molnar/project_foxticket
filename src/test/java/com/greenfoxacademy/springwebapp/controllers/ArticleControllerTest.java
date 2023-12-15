@@ -8,7 +8,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+<<<<<<< HEAD
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+=======
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+>>>>>>> e87db1d (add changes requested by reviewers and add unit test for service class method)
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -52,6 +57,7 @@ class ArticleControllerTest {
 =======
     @Autowired
     MockMvc mvc;
+
     @Test
     public void getAllArticles_returnsArticleDTO () throws Exception {
         mvc.perform(get("/api/news"))
