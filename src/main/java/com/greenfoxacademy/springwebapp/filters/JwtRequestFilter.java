@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.SignatureException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -36,8 +38,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
       jwt = authorizationHeader.substring(7);
-      Claims claims = jwtUtil.extractAllClaims(jwt);
-      userId = (Integer) claims.get("userId");
+      try {
+        Claims claims = jwtUtil.extractAllClaims(jwt);
+        userId = (Integer) claims.get("userId");
+      } catch (Exception e) {
+        sendErrorResponse(response, "Invalid token");
+        return;
+      }
     }
 
     if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -46,8 +53,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+      } else {
+        sendErrorResponse(response, "Invalid token");
+        return;
       }
     }
+
     chain.doFilter(request, response);
+  }
+
+  private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
+    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    response.setStatus(401);
+    response.getWriter().write("{ \"message\": \"" + message +"\"}");
   }
 }

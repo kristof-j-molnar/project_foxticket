@@ -30,12 +30,14 @@ public class SecurityConfigurer {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**"));
+    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**", "/api/news", "/api/hello"));
+
     http.authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("/api/users/**")
+        .requestMatchers("/api/users/**", "/api/news")
         .permitAll()
         .anyRequest()
         .authenticated());
+
     http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
