@@ -66,7 +66,7 @@ public class Article {
   private LocalDate publishDate;
 
   public Article() {
-    this.publishDate = LocalDate.now();
+    publishDate = LocalDate.now();
   }
 
   public Article(String title, String content) {
