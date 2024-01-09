@@ -34,6 +34,7 @@ public class SecurityConfigurer {
     http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**", "/api/news", "/api/hello"));
 
     http.authorizeHttpRequests(authorize -> authorize
+        .requestMatchers("/admin").hasRole("ADMIN")
         .requestMatchers("/api/users/**", "/api/news")
         .permitAll()
         .anyRequest()

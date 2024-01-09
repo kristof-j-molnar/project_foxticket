@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -71,4 +72,14 @@ public class UserController {
       return ResponseEntity.status(200).body(new TokenDTO("ok", jwt));
     }
   }
+
+  @GetMapping("/admin")
+  public ResponseEntity<?> adminAuthorization(UserRequestDTO userRequestDTO) {
+    if (!Objects.equals(userRequestDTO.getRole(), "ADMIN")){
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Unauthorized access"));
+    } else {
+      return ResponseEntity.status(200).body("Authorized access");
+    }
+  }
+
 }
