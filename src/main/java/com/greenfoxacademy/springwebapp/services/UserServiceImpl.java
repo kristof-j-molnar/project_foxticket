@@ -101,4 +101,20 @@ public class UserServiceImpl implements UserService {
   public Boolean validatePassword(User user, UserLoginDTO userLoginDTO) {
     return passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword());
   }
+
+  @Override
+  public User editUserInformation(User user) {
+    Optional<User> user1 = userRepository.findById(user.getId());
+
+    if (user1.isPresent()) {
+      User foundUser = user1.get();
+      foundUser.setPassword(user.getPassword());
+      foundUser.setEmail(user.getEmail());
+      foundUser.setName(user.getName());
+      userRepository.save(foundUser);
+      return foundUser;
+    }
+    return null;
+  }
 }
+

@@ -28,5 +28,6 @@ public interface UserService {
   ErrorMessageDTO validateLogin(UserLoginDTO userLoginDTO);
 
   Boolean validatePassword(User user, UserLoginDTO userLoginDTO);
+  User editUserInformation(User user);
 }
 

@@ -76,7 +76,6 @@ public class UserController {
       return ResponseEntity.status(200).body(new TokenDTO("ok", jwt));
     }
   }
-
   @GetMapping("/admin")
   public ResponseEntity<?> adminAuthorization(Authentication authentication) {
 
@@ -84,6 +83,34 @@ public class UserController {
       return ResponseEntity.status(403).body(new ErrorMessageDTO("Unauthorized access"));
     } else {
       return ResponseEntity.status(200).body("Authorized access");
+    }
+  }
+
+  @RequestMapping(value = "/users", method = RequestMethod.PATCH)
+  public ResponseEntity<?> editUserProfile(@RequestBody User user) {
+
+    if (user.getName().isEmpty() && user.getPassword().isEmpty() && user.getEmail().isEmpty()) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Name, password and email are required."));
+    } else if (user.getName().isEmpty() && user.getPassword().isEmpty()) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Name and password are required."));
+    } else if (user.getName().isEmpty() && user.getEmail().isEmpty()) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Name and email are required."));
+    } else if (user.getEmail().isEmpty() && user.getPassword().isEmpty()) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Email and password are required."));
+    } else if (user.getPassword().isEmpty()) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Password is required."));
+    } else if (user.getName().isEmpty()) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Name is required."));
+    } else if (user.getEmail().isEmpty()) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Email is required."));
+    } else if (!userService.findEmail(user.getEmail())) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Email is already taken."));
+    } else if (!userService.checkIfPasswordIsGood(user.getPassword())) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Password must be at least 8 characters."));
+    } else {
+      User foundUser = userService.editUserInformation(user);
+
+      return ResponseEntity.status(200).body(new UserResponseDTOWithName(foundUser.getId(), foundUser.getName(), foundUser.getEmail()));
     }
   }
 }
