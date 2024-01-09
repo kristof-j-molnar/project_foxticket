@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -74,12 +74,12 @@ public class UserController {
   }
 
   @GetMapping("/admin")
-  public ResponseEntity<?> adminAuthorization(UserRequestDTO userRequestDTO) {
-    if (!Objects.equals(userRequestDTO.getRole(), "ADMIN")){
+  public ResponseEntity<?> adminAuthorization(Authentication authentication) {
+
+    if (authentication.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ADMIN"))){
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Unauthorized access"));
     } else {
       return ResponseEntity.status(200).body("Authorized access");
     }
   }
-
 }
