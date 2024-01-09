@@ -6,6 +6,7 @@ import com.greenfoxacademy.springwebapp.dtos.UserRequestDTO;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,10 +14,12 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
   private UserRepository userRepository;
+  private BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Autowired
   public UserServiceImpl(UserRepository userRepository) {
     this.userRepository = userRepository;
+    this.bCryptPasswordEncoder = bCryptPasswordEncoder;
   }
 
   @Override
@@ -76,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User generateUser(UserRequestDTO userRequestDTO) {
-    User newUser = new User(userRequestDTO.getName(), userRequestDTO.getEmail(), userRequestDTO.getPassword(), "USER");
+    User newUser = new User(userRequestDTO.getName(), userRequestDTO.getEmail(), bCryptPasswordEncoder.encode(userRequestDTO.getPassword()), "USER");
     return newUser;
   }
 
