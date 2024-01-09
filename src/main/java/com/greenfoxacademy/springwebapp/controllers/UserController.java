@@ -86,11 +86,11 @@ public class UserController {
     }
   }
 
-  @RequestMapping(value = "/users", method = RequestMethod.PATCH)
+  @RequestMapping(value = "/api/users", method = RequestMethod.PATCH)
   public ResponseEntity<?> editUserProfile(@RequestBody User user) {
 
     if (user.getName().isEmpty() && user.getPassword().isEmpty() && user.getEmail().isEmpty()) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Name, password and email are required."));
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Name, password or email is required."));
     } else if (user.getName().isEmpty() && user.getPassword().isEmpty()) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Name and password are required."));
     } else if (user.getName().isEmpty() && user.getEmail().isEmpty()) {
