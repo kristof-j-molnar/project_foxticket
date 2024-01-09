@@ -38,6 +38,7 @@ jacocoTestReport {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.slf4j:slf4j-api:2.0.9'
     testImplementation 'ch.qos.logback:logback-classic:1.4.14'
@@ -49,12 +50,22 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2'
     testImplementation 'org.springframework.security:spring-security-test'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'io.rest-assured:rest-assured:5.3.2'
+    implementation 'io.rest-assured:json-schema-validator:5.3.2'
+    testImplementation 'org.mockito:mockito-core:5.8.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+    testImplementation 'junit:junit:4.13.2'
+    implementation 'com.h2database:h2:2.2.224'
+    testImplementation 'com.h2database:h2'
     runtimeOnly 'com.h2database:h2'
+    testImplementation 'org.hamcrest:hamcrest-core:2.2'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
 }
 
 tasks.named('test') {
