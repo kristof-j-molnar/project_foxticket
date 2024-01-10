@@ -95,15 +95,12 @@ public class UserController {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Email is already taken."));
     } else if (!editProfileDTO.getNewPassword().isEmpty() && !userService.checkIfPasswordIsGood(editProfileDTO.getNewPassword())) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Password must be at least 8 characters."));
-    } else if(userAuthenticationService.getCurrentUser() instanceof User) {
-
+    } else {
       String currentUserEmail = userAuthenticationService.findCurrentUserEmail((userAuthenticationService.getCurrentUser()));
       User editedUser = userService.editUserInformation(currentUserEmail, editProfileDTO);
 
       return ResponseEntity.status(200).body(new UserResponseDTOWithName(editedUser.getId(), editedUser.getName(), editedUser.getEmail()));
     }
-
-    return ResponseEntity.status(400).build();
   }
 }
 
