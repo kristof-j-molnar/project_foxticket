@@ -14,6 +14,8 @@ public class User {
   private String email;
   private String password;
   private String role;
+  @OneToOne
+  private Cart cart;
 
   public User(String name, String email, String password, String role) {
     this.name = name;
@@ -59,5 +61,13 @@ public class User {
 
   public void setRole(String role) {
     this.role = role;
+  }
+
+  public Cart getCart() {
+    return cart;
+  }
+
+  public void setCart(Cart cart) {
+    this.cart = cart;
   }
 }

@@ -17,15 +17,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 class ProductControllerTest {
 
-    @Autowired
-    MockMvc mvc;
+  @Autowired
+  MockMvc mvc;
 
-    @Test
-    void getAvailableProducts_ReturnAListAnd200() throws Exception {
-        mvc.perform(get("/api/products"))
-                .andExpect(status().is(200))
-                .andExpect(jsonPath("$['products']").value(hasSize(2)))
-                .andExpect(jsonPath("$['products'][0]['id']").value(1))
-                .andExpect(jsonPath("$['products'][1]['id']").value(2));
-    }
+  @Test
+  void getAvailableProducts_ReturnAListAnd200() throws Exception {
+    mvc.perform(get("/api/products"))
+        .andExpect(status().is(200))
+        .andExpect(jsonPath("$['products']").value(hasSize(2)))
+        .andExpect(jsonPath("$['products'][0]['id']").value(1))
+        .andExpect(jsonPath("$['products'][1]['id']").value(2));
+  }
 }

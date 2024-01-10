@@ -1,6 +1,8 @@
 package com.greenfoxacademy.springwebapp;
 
+import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.User;
+import com.greenfoxacademy.springwebapp.repositories.CartRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.ProductType;
@@ -14,11 +16,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BasicSpringProjectApplication implements CommandLineRunner {
   private UserRepository userRepository;
   private ProductTypeRepository productTypeRepository;
+  private CartRepository cartRepository;
 
   @Autowired
-  public BasicSpringProjectApplication(UserRepository userRepository, ProductTypeRepository productTypeRepository) {
+  public BasicSpringProjectApplication(UserRepository userRepository, ProductTypeRepository productTypeRepository,
+                                       CartRepository cartRepository) {
     this.userRepository = userRepository;
     this.productTypeRepository = productTypeRepository;
+    this.cartRepository = cartRepository;
   }
 
   public static void main(String[] args) {
@@ -38,5 +43,12 @@ public class BasicSpringProjectApplication implements CommandLineRunner {
     t1.addProduct(p1);
     t1.addProduct(p2);
     productTypeRepository.save(t1);
+
+    Cart cart1 = new Cart();
+    cartRepository.save(cart1);
+    cart1.addUser(user);
+    cart1.addProduct(p1);
+    cart1.addProduct(p2);
+    cartRepository.save(cart1);
   }
 }
