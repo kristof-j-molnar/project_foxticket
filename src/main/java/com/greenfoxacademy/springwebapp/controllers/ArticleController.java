@@ -27,7 +27,7 @@ public class ArticleController {
   public ResponseEntity<ArticlesDTO> getAllArticles() {
     return ResponseEntity.ok(articleService.generateArticlesDTO());
   }
-  
+
   public ResponseEntity<?> getArticles(@RequestParam(name = "search", required = false) String search) {
     if (search != null && !search.isEmpty()) {
       ArticlesDTO result = articleService.searchArticles(search);
