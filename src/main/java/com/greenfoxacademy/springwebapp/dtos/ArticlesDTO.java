@@ -24,8 +24,4 @@ public class ArticlesDTO {
   public void setArticles(List<Article> articles) {
     this.articles = articles;
   }
-
-  public void add(Article article) {
-    articles.add(article);
-  }
 }

@@ -22,8 +22,7 @@ class ArticleServiceImplTest {
     );
 
     ArticleServiceImpl articleService = new ArticleServiceImpl(repo);
-    ArticlesDTO articlesDTO = new ArticlesDTO();
-    articlesDTO.add(new Article("test article", "this is an amazing test article."));
+    ArticlesDTO articlesDTO = new ArticlesDTO(List.of(new Article("test article", "this is an amazing test article.")));
 
     ArticlesDTO actualArticlesDTO = articleService.generateArticlesDTO();
     assertEquals(articlesDTO.getArticles().get(0).getTitle(), actualArticlesDTO.getArticles().get(0).getTitle());
@@ -38,9 +37,8 @@ class ArticleServiceImplTest {
     );
 
     ArticleServiceImpl articleService = new ArticleServiceImpl(repo);
-    ArticlesDTO articlesDTO = new ArticlesDTO();
-    articlesDTO.add(new Article("First Article", "This is our brand new article"));
-    articlesDTO.add(new Article("Second Article", "This is our awesome second article"));
+    ArticlesDTO articlesDTO = new ArticlesDTO(List.of(new Article("First Article", "This is our brand new article"),
+        new Article("Second Article", "This is our awesome second article")));
 
     ArticlesDTO actualArticlesDTO = articleService.searchArticles(search);
     assertEquals(articlesDTO.getArticles().get(0).getTitle(), actualArticlesDTO.getArticles().get(0).getTitle());
@@ -55,8 +53,7 @@ class ArticleServiceImplTest {
     );
 
     ArticleServiceImpl articleService = new ArticleServiceImpl(repo);
-    ArticlesDTO articlesDTO = new ArticlesDTO();
-    articlesDTO.add(new Article("test article", "this is an amazing test article."));
+    ArticlesDTO articlesDTO = new ArticlesDTO(List.of(new Article("test article", "this is an amazing test article.")));
 
     ArticlesDTO actualArticlesDTO = articleService.searchArticles(search);
     assertTrue(actualArticlesDTO.getArticles().isEmpty());

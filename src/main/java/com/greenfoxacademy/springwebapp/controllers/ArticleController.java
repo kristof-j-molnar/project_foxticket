@@ -1,6 +1,7 @@
 package com.greenfoxacademy.springwebapp.controllers;
 
 import com.greenfoxacademy.springwebapp.dtos.ArticlesDTO;
+import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +26,7 @@ public class ArticleController {
     if (search != null && !search.isEmpty()) {
       ArticlesDTO result = articleService.searchArticles(search);
       if (result.getArticles().isEmpty()) {
-        return ResponseEntity.status(404).body("No articles found with the given search criteria.");
+        return ResponseEntity.status(404).body(new ErrorMessageDTO("No articles found with the given search criteria."));
       } else {
         return ResponseEntity.ok(result);
       }

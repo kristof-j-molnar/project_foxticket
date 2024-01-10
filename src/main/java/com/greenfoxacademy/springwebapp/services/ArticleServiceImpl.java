@@ -20,7 +20,6 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public ArticlesDTO generateArticlesDTO() {
     List<Article> articles = articleRepository.findAll();
-
     return new ArticlesDTO(articles);
   }
 

@@ -2,6 +2,8 @@ package com.greenfoxacademy.springwebapp.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
@@ -13,10 +15,10 @@ public class Article {
   private String title;
   private String content;
   @JsonProperty("publish_date")
-  private LocalDate publishDate;
+  private Instant publishDate;
 
   public Article() {
-    this.publishDate = LocalDate.now();
+    this.publishDate = Instant.now();
   }
 
   public Article(String title, String content) {
@@ -45,11 +47,11 @@ public class Article {
     this.content = content;
   }
 
-  public LocalDate getPublishDate() {
+  public Instant getPublishDate() {
     return publishDate;
   }
 
-  public void setPublishDate(LocalDate publishDate) {
+  public void setPublishDate(Instant publishDate) {
     this.publishDate = publishDate;
   }
 }
