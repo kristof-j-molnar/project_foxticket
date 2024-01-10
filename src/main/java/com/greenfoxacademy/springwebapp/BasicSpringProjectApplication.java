@@ -9,19 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class BasicSpringProjectApplication implements CommandLineRunner {
   private UserRepository userRepository;
   private ProductTypeRepository productTypeRepository;
-  private BCryptPasswordEncoder bCryptPasswordEncoder;
+  private PasswordEncoder passwordEncoder;
 
   @Autowired
-  public BasicSpringProjectApplication(UserRepository userRepository, ProductTypeRepository productTypeRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+  public BasicSpringProjectApplication(UserRepository userRepository, ProductTypeRepository productTypeRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.productTypeRepository = productTypeRepository;
-    this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    this.passwordEncoder = passwordEncoder;
   }
 
   public static void main(String[] args) {
@@ -30,9 +30,9 @@ public class BasicSpringProjectApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    User user1 = new User("reka", "ferenczy.reka01@gmail.com", bCryptPasswordEncoder.encode("reka12345"), "USER");
+    User user1 = new User("reka", "ferenczy.reka01@gmail.com", passwordEncoder.encode("reka12345"), "USER");
     userRepository.save(user1);
-    User user = new User("user", "lacika.com", bCryptPasswordEncoder.encode( "pass"), "User");
+    User user = new User("user", "lacika.com", passwordEncoder.encode("pass"), "User");
     userRepository.save(user);
 
     Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");

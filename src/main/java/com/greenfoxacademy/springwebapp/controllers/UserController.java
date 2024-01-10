@@ -25,7 +25,6 @@ public class UserController {
 
   @RequestMapping(value = "/users", method = RequestMethod.POST)
   public ResponseEntity<?> register(@RequestBody UserRequestDTO userRequestDTO) {
-
     if (!userService.validateEmptyDTO(userRequestDTO)) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Name, email and password are required."));
     } else if (!userService.checkIfPasswordIsGood(userRequestDTO.getPassword())) {
@@ -36,9 +35,9 @@ public class UserController {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Name is required."));
     } else if (!userService.validateEmail(userRequestDTO)) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Email is required."));
-    } else if (!userService.validatePassword(userRequestDTO)) {
+    } else if (!userService.checkIfPasswordExists(userRequestDTO)) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Password is required."));
-    } else if (userService.validateEmail(userRequestDTO) && userService.validateName(userRequestDTO) && userService.validatePassword(userRequestDTO)) {
+    } else if (userService.validateEmail(userRequestDTO) && userService.validateName(userRequestDTO) && userService.checkIfPasswordExists(userRequestDTO)) {
       User newUser = userService.generateUser(userRequestDTO);
       userService.saveUser(newUser);
       return ResponseEntity.status(200).body(new UserResponseDTO(newUser.getId(), newUser.getEmail(), newUser.getRole()));
@@ -53,8 +52,9 @@ public class UserController {
     if (error != null) {
       return ResponseEntity.status(400).body(error);
     }
+
     Optional<User> optionalUser = userService.findUserByEmail(userLoginDTO.getEmail());
-    if (optionalUser.isEmpty() || !optionalUser.get().getPassword().equals(userLoginDTO.getPassword())) {
+    if (optionalUser.isEmpty() || !userService.validatePassword(optionalUser.get(), userLoginDTO)) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Email or password is incorrect"));
     } else {
       User user = optionalUser.get();
