@@ -1,6 +1,5 @@
 package com.greenfoxacademy.springwebapp.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
