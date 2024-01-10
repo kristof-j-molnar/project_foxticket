@@ -6,6 +6,8 @@ import com.greenfoxacademy.springwebapp.dtos.UserRequestDTO;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,19 +15,12 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
   private UserRepository userRepository;
+  private PasswordEncoder passwordEncoder;
 
   @Autowired
-  public UserServiceImpl(UserRepository userRepository) {
+  public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
-  }
-
-  @Override
-  public boolean validatePassword(UserRequestDTO userDTO) {
-    if (userDTO.getPassword().isEmpty()) {
-      return false;
-    } else {
-      return true;
-    }
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Override
@@ -76,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User generateUser(UserRequestDTO userRequestDTO) {
-    User newUser = new User(userRequestDTO.getName(), userRequestDTO.getEmail(), userRequestDTO.getPassword(), "USER");
+    User newUser = new User(userRequestDTO.getName(), userRequestDTO.getEmail(), passwordEncoder.encode(userRequestDTO.getPassword()), "USER");
     return newUser;
   }
 
@@ -101,5 +96,10 @@ public class UserServiceImpl implements UserService {
     } else {
       return null;
     }
+  }
+
+  @Override
+  public Boolean validatePassword(User user, UserLoginDTO userLoginDTO) {
+    return passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword());
   }
 }
