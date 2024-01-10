@@ -1,5 +1,6 @@
 package com.greenfoxacademy.springwebapp.services;
 
+import com.greenfoxacademy.springwebapp.dtos.EditProfileDTO;
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserRequestDTO;
@@ -103,18 +104,36 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User editUserInformation(User user) {
-    Optional<User> user1 = userRepository.findById(user.getId());
+    public User editUserInformation (String email, EditProfileDTO editProfileDTO){
+    Optional<User> editableUser = userRepository.findUserByEmail(email);
 
-    if (user1.isPresent()) {
-      User foundUser = user1.get();
-      foundUser.setPassword(user.getPassword());
-      foundUser.setEmail(user.getEmail());
-      foundUser.setName(user.getName());
-      userRepository.save(foundUser);
+    if (editableUser.isPresent()) {
+      User foundUser = editableUser.get();
+      if (!editProfileDTO.getNewPassword().isEmpty()) {
+        foundUser.setPassword(editProfileDTO.getNewPassword());
+        userRepository.save(foundUser);
+      }
+      if (!editProfileDTO.getNewEmail().isEmpty()){
+        foundUser.setEmail(editProfileDTO.getNewEmail());
+        userRepository.save(foundUser);
+      }
+      if (!editProfileDTO.getNewName().isEmpty()) {
+        foundUser.setName(editProfileDTO.getNewName());
+        userRepository.save(foundUser);
+      }
       return foundUser;
     }
     return null;
+    }
+
+    @Override
+    public boolean checkEditableEmail (String email){
+      Optional<User> foundUser = userRepository.findUserByEmail(email);
+      if (foundUser.isEmpty()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
-}
 

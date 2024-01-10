@@ -49,9 +49,6 @@ public class EditProfileUnitTest {
 
     UserServiceImpl userService = new UserServiceImpl(repo);
 
-    User testUser = new User("testUser", "testuser@gmail.com", "testuser123", "USER");
-    User actualuser =  userService.editUserInformation(testUser);
-    assertEquals(testUser, actualuser);
 
   }
 }

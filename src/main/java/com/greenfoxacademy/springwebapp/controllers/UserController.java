@@ -25,9 +25,9 @@ public class UserController {
   private UserAuthenticationService userAuthenticationService;
 
   @Autowired
-  public UserController(JwtUtil jwtUtil, UserService userService, UserAuthenticationService userAuthenticationService) {
-    this.jwtUtil = jwtUtil;
+  public UserController(UserService userService, JwtUtil jwtUtil, UserAuthenticationService userAuthenticationService) {
     this.userService = userService;
+    this.jwtUtil = jwtUtil;
     this.userAuthenticationService = userAuthenticationService;
   }
 
@@ -86,31 +86,24 @@ public class UserController {
     }
   }
 
-  @RequestMapping(value = "/api/users", method = RequestMethod.PATCH)
-  public ResponseEntity<?> editUserProfile(@RequestBody User user) {
+  @RequestMapping(value = "/users", method = RequestMethod.PATCH)
+  public ResponseEntity<?> editUserProfile(@RequestBody EditProfileDTO editProfileDTO) {
 
-    if (user.getName().isEmpty() && user.getPassword().isEmpty() && user.getEmail().isEmpty()) {
+    if (editProfileDTO.getNewName().isEmpty() && editProfileDTO.getNewPassword().isEmpty() && editProfileDTO.getNewEmail().isEmpty()) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Name, password or email is required."));
-    } else if (user.getName().isEmpty() && user.getPassword().isEmpty()) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Name and password are required."));
-    } else if (user.getName().isEmpty() && user.getEmail().isEmpty()) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Name and email are required."));
-    } else if (user.getEmail().isEmpty() && user.getPassword().isEmpty()) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Email and password are required."));
-    } else if (user.getPassword().isEmpty()) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Password is required."));
-    } else if (user.getName().isEmpty()) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Name is required."));
-    } else if (user.getEmail().isEmpty()) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Email is required."));
-    } else if (!userService.findEmail(user.getEmail())) {
+    } else if (!editProfileDTO.getNewEmail().isEmpty() && !userService.checkEditableEmail(editProfileDTO.getNewEmail())) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Email is already taken."));
-    } else if (!userService.checkIfPasswordIsGood(user.getPassword())) {
+    } else if (!editProfileDTO.getNewPassword().isEmpty() && !userService.checkIfPasswordIsGood(editProfileDTO.getNewPassword())) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Password must be at least 8 characters."));
-    } else {
-      User foundUser = userService.editUserInformation(user);
+    } else if(userAuthenticationService.getCurrentUser() instanceof User) {
 
-      return ResponseEntity.status(200).body(new UserResponseDTOWithName(foundUser.getId(), foundUser.getName(), foundUser.getEmail()));
+      String currentUserEmail = userAuthenticationService.findCurrentUserEmail((userAuthenticationService.getCurrentUser()));
+      User editedUser = userService.editUserInformation(currentUserEmail, editProfileDTO);
+
+      return ResponseEntity.status(200).body(new UserResponseDTOWithName(editedUser.getId(), editedUser.getName(), editedUser.getEmail()));
     }
+
+    return ResponseEntity.status(400).build();
   }
 }
+

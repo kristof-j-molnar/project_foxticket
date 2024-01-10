@@ -1,5 +1,6 @@
 package com.greenfoxacademy.springwebapp.services;
 
+import com.greenfoxacademy.springwebapp.dtos.EditProfileDTO;
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserRequestDTO;
@@ -28,6 +29,9 @@ public interface UserService {
   ErrorMessageDTO validateLogin(UserLoginDTO userLoginDTO);
 
   Boolean validatePassword(User user, UserLoginDTO userLoginDTO);
-  User editUserInformation(User user);
+
+  User editUserInformation(String email, EditProfileDTO editProfileDTO);
+
+  boolean checkEditableEmail(String email);
 }
 
