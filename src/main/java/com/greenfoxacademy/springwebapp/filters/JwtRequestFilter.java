@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.security.SignatureException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -65,6 +64,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
   private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     response.setStatus(401);
-    response.getWriter().write("{ \"message\": \"" + message +"\"}");
+    response.getWriter().write("{ \"message\": \"" + message + "\"}");
   }
 }
