@@ -24,15 +24,6 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean checkIfPasswordExists(UserRequestDTO userDTO) {
-    if (userDTO.getPassword().isEmpty()) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  @Override
   public boolean validateEmail(UserRequestDTO userDTO) {
     if (userDTO.getEmail().isEmpty()) {
       return false;

@@ -35,9 +35,9 @@ public class UserController {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Name is required."));
     } else if (!userService.validateEmail(userRequestDTO)) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Email is required."));
-    } else if (!userService.checkIfPasswordExists(userRequestDTO)) {
+    } else if (userRequestDTO.getPassword().isEmpty()) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Password is required."));
-    } else if (userService.validateEmail(userRequestDTO) && userService.validateName(userRequestDTO) && userService.checkIfPasswordExists(userRequestDTO)) {
+    } else if (userService.validateEmail(userRequestDTO) && userService.validateName(userRequestDTO) && !userRequestDTO.getPassword().isEmpty()) {
       User newUser = userService.generateUser(userRequestDTO);
       userService.saveUser(newUser);
       return ResponseEntity.status(200).body(new UserResponseDTO(newUser.getId(), newUser.getEmail(), newUser.getRole()));

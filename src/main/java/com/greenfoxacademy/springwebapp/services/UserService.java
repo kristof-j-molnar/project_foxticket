@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public interface UserService {
 
-  boolean checkIfPasswordExists(UserRequestDTO userDTO);
-
   boolean validateEmail(UserRequestDTO userDTO);
 
   boolean validateName(UserRequestDTO userDTO);
