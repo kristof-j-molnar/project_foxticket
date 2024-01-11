@@ -3,6 +3,7 @@ package com.greenfoxacademy.springwebapp.controllers;
 import com.greenfoxacademy.springwebapp.dtos.CartDTO;
 import com.greenfoxacademy.springwebapp.dtos.MyUserDetailsDTO;
 import com.greenfoxacademy.springwebapp.models.User;
+import com.greenfoxacademy.springwebapp.services.CartServiceImp;
 import com.greenfoxacademy.springwebapp.services.ProductServiceImp;
 import com.greenfoxacademy.springwebapp.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api")
 public class CartController {
-  private ProductServiceImp productServiceImp;
+  private CartServiceImp cartServiceImp;
   private UserServiceImpl userServiceImpl;
 
   @Autowired
-  public CartController(ProductServiceImp productServiceImp, UserServiceImpl userServiceImpl) {
-    this.productServiceImp = productServiceImp;
+  public CartController(CartServiceImp cartServiceImp, UserServiceImpl userServiceImpl) {
+    this.cartServiceImp = cartServiceImp;
     this.userServiceImpl = userServiceImpl;
   }
 
@@ -32,7 +33,7 @@ public class CartController {
     if (principal instanceof MyUserDetailsDTO) {
       User user = userServiceImpl.findUserByEmail(((MyUserDetailsDTO) principal).getEmail()).orElse(null);
       if (user != null) {
-        return ResponseEntity.status(200).body(productServiceImp.getProductsInCartDTO(user.getId()));
+        return ResponseEntity.status(200).body(cartServiceImp.getProductsInCartDTO(user.getId()));
       }
     }
     return null;

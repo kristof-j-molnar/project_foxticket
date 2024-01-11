@@ -18,12 +18,10 @@ import java.util.Optional;
 public class ProductServiceImp implements ProductService {
 
   private ProductRepository productRepository;
-  private CartRepository cartRepository;
 
   @Autowired
-  public ProductServiceImp(ProductRepository productRepository, CartRepository cartRepository) {
+  public ProductServiceImp(ProductRepository productRepository) {
     this.productRepository = productRepository;
-    this.cartRepository = cartRepository;
   }
 
   public ProductListResponseDTO getAvailableProductsInDTO() {
@@ -33,18 +31,5 @@ public class ProductServiceImp implements ProductService {
       productDTOs.add(new ProductDTO(product.getId(), product.getName(), product.getPrice(), product.getDuration(), product.getDescription(), product.getType().getName()));
     }
     return productDTOs;
-  }
-
-  public CartDTO getProductsInCartDTO(Integer id) {
-    Optional<Cart> cart = cartRepository.findByUserId(id);
-    if (cart.isPresent()) {
-      List<Product> productList = cart.get().getProductList();
-      CartDTO cartDto = new CartDTO();
-      for (Product product : productList) {
-        cartDto.add(new CartItemDTO(product.getId(), product.getName(), product.getPrice()));
-      }
-      return cartDto;
-    }
-    return null;
   }
 }

@@ -5,6 +5,4 @@ import com.greenfoxacademy.springwebapp.dtos.ProductListResponseDTO;
 
 public interface ProductService {
   ProductListResponseDTO getAvailableProductsInDTO();
-
-  CartDTO getProductsInCartDTO(Integer id);
 }
