@@ -99,7 +99,7 @@ public class UserController {
       String currentUserEmail = userAuthenticationService.findCurrentUserEmail(());
       User editedUser = userService.editUserInformation(currentUserEmail, editProfileDTO);
 
-      return ResponseEntity.status(200).body(new UserResponseDTOWithName(editedUser.getId(), editedUser.getName(), editedUser.getEmail()));
+      return ResponseEntity.status(200).body(new UserResponseDTOWithName(editedUser.getId(), editedUser.getEmail(), editedUser.getName()));
     }
   }
 }

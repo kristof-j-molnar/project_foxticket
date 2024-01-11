@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-    public User editUserInformation (String email, EditProfileDTO editProfileDTO){
+  public User editUserInformation(String email, EditProfileDTO editProfileDTO) {
     Optional<User> editableUser = userRepository.findUserByEmail(email);
 
     if (editableUser.isPresent()) {
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
         foundUser.setPassword(editProfileDTO.getNewPassword());
         userRepository.save(foundUser);
       }
-      if (!editProfileDTO.getNewEmail().isEmpty()){
+      if (!editProfileDTO.getNewEmail().isEmpty()) {
         foundUser.setEmail(editProfileDTO.getNewEmail());
         userRepository.save(foundUser);
       }
@@ -124,16 +124,16 @@ public class UserServiceImpl implements UserService {
       return foundUser;
     }
     return null;
-    }
+  }
 
-    @Override
-    public boolean checkEditableEmail (String email){
-      Optional<User> foundUser = userRepository.findUserByEmail(email);
-      if (foundUser.isEmpty()) {
-        return true;
-      } else {
-        return false;
-      }
+  @Override
+  public boolean checkEditableEmail(String email) {
+    Optional<User> foundUser = userRepository.findUserByEmail(email);
+    if (foundUser.isEmpty()) {
+      return true;
+    } else {
+      return false;
     }
   }
+}
 
