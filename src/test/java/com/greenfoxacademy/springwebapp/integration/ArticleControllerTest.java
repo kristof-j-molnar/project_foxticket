@@ -15,17 +15,17 @@ import java.util.Map;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class ArticleControllerTest {
 
+  ObjectMapper objectMapper = new ObjectMapper();
   @Autowired
   private MockMvc mockMvc;
-
-  ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
   public void getArticles_withSearchParam_returnsFilteredArticles() throws Exception {

@@ -26,7 +26,7 @@ public class RegisterUsersAPITest {
   @Autowired
   UserService userService;
 
-  private ObjectMapper mapper = new ObjectMapper();
+  private final ObjectMapper mapper = new ObjectMapper();
 
   @Test
   void checkCredentialValidity_WithEmptyCredential_ShouldReturnErrorMessage() throws Exception {

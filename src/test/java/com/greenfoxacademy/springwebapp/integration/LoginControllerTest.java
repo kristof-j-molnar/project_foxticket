@@ -29,7 +29,7 @@ public class LoginControllerTest {
   @Autowired
   MyUserDetailsService userDetailsService;
 
-  private ObjectMapper mapper = new ObjectMapper();
+  private final ObjectMapper mapper = new ObjectMapper();
 
   @Test
   void checkJsonValidity_WithMissingFields_ShouldReturnCustomErrorMessage() throws Exception {

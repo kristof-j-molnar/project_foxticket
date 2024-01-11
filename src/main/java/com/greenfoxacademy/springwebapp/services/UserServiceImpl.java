@@ -15,8 +15,8 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-  private UserRepository userRepository;
-  private PasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @Autowired
   public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -26,48 +26,28 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean validateEmail(UserRequestDTO userDTO) {
-    if (userDTO.getEmail().isEmpty()) {
-      return false;
-    } else {
-      return true;
-    }
+    return !userDTO.getEmail().isEmpty();
   }
 
   @Override
   public boolean validateName(UserRequestDTO userDTO) {
-    if (userDTO.getName().isEmpty()) {
-      return false;
-    } else {
-      return true;
-    }
+    return !userDTO.getName().isEmpty();
   }
 
   @Override
   public boolean validateEmptyDTO(UserRequestDTO userDTO) {
-    if (userDTO.getName().isEmpty() && userDTO.getEmail().isEmpty() && userDTO.getPassword().isEmpty()) {
-      return false;
-    } else {
-      return true;
-    }
+    return !userDTO.getName().isEmpty() || !userDTO.getEmail().isEmpty() || !userDTO.getPassword().isEmpty();
   }
 
   @Override
   public boolean findEmail(String email) {
     Optional<User> foundUser = userRepository.findUserByEmail(email);
-    if (foundUser.isEmpty()) {
-      return true;
-    } else {
-      return false;
-    }
+    return foundUser.isEmpty();
   }
 
   @Override
   public boolean checkIfPasswordIsGood(String password) {
-    if (!password.isEmpty() && password.length() < 8) {
-      return false;
-    } else {
-      return true;
-    }
+    return password.isEmpty() || password.length() >= 8;
   }
 
   @Override

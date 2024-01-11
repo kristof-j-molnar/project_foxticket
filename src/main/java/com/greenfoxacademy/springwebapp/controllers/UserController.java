@@ -19,11 +19,11 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class UserController {
 
-  private JwtBuilder jwtBuilder;
-  private UserService userService;
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private final JwtBuilder jwtBuilder;
+  private final UserService userService;
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  private UserAuthenticationService userAuthenticationService;
+  private final UserAuthenticationService userAuthenticationService;
 
   @Autowired
   public UserController(UserService userService, UserAuthenticationService userAuthenticationService, JwtBuilder jwtBuilder) {

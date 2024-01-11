@@ -1,34 +1,23 @@
-package com.greenfoxacademy.springwebapp.models;
+package com.greenfoxacademy.springwebapp.dtos;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "products")
-public class Product {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ProductEditResponseDTO {
   private Long id;
-
   private String name;
-
   private int price;
-
-  private int duration;
-
+  private String duration;
   private String description;
+  private String type;
 
-  @ManyToOne
-  private ProductType type;
-
-  public Product() {
+  public ProductEditResponseDTO() {
   }
 
-  public Product(String name, int price, int duration, String description) {
+  public ProductEditResponseDTO(Long id, String name, int price, String duration, String description, String type) {
+    this.id = id;
     this.name = name;
     this.price = price;
     this.duration = duration;
     this.description = description;
+    this.type = type;
   }
 
   public Long getId() {
@@ -55,11 +44,11 @@ public class Product {
     this.price = price;
   }
 
-  public int getDuration() {
+  public String getDuration() {
     return duration;
   }
 
-  public void setDuration(int duration) {
+  public void setDuration(String duration) {
     this.duration = duration;
   }
 
@@ -71,11 +60,11 @@ public class Product {
     this.description = description;
   }
 
-  public ProductType getType() {
+  public String getType() {
     return type;
   }
 
-  public void setType(ProductType type) {
+  public void setType(String type) {
     this.type = type;
   }
 }
