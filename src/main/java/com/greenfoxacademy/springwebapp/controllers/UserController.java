@@ -2,6 +2,7 @@ package com.greenfoxacademy.springwebapp.controllers;
 
 import com.greenfoxacademy.springwebapp.dtos.*;
 import com.greenfoxacademy.springwebapp.models.User;
+import com.greenfoxacademy.springwebapp.services.UserAuthenticationService;
 import com.greenfoxacademy.springwebapp.services.UserService;
 import com.greenfoxacademy.springwebapp.utilities.JwtUtil;
 import org.slf4j.Logger;
@@ -21,10 +22,13 @@ public class UserController {
   private UserService userService;
   private Logger logger = LoggerFactory.getLogger(getClass());
 
+  private UserAuthenticationService userAuthenticationService;
+
   @Autowired
-  public UserController(UserService userService, JwtUtil jwtUtil) {
-    this.userService = userService;
+  public UserController(JwtUtil jwtUtil, UserService userService, UserAuthenticationService userAuthenticationService) {
     this.jwtUtil = jwtUtil;
+    this.userService = userService;
+    this.userAuthenticationService = userAuthenticationService;
   }
 
   @RequestMapping(value = "/users", method = RequestMethod.POST)
@@ -76,8 +80,8 @@ public class UserController {
   @GetMapping("/admin")
   public ResponseEntity<?> adminAuthorization(Authentication authentication) {
 
-    if (authentication.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ADMIN"))){
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Unauthorized access"));
+    if (!userAuthenticationService.hasRole(authentication)){
+      return ResponseEntity.status(403).body(new ErrorMessageDTO("Unauthorized access"));
     } else {
       return ResponseEntity.status(200).body("Authorized access");
     }
