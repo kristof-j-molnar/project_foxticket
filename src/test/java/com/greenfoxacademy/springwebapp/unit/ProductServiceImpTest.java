@@ -18,7 +18,7 @@ class ProductServiceImpTest {
   @Test
   void getAvailableProducts_ReturnProductListResponseDTO() {
     var repo = Mockito.mock(ProductRepository.class);
-    Product p1  = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
     ProductType t1 = new ProductType("Jegy");
     t1.addProduct(p1);
     Mockito.when(repo.findAll()).thenReturn(List.of(p1));

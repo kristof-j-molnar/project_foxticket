@@ -61,11 +61,10 @@ public class UserController {
       logger.error("user not found");
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Email or password is incorrect"));
     }
-    if ( !userService.validatePassword(optionalUser.get(), userLoginDTO)){
+    if (!userService.validatePassword(optionalUser.get(), userLoginDTO)) {
       logger.error("wrong password " + optionalUser.get().getPassword() + " " + userLoginDTO.getPassword());
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Email or password is incorrect"));
-    }
-    else {
+    } else {
       User user = optionalUser.get();
       MyUserDetailsDTO myUserDetailsDTO = new MyUserDetailsDTO(user);
       String jwt = jwtUtil.generateToken(myUserDetailsDTO);
