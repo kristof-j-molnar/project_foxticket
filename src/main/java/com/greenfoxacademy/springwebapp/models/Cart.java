@@ -23,6 +23,11 @@ public class Cart {
     productList = new ArrayList<>();
   }
 
+  public Cart(User user) {
+    this();
+    addUser(user);
+  }
+
   public Long getId() {
     return id;
   }

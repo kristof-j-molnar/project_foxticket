@@ -12,6 +12,4 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
   @Override
   List<Product> findAll();
-
-  List<Product> findProductsByCart(Optional<Cart> cart);
 }

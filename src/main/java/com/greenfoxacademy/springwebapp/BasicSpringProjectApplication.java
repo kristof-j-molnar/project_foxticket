@@ -44,9 +44,8 @@ public class BasicSpringProjectApplication implements CommandLineRunner {
     t1.addProduct(p2);
     productTypeRepository.save(t1);
 
-    Cart cart1 = new Cart();
+    Cart cart1 = new Cart(user);
     cartRepository.save(cart1);
-    cart1.addUser(user);
     cart1.addProduct(p1);
     cart1.addProduct(p2);
     cartRepository.save(cart1);

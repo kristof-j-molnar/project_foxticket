@@ -38,7 +38,7 @@ public class ProductServiceImp implements ProductService {
   public CartDTO getProductsInCartDTO(Integer id) {
     Optional<Cart> cart = cartRepository.findByUserId(id);
     if (cart.isPresent()) {
-      List<Product> productList = productRepository.findProductsByCart(cart);
+      List<Product> productList = cart.get().getProductList();
       CartDTO cartDto = new CartDTO();
       for (Product product : productList) {
         cartDto.add(new CartItemDTO(product.getId(), product.getName(), product.getPrice()));
