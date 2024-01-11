@@ -58,5 +58,5 @@ INSERT INTO USERS (NAME, EMAIL, PASSWORD, ROLE)
 VALUES ('TestUser', 'user@user.user', '$2a$12$L8fyzChb7.59SlhPPJ.0DOuzM1J3x3FtXUK75ibY9udZ3QNCDReSW', 'ROLE_USER');
 
 INSERT INTO USERS (NAME, EMAIL, PASSWORD, ROLE)
-VALUES ('TestAdmin', 'admin@admin.admin', '$2a$12$L8fyzChb7.59SlhPPJ.0DOuzM1J3x3FtXUK75ibY9udZ3QNCDReSW',
+VALUES ('TestAdmin', 'admin@admin.hu', '$2a$10$fAKsedEmk29iZlspbWX2fODzONubZQRVfWg5Wc4.gWLHupGHMC6LS',
         'ROLE_USER,ROLE_ADMIN');

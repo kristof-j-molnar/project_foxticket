@@ -94,7 +94,7 @@ public class LoginControllerTest {
   @Test
   void checkJsonValidity_WithExistingEmailAndPassword_ShouldReturnStatusOkAndTokenDTOWithStatusOkAndGeneratedToken() throws Exception {
 
-    UserLoginDTO userLoginDTO = new UserLoginDTO("user@user.user", "$2a$12$L8fyzChb7.59SlhPPJ.0DOuzM1J3x3FtXUK75ibY9udZ3QNCDReSW");
+    UserLoginDTO userLoginDTO = new UserLoginDTO("admin@admin.hu", "adminadmin");
 
     mockMvc.perform(post("/api/users/login")
             .contentType(MediaType.APPLICATION_JSON)

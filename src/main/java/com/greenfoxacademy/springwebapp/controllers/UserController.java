@@ -4,6 +4,8 @@ import com.greenfoxacademy.springwebapp.dtos.*;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.services.UserService;
 import com.greenfoxacademy.springwebapp.utilities.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ public class UserController {
 
   private JwtUtil jwtUtil;
   private UserService userService;
+  private Logger logger = LoggerFactory.getLogger(getClass());
 
   @Autowired
   public UserController(UserService userService, JwtUtil jwtUtil) {
@@ -54,9 +57,15 @@ public class UserController {
     }
 
     Optional<User> optionalUser = userService.findUserByEmail(userLoginDTO.getEmail());
-    if (optionalUser.isEmpty() || !userService.validatePassword(optionalUser.get(), userLoginDTO)) {
+    if (optionalUser.isEmpty()) {
+      logger.error("user not found");
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Email or password is incorrect"));
-    } else {
+    }
+    if ( !userService.validatePassword(optionalUser.get(), userLoginDTO)){
+      logger.error("wrong password " + optionalUser.get().getPassword() + " " + userLoginDTO.getPassword());
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Email or password is incorrect"));
+    }
+    else {
       User user = optionalUser.get();
       MyUserDetailsDTO myUserDetailsDTO = new MyUserDetailsDTO(user);
       String jwt = jwtUtil.generateToken(myUserDetailsDTO);

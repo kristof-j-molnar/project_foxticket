@@ -40,7 +40,7 @@ class ProductControllerTest {
   }
 
   private String login() throws Exception {
-    UserLoginDTO user = new UserLoginDTO("user@user.user", "$2a$12$L8fyzChb7.59SlhPPJ.0DOuzM1J3x3FtXUK75ibY9udZ3QNCDReSW");
+    UserLoginDTO user = new UserLoginDTO("admin@admin.hu", "adminadmin");
     String responseContent = mvc.perform(post("/api/users/login")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(user)))
