@@ -96,7 +96,8 @@ public class UserController {
     } else if (!editProfileDTO.getNewPassword().isEmpty() && !userService.checkIfPasswordIsGood(editProfileDTO.getNewPassword())) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Password must be at least 8 characters."));
     } else {
-      String currentUserEmail = userAuthenticationService.findCurrentUserEmail(());
+
+      String currentUserEmail = userAuthenticationService.getCurrentUserEmail();
       User editedUser = userService.editUserInformation(currentUserEmail, editProfileDTO);
 
       return ResponseEntity.status(200).body(new UserResponseDTOWithName(editedUser.getId(), editedUser.getEmail(), editedUser.getName()));
