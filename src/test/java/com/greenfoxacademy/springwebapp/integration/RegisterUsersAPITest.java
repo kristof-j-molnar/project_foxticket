@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -16,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-//@ActiveProfiles("test")
+@ActiveProfiles("test")
 public class RegisterUsersAPITest {
 
   @Autowired
@@ -25,7 +26,7 @@ public class RegisterUsersAPITest {
   @Autowired
   UserService userService;
 
-  private ObjectMapper mapper;
+  private ObjectMapper mapper = new ObjectMapper();
 
   @Test
   void checkCredentialValidity_WithEmptyCredential_ShouldReturnErrorMessage() throws Exception {
@@ -51,7 +52,7 @@ public class RegisterUsersAPITest {
 
   @Test
   void checkCorrectEmailValidity_WithAlreadyExistingEmail_ShouldReturnCorrectErrorMessage() throws Exception {
-    UserRequestDTO userRequestDTO = new UserRequestDTO("Julcsi", "ferenczy.reka01@gmail.com", "hgjhdfjhfcj", "USER");
+    UserRequestDTO userRequestDTO = new UserRequestDTO("Julcsi", "user@user.user", "hgjhdfjhfcj", "USER");
 
     mockMvc.perform(post("/api/users")
             .contentType(MediaType.APPLICATION_JSON)
