@@ -128,11 +128,11 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean checkEditableEmail(String email) {
-    Optional<User> foundUser = userRepository.findUserByEmail(email);
+    Optional<User> foundUser = userRepository.existsByEmail(email);
     if (foundUser.isEmpty()) {
       return true;
     } else {
-      return false;
+      throw new IllegalArgumentException();
     }
   }
 
