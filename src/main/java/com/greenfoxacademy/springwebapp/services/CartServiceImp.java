@@ -5,6 +5,7 @@ import com.greenfoxacademy.springwebapp.dtos.CartItemDTO;
 import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +23,16 @@ public class CartServiceImp implements CartService {
   }
 
   public CartDTO getProductsInCartDTO(Integer id) {
-    Optional<Cart> cart = cartRepository.findByUserId(id);
-    if (cart.isPresent()) {
-      List<Product> productList = cart.get().getProductList();
-      CartDTO cartDto = new CartDTO();
-      for (Product product : productList) {
-        cartDto.add(new CartItemDTO(product.getId(), product.getName(), product.getPrice()));
-      }
-      return cartDto;
-    }
-    return null;
+    return cartRepository.findByUserId(id)
+        .map(this::mapToCartDTO)
+        .orElseThrow(() -> new EntityNotFoundException(("User is not found")));
+  }
+
+  private CartDTO mapToCartDTO(Cart cart) {
+    List<Product> productList = cart.getProductList();
+    CartDTO cartDto = new CartDTO();
+    productList.forEach(product ->
+        cartDto.add(new CartItemDTO(product.getId(), product.getName(), product.getPrice())));
+    return cartDto;
   }
 }
