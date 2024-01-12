@@ -26,6 +26,7 @@ class ProductControllerTest {
   @Autowired
   MockMvc mvc;
 
+
   ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
@@ -54,4 +55,3 @@ class ProductControllerTest {
     Map<String, String> map = objectMapper.readValue(responseContent, Map.class);
     return map.get("token");
   }
-}

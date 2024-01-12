@@ -17,9 +17,12 @@ public class Product {
   private int duration;
 
   private String description;
-  
+
   @ManyToOne
   private ProductType type;
+
+  @ManyToOne
+  private Cart cart;
 
   public Product() {
   }
@@ -73,5 +76,13 @@ public class Product {
 
   public void setType(ProductType type) {
     this.type = type;
+  }
+
+  public Cart getCart() {
+    return cart;
+  }
+
+  public void setCart(Cart cart) {
+    this.cart = cart;
   }
 }
