@@ -8,6 +8,7 @@ import com.greenfoxacademy.springwebapp.utilities.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,11 @@ public class UserController {
     this.userService = userService;
     this.jwtUtil = jwtUtil;
     this.userAuthenticationService = userAuthenticationService;
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<ErrorMessageDTO> handleIllegalArgumentException(IllegalArgumentException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDTO(e.getMessage()));
   }
 
   @RequestMapping(value = "/users", method = RequestMethod.POST)
@@ -88,19 +94,15 @@ public class UserController {
 
   @RequestMapping(value = "/users", method = RequestMethod.PATCH)
   public ResponseEntity<?> editUserProfile(@RequestBody EditProfileDTO editProfileDTO) {
-
-    if (editProfileDTO.getNewName().isEmpty() && editProfileDTO.getNewPassword().isEmpty() && editProfileDTO.getNewEmail().isEmpty()) {
-      return ResponseEntity.status(400).body(new ErrorMessageDTO("Name, password or email is required."));
-    } else if (!editProfileDTO.getNewEmail().isEmpty() && !userService.checkEditableEmail(editProfileDTO.getNewEmail())) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Email is already taken."));
-    } else if (!editProfileDTO.getNewPassword().isEmpty() && !userService.checkIfPasswordIsGood(editProfileDTO.getNewPassword())) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Password must be at least 8 characters."));
-    } else {
+    try{
+      userService.validateEditProfileDTO(editProfileDTO);
 
       String currentUserEmail = userAuthenticationService.getCurrentUserEmail();
       User editedUser = userService.editUserInformation(currentUserEmail, editProfileDTO);
 
       return ResponseEntity.status(200).body(new UserResponseDTOWithName(editedUser.getId(), editedUser.getEmail(), editedUser.getName()));
+    } catch (IllegalArgumentException e){
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDTO(e.getMessage()));
     }
   }
 }

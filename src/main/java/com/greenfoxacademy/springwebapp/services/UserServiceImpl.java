@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
     if (editableUser.isPresent()) {
       User foundUser = editableUser.get();
       if (!editProfileDTO.getNewPassword().isEmpty()) {
-        foundUser.setPassword(editProfileDTO.getNewPassword());
+        foundUser.setPassword(passwordEncoder.encode(editProfileDTO.getNewPassword()));
         userRepository.save(foundUser);
       }
       if (!editProfileDTO.getNewEmail().isEmpty()) {
@@ -133,6 +133,18 @@ public class UserServiceImpl implements UserService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  @Override
+  public void validateEditProfileDTO(EditProfileDTO editProfileDTO) {
+
+    if (editProfileDTO.getNewName().isEmpty() && editProfileDTO.getNewPassword().isEmpty() && editProfileDTO.getNewEmail().isEmpty()) {
+      throw new IllegalArgumentException("Name, password, or email are required.");
+    } else if (!findEmail(editProfileDTO.getNewEmail())) {
+      throw new IllegalArgumentException("Email is already taken.");
+    } else if (!checkIfPasswordIsGood(editProfileDTO.getNewPassword())) {
+      throw new IllegalArgumentException("Password must be at least 8 characters.");
     }
   }
 }

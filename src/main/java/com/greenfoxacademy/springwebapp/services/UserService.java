@@ -33,5 +33,7 @@ public interface UserService {
   User editUserInformation(String email, EditProfileDTO editProfileDTO);
 
   boolean checkEditableEmail(String email);
+
+  void validateEditProfileDTO(EditProfileDTO editProfileDTO);
 }
 
