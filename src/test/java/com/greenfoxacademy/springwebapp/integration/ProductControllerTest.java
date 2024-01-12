@@ -55,3 +55,4 @@ class ProductControllerTest {
     Map<String, String> map = objectMapper.readValue(responseContent, Map.class);
     return map.get("token");
   }
+}

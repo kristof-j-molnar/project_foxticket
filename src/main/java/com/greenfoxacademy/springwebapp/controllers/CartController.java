@@ -1,9 +1,9 @@
 package com.greenfoxacademy.springwebapp.controllers;
 
-import com.greenfoxacademy.springwebapp.dtos.CartDTO;
 import com.greenfoxacademy.springwebapp.dtos.MyUserDetailsDTO;
 import com.greenfoxacademy.springwebapp.models.User;
-import com.greenfoxacademy.springwebapp.services.*;
+import com.greenfoxacademy.springwebapp.services.CartService;
+import com.greenfoxacademy.springwebapp.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
