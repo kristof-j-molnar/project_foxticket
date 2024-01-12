@@ -8,17 +8,15 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-<<<<<<< HEAD
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-=======
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
->>>>>>> e87db1d (add changes requested by reviewers and add unit test for service class method)
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class ArticleControllerTest {
-<<<<<<< HEAD
 
   @Autowired
   private MockMvc mockMvc;
@@ -29,7 +27,7 @@ class ArticleControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$['articles']").exists())
         .andExpect(jsonPath("$['articles']").value(hasSize(1)))
-        .andExpect(jsonPath("$['articles'][0]['id']").value(2));
+        .andExpect(jsonPath("$['articles'][0]['id']").value(1));
   }
 
   @Test
@@ -44,7 +42,7 @@ class ArticleControllerTest {
   public void getArticles_withEmptySearchResult_returns404() throws Exception {
     mockMvc.perform(get("/api/news").param("search", "nonexistent"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("No articles found with the given search criteria."));
+        .andExpect(jsonPath("$.error").value("No articles found with the given search criteria."));
   }
 
   @Test
@@ -54,16 +52,15 @@ class ArticleControllerTest {
         .andExpect(jsonPath("$['articles']").exists())
         .andExpect(jsonPath("$['articles']").value(hasSize(2)));
   }
-=======
-    @Autowired
-    MockMvc mvc;
 
-    @Test
-    public void getAllArticles_returnsArticleDTO () throws Exception {
-        mvc.perform(get("/api/news"))
-                .andExpect(status().is(200))
-                .andExpect( jsonPath("$['articles']").value(hasSize(2)))
-                .andExpect(jsonPath("$['articles'][0]['id']").value(1));
-    }
->>>>>>> 1e4d9b8 (add all changes requested by reviewers)
+  @Autowired
+  MockMvc mvc;
+
+  @Test
+  public void getAllArticles_returnsArticleDTO() throws Exception {
+    mvc.perform(get("/api/news"))
+        .andExpect(status().is(200))
+        .andExpect(jsonPath("$['articles']").value(hasSize(2)))
+        .andExpect(jsonPath("$['articles'][0]['id']").value(1));
+  }
 }
