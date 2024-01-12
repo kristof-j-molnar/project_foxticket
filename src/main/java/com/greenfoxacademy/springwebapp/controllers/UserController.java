@@ -90,7 +90,7 @@ public class UserController {
   public ResponseEntity<?> editUserProfile(@RequestBody EditProfileDTO editProfileDTO) {
 
     if (editProfileDTO.getNewName().isEmpty() && editProfileDTO.getNewPassword().isEmpty() && editProfileDTO.getNewEmail().isEmpty()) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Name, password or email is required."));
+      return ResponseEntity.status(400).body(new ErrorMessageDTO("Name, password or email is required."));
     } else if (!editProfileDTO.getNewEmail().isEmpty() && !userService.checkEditableEmail(editProfileDTO.getNewEmail())) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Email is already taken."));
     } else if (!editProfileDTO.getNewPassword().isEmpty() && !userService.checkIfPasswordIsGood(editProfileDTO.getNewPassword())) {
