@@ -2,6 +2,7 @@ package com.greenfoxacademy.springwebapp.controllers;
 
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductEditRequestDTO;
+import com.greenfoxacademy.springwebapp.dtos.ProductEditResponseDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductListResponseDTO;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.services.ProductService;
@@ -61,8 +62,14 @@ public class ProductController {
 
     //change product fields in database
     Product editedProduct = productService.editProduct(productToEdit, productEditRequestDTO);
+    productService.save(editedProduct);
 
+    // create and return ProductEditResponseDTO
+    // duration in product is int, duration in responseDTO is String with DAYS or HOURS!!!
+    ProductEditResponseDTO responseDTO = new ProductEditResponseDTO(editedProduct.getId(), editedProduct.getName(),
+        editedProduct.getPrice(), String.valueOf(editedProduct.getDuration()).concat(" hours"),
+        editedProduct.getDescription(), editedProduct.getType().getName());
 
-    return null;
+    return ResponseEntity.status(200).body(responseDTO);
   }
 }

@@ -18,4 +18,6 @@ public interface ProductService {
   String validateProductEditDTO(ProductEditRequestDTO productEditRequestDTO);
 
   Product editProduct(Product product, ProductEditRequestDTO productEditRequestDTO);
+
+  void save(Product product);
 }

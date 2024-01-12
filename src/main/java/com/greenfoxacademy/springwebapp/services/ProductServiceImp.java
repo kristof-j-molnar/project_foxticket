@@ -4,6 +4,7 @@ import com.greenfoxacademy.springwebapp.dtos.ProductDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductEditRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductListResponseDTO;
 import com.greenfoxacademy.springwebapp.models.Product;
+import com.greenfoxacademy.springwebapp.models.ProductType;
 import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,14 @@ import java.util.Optional;
 @Service
 public class ProductServiceImp implements ProductService {
 
+
   private final ProductRepository productRepository;
+  private final ProductTypeService productTypeService;
 
   @Autowired
-  public ProductServiceImp(ProductRepository productRepository) {
+  public ProductServiceImp(ProductRepository productRepository, ProductTypeService productTypeService) {
     this.productRepository = productRepository;
+    this.productTypeService = productTypeService;
   }
 
   @Override
@@ -57,18 +61,36 @@ public class ProductServiceImp implements ProductService {
     if (productEditRequestDTO.getDuration().isBlank() || productEditRequestDTO.getDuration() == null) {
       return "Duration";
     }
-    if (productEditRequestDTO.getTypeId() == null) {
-      return "Type id";
-    }
     if (productEditRequestDTO.getDescription().isBlank() || productEditRequestDTO.getDescription() == null) {
       return "Description";
+    }
+    if (productEditRequestDTO.getTypeId() == null) {
+      return "Type id";
     }
 
     return null;
   }
 
   @Override
-  public Product editProduct(Product product, ProductEditRequestDTO productEditRequestDTO) {
-    return null;
+  public Product editProduct(Product product, ProductEditRequestDTO productEditRequestDTO) throws IllegalArgumentException {
+    product.setName(productEditRequestDTO.getName());
+    product.setPrice(productEditRequestDTO.getPrice());
+    product.setDuration(Integer.parseInt(productEditRequestDTO.getDuration().split(" ")[0]));
+    product.setDescription(productEditRequestDTO.getDescription());
+    if (product.getType().getId() != productEditRequestDTO.getTypeId()) {
+      Optional<ProductType> productTypeOptional = productTypeService.findById(productEditRequestDTO.getTypeId());
+      if (productTypeOptional.isPresent()) {
+        product.setType(productTypeOptional.get());
+      } else {
+        throw new IllegalArgumentException("ProductType does not exist.");
+      }
+    }
+
+    return product;
+  }
+
+  @Override
+  public void save(Product product) {
+    productRepository.save(product);
   }
 }
