@@ -11,6 +11,6 @@ public class BasicSpringProjectApplication {
     SpringApplication.run(BasicSpringProjectApplication.class, args);
   }
   public void run(String... args) throws Exception {
-
+    
   }
 }
