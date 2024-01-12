@@ -1,6 +1,8 @@
 package com.greenfoxacademy.springwebapp;
 
+import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.User;
+import com.greenfoxacademy.springwebapp.repositories.CartRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.ProductType;
@@ -15,13 +17,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class BasicSpringProjectApplication implements CommandLineRunner {
   private UserRepository userRepository;
   private ProductTypeRepository productTypeRepository;
+  private CartRepository cartRepository;
   private PasswordEncoder passwordEncoder;
 
   @Autowired
-  public BasicSpringProjectApplication(UserRepository userRepository, ProductTypeRepository productTypeRepository, PasswordEncoder passwordEncoder) {
+  public BasicSpringProjectApplication(UserRepository userRepository, ProductTypeRepository productTypeRepository, PasswordEncoder passwordEncoder, CartRepository cartRepository) {
     this.userRepository = userRepository;
     this.productTypeRepository = productTypeRepository;
     this.passwordEncoder = passwordEncoder;
+    this.cartRepository = cartRepository;
   }
 
   public static void main(String[] args) {
@@ -41,5 +45,11 @@ public class BasicSpringProjectApplication implements CommandLineRunner {
     t1.addProduct(p1);
     t1.addProduct(p2);
     productTypeRepository.save(t1);
+
+    Cart cart1 = new Cart(user);
+    cartRepository.save(cart1);
+    cart1.addProduct(p1);
+    cart1.addProduct(p2);
+    cartRepository.save(cart1);
   }
 }
