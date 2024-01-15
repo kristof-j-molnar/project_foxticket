@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -21,6 +22,13 @@ public class UserServiceImpl implements UserService {
   public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
+  }
+
+  public UserServiceImpl(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
+
+  public UserServiceImpl() {
   }
 
   @Override
@@ -94,7 +102,7 @@ public class UserServiceImpl implements UserService {
     } else if (userLoginDTO.getEmail() == null) {
       return new ErrorMessageDTO("E-mail is required.");
     } else {
-      return null;
+      throw new IllegalArgumentException();
     }
   }
 
@@ -123,7 +131,7 @@ public class UserServiceImpl implements UserService {
       }
       return foundUser;
     }
-    return null;
+    throw new NoSuchElementException("The user does not exist");
   }
 
   @Override
