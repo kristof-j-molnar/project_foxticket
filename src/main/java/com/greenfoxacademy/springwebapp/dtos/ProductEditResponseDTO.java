@@ -3,7 +3,7 @@ package com.greenfoxacademy.springwebapp.dtos;
 public class ProductEditResponseDTO {
   private Long id;
   private String name;
-  private int price;
+  private Integer price;
   private String duration;
   private String description;
   private String type;

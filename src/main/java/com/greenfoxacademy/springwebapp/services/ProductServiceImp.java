@@ -53,16 +53,16 @@ public class ProductServiceImp implements ProductService {
 
   @Override
   public String validateProductEditDTO(ProductEditRequestDTO productEditRequestDTO) {
-    if (productEditRequestDTO.getName().isBlank() || productEditRequestDTO.getName() == null) {
+    if (productEditRequestDTO.getName() == null || productEditRequestDTO.getName().isBlank()) {
       return "Name";
     }
     if (productEditRequestDTO.getPrice() == null) {
       return "Price";
     }
-    if (productEditRequestDTO.getDuration().isBlank() || productEditRequestDTO.getDuration() == null) {
+    if (productEditRequestDTO.getDuration() == null || productEditRequestDTO.getDuration().isBlank()) {
       return "Duration";
     }
-    if (productEditRequestDTO.getDescription().isBlank() || productEditRequestDTO.getDescription() == null) {
+    if (productEditRequestDTO.getDescription() == null || productEditRequestDTO.getDescription().isBlank()) {
       return "Description";
     }
     if (productEditRequestDTO.getTypeId() == null) {

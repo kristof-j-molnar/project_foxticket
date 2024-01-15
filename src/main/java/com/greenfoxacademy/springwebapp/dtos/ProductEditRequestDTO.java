@@ -13,7 +13,7 @@ public class ProductEditRequestDTO {
   public ProductEditRequestDTO() {
   }
 
-  public ProductEditRequestDTO(String name, int price, String duration, String description, Long typeId) {
+  public ProductEditRequestDTO(String name, Integer price, String duration, String description, Long typeId) {
     this.name = name;
     this.price = price;
     this.duration = duration;
@@ -33,7 +33,7 @@ public class ProductEditRequestDTO {
     return price;
   }
 
-  public void setPrice(int price) {
+  public void setPrice(Integer price) {
     this.price = price;
   }
 
