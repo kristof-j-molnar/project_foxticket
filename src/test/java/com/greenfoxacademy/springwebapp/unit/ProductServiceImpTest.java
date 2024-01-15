@@ -6,6 +6,7 @@ import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.ProductType;
 import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import com.greenfoxacademy.springwebapp.services.ProductServiceImp;
+import com.greenfoxacademy.springwebapp.services.ProductTypeService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -18,12 +19,13 @@ class ProductServiceImpTest {
   @Test
   void getAvailableProducts_ReturnProductListResponseDTO() {
     var repo = Mockito.mock(ProductRepository.class);
+    var productTypeService = Mockito.mock(ProductTypeService.class);
     Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
     ProductType t1 = new ProductType("Jegy");
     t1.addProduct(p1);
     Mockito.when(repo.findAll()).thenReturn(List.of(p1));
 
-    ProductServiceImp productService = new ProductServiceImp(repo);
+    ProductServiceImp productService = new ProductServiceImp(repo, productTypeService);
     ProductListResponseDTO productDTOs = new ProductListResponseDTO();
     productDTOs.add(new ProductDTO(1L, "Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!", "Jegy"));
 

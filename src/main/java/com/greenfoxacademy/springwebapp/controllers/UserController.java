@@ -18,7 +18,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class UserController {
-
   private final JwtBuilder jwtBuilder;
   private final UserService userService;
   private final Logger logger = LoggerFactory.getLogger(getClass());

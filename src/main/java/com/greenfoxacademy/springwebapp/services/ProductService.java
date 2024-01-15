@@ -21,5 +21,6 @@ public interface ProductService {
   Product editProduct(Product product, ProductEditRequestDTO productEditRequestDTO);
 
   void save(Product product);
+
   ProductEditResponseDTO getProductEditResponseDTO(Product editedProduct);
 }

@@ -2,7 +2,6 @@ package com.greenfoxacademy.springwebapp.controllers;
 
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductEditRequestDTO;
-import com.greenfoxacademy.springwebapp.dtos.ProductEditResponseDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductListResponseDTO;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.services.ProductService;
@@ -32,14 +31,11 @@ public class ProductController {
 
   @RequestMapping(path = "/{productId}", method = RequestMethod.PATCH)
   public ResponseEntity<?> editProduct(@PathVariable Long productId, @RequestBody ProductEditRequestDTO productEditRequestDTO) {
-
-    // check for empty or blank fields
     String emptyField = productService.validateProductEditDTO(productEditRequestDTO);
     if (emptyField != null) {
       return ResponseEntity.status(400).body(new ErrorMessageDTO(emptyField + " is required."));
     }
 
-    // get the product to edit
     Optional<Product> productOptional = productService.findById(productId);
     Product productToEdit;
     if (productOptional.isEmpty()) {
@@ -48,24 +44,18 @@ public class ProductController {
       productToEdit = productOptional.get();
     }
 
-    // check for the name of the product if it's unique or not
-    // modelben is legyen unique a name
     if (!productToEdit.getName().equals(productEditRequestDTO.getName()) &&
         productService.existsByName(productEditRequestDTO.getName())) {
       return ResponseEntity.status(400).body(new ErrorMessageDTO("ProductName already exists."));
     }
 
-    // check for valid product type
     if (!productToEdit.getType().getId().equals(productEditRequestDTO.getTypeId()) &&
         productTypeService.findById(productEditRequestDTO.getTypeId()).isEmpty()) {
       return ResponseEntity.status(400).body(new ErrorMessageDTO("ProductType does not exist."));
     }
 
-    //change product fields in database
     Product editedProduct = productService.editProduct(productToEdit, productEditRequestDTO);
     productService.save(editedProduct);
-
-    // create and return ProductEditResponseDTO
     return ResponseEntity.status(200).body(productService.getProductEditResponseDTO(editedProduct));
   }
 }

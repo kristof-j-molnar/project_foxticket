@@ -1,6 +1,7 @@
 package com.greenfoxacademy.springwebapp.models;
 
 import jakarta.persistence.*;
+import org.checkerframework.common.aliasing.qual.Unique;
 
 @Entity
 @Table(name = "products")
@@ -10,6 +11,7 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Unique
   private String name;
 
   private int price;

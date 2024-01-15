@@ -23,9 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CartController {
   private final CartService cartService;
   private final UserService userService;
-
   private final ProductService productService;
-
   private final UserAuthenticationService userAuthenticationService;
 
   @Autowired
