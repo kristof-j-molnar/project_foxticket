@@ -26,7 +26,7 @@ public class AdminRoleUnitTest {
   @Test
   void checkIfTheUserHasAdminRole_withValidAdminRole_ShouldReturnTrue() {
     String role = "ADMIN";
-    GrantedAuthority authority = new SimpleGrantedAuthority(role);
+    GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_"+role);
     Collection<? extends GrantedAuthority> authorities = Arrays.asList(authority);
     Authentication authentication = new UsernamePasswordAuthenticationToken("testAdmin", "test12345", authorities);
 
@@ -39,7 +39,7 @@ public class AdminRoleUnitTest {
   @Test
   void checkIfTheUserHasAdminRole_withOnlyUserRole_ShouldReturnFalse() {
     String role1 = "User";
-    GrantedAuthority authority = new SimpleGrantedAuthority(role1);
+    GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_"+role1);
     Collection<? extends GrantedAuthority> authorities = Arrays.asList(authority);
     Authentication authentication1 = new UsernamePasswordAuthenticationToken("reka", "reka12345", authorities);
 
