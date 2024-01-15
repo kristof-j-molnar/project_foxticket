@@ -2,6 +2,7 @@ package com.greenfoxacademy.springwebapp.services;
 
 import com.greenfoxacademy.springwebapp.dtos.ProductDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductEditRequestDTO;
+import com.greenfoxacademy.springwebapp.dtos.ProductEditResponseDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductListResponseDTO;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.ProductType;
@@ -31,8 +32,8 @@ public class ProductServiceImp implements ProductService {
   }
 
   @Override
-  public Boolean findByName(String name) {
-    return productRepository.findByName(name);
+  public Boolean existsByName(String name) {
+    return productRepository.existsByName(name);
   }
 
   @Override
@@ -92,5 +93,12 @@ public class ProductServiceImp implements ProductService {
   @Override
   public void save(Product product) {
     productRepository.save(product);
+  }
+
+  @Override
+  public ProductEditResponseDTO getProductEditResponseDTO(Product editedProduct) {
+    return new ProductEditResponseDTO(editedProduct.getId(), editedProduct.getName(),
+        editedProduct.getPrice(), String.valueOf(editedProduct.getDuration()).concat(" hours"),
+        editedProduct.getDescription(), editedProduct.getType().getName());
   }
 }

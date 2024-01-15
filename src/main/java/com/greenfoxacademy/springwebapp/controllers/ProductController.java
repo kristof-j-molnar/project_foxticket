@@ -31,7 +31,7 @@ public class ProductController {
   }
 
   @RequestMapping(path = "/{productId}", method = RequestMethod.PATCH)
-  public ResponseEntity<?> editProduct(@PathVariable Long productId, ProductEditRequestDTO productEditRequestDTO) {
+  public ResponseEntity<?> editProduct(@PathVariable Long productId, @RequestBody ProductEditRequestDTO productEditRequestDTO) {
 
     // check for empty or blank fields
     String emptyField = productService.validateProductEditDTO(productEditRequestDTO);
@@ -49,13 +49,14 @@ public class ProductController {
     }
 
     // check for the name of the product if it's unique or not
-    if (!productToEdit.getName().equals(productEditRequestDTO.getName())
-        && productService.findByName(productEditRequestDTO.getName())) {
-      return ResponseEntity.status(400).body(new ErrorMessageDTO("Product name already exists."));
+    // modelben is legyen unique a name
+    if (!productToEdit.getName().equals(productEditRequestDTO.getName()) &&
+        productService.existsByName(productEditRequestDTO.getName())) {
+      return ResponseEntity.status(400).body(new ErrorMessageDTO("ProductName already exists."));
     }
 
     // check for valid product type
-    if (productToEdit.getType().getId() != productEditRequestDTO.getTypeId() &&
+    if (!productToEdit.getType().getId().equals(productEditRequestDTO.getTypeId()) &&
         productTypeService.findById(productEditRequestDTO.getTypeId()).isEmpty()) {
       return ResponseEntity.status(400).body(new ErrorMessageDTO("ProductType does not exist."));
     }
@@ -65,11 +66,6 @@ public class ProductController {
     productService.save(editedProduct);
 
     // create and return ProductEditResponseDTO
-    // duration in product is int, duration in responseDTO is String with DAYS or HOURS!!!
-    ProductEditResponseDTO responseDTO = new ProductEditResponseDTO(editedProduct.getId(), editedProduct.getName(),
-        editedProduct.getPrice(), String.valueOf(editedProduct.getDuration()).concat(" hours"),
-        editedProduct.getDescription(), editedProduct.getType().getName());
-
-    return ResponseEntity.status(200).body(responseDTO);
+    return ResponseEntity.status(200).body(productService.getProductEditResponseDTO(editedProduct));
   }
 }
