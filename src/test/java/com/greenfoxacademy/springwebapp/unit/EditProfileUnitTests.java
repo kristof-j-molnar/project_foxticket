@@ -21,7 +21,6 @@ public class EditProfileUnitTests {
   UserService userService = new UserServiceImpl();
 
   PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-  //UserAuthenticationService userAuthenticationService = new UserAuthenticationServiceImpl();
 
   UserRepository userRepository;
 
@@ -40,8 +39,6 @@ public class EditProfileUnitTests {
         () -> userService.validateEditProfileDTO(editProfileDTO));
 
     Assertions.assertEquals("Name, password, or email are required.", exception.getMessage());
-
-
   }
 
   @Test
@@ -54,7 +51,6 @@ public class EditProfileUnitTests {
         () -> userService.validateEditProfileDTO(editProfileDTO));
 
     Assertions.assertEquals("Email is already taken.", exception.getMessage());
-
   }
 
   @Test
@@ -124,6 +120,5 @@ public class EditProfileUnitTests {
         () -> userService.editUserInformation(email, editProfileDTO));
 
     Assertions.assertEquals("The user does not exist", exception.getMessage());
-
   }
 }
