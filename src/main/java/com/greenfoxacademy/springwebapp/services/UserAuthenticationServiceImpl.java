@@ -1,6 +1,5 @@
 package com.greenfoxacademy.springwebapp.services;
 
-
 import com.greenfoxacademy.springwebapp.dtos.MyUserDetailsDTO;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
