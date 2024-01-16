@@ -22,8 +22,8 @@ CREATE TABLE PRODUCT_TYPES
 );
 
 INSERT INTO PRODUCT_TYPES (NAME)
-VALUES ('jegy'),
-       ('bérlet');
+VALUES ('ticket'),
+       ('pass');
 
 CREATE TABLE PRODUCTS
 (
