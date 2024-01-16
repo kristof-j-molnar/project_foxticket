@@ -82,6 +82,7 @@ public class UserController {
       return ResponseEntity.status(200).body(new TokenDTO("ok", jwt));
     }
   }
+
   @GetMapping("/admin")
   public ResponseEntity<?> adminAuthorization(Authentication authentication) {
 
@@ -94,14 +95,14 @@ public class UserController {
 
   @RequestMapping(value = "/users", method = RequestMethod.PATCH)
   public ResponseEntity<?> editUserProfile(@RequestBody EditProfileDTO editProfileDTO) {
-    try{
+    try {
       userService.validateEditProfileDTO(editProfileDTO);
 
       String currentUserEmail = userAuthenticationService.getCurrentUserEmail();
       User editedUser = userService.editUserInformation(currentUserEmail, editProfileDTO);
 
       return ResponseEntity.status(200).body(new UserResponseDTOWithName(editedUser.getId(), editedUser.getEmail(), editedUser.getName()));
-    } catch (IllegalArgumentException e){
+    } catch (IllegalArgumentException e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDTO(e.getMessage()));
     }
   }
