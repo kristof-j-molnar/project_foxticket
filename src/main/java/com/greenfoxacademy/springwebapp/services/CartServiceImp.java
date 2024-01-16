@@ -27,6 +27,10 @@ public class CartServiceImp implements CartService {
         .orElseThrow(() -> new EntityNotFoundException(("User is not found")));
   }
 
+  public void save(Cart cart) {
+    cartRepository.save(cart);
+  }
+
   private CartDTO mapToCartDTO(Cart cart) {
     List<Product> productList = cart.getProductList();
     CartDTO cartDto = new CartDTO();
