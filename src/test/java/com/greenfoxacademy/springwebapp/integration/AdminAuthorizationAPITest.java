@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Map;
 
@@ -28,17 +31,14 @@ public class AdminAuthorizationAPITest {
 
   ObjectMapper objectMapper = new ObjectMapper();
 
-  /*@Test
+  @Test
+  @WithMockUser(username = "admin", roles = "Admin")
   void adminAuthorization_Returns200AndCorrectMessage() throws Exception {
-    String jwt = login();
-
-    mvc.perform(get("/api/admin").header("Authorization", "Bearer "+jwt))
-        .andExpect(status().is(200))
-        .andExpect(jsonPath());
+    mvc.perform(MockMvcRequestBuilders.get("/api/admin"))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.content().string("Authorized access"));
 
   }
-
-   */
 
   @Test
   void adminAuthorization_Return403AndCorrectErrorMessage() throws Exception {
