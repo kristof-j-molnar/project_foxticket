@@ -119,6 +119,6 @@ public class EditProfileUnitTests {
     NoSuchElementException exception = assertThrows(NoSuchElementException.class,
         () -> userService.editUserInformation(email, editProfileDTO));
 
-    Assertions.assertEquals("The user does not exist", exception.getMessage());
+    Assertions.assertEquals("User does not exist!", exception.getMessage());
   }
 }

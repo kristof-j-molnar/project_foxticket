@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User editUserInformation(String email, EditProfileDTO editProfileDTO) {
-    User editableUser = userRepository.findUserByEmail(email).orElseThrow(() -> new NoSuchElementException("User does not exists!"));
+    User editableUser = userRepository.findUserByEmail(email).orElseThrow(() -> new NoSuchElementException("User does not exist!"));
 
     if (!editProfileDTO.getNewPassword().isEmpty()) {
       editableUser.setPassword(passwordEncoder.encode(editProfileDTO.getNewPassword()));
