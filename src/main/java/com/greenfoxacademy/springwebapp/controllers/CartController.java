@@ -38,7 +38,7 @@ public class CartController {
   @Transactional
   @RequestMapping(path = "/cart", method = RequestMethod.GET)
   public ResponseEntity<?> getProductsInCart(Authentication auth) {
-    Optional<User> optUser = userService.findUserByEmail((userAuthenticationService.getUserEmail(auth)));
+    Optional<User> optUser = userService.findUserByEmail((userAuthenticationService.getCurrentUserEmail(auth)));
 
     try {
       return optUser

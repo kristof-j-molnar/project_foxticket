@@ -15,6 +15,7 @@ public class ArticlesDTO {
   public ArticlesDTO(List<Article> articles) {
     this();
     this.articles = articles;
+
   }
 
   public List<Article> getArticles() {

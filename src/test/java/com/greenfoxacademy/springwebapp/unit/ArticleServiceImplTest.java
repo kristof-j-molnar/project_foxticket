@@ -2,6 +2,7 @@ package com.greenfoxacademy.springwebapp.unit;
 
 import com.greenfoxacademy.springwebapp.dtos.ArticlesDTO;
 import com.greenfoxacademy.springwebapp.models.Article;
+
 import com.greenfoxacademy.springwebapp.repositories.ArticleRepository;
 import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -19,14 +20,29 @@ class ArticleServiceImplTest {
   void generateArticlesDTO_ReturnsAllArticlesInDTO() {
     var repo = Mockito.mock(ArticleRepository.class);
     Mockito.when(repo.findAll()).thenReturn(
-        List.of(new Article("test article", "this is an amazing test article."))
+        List.of(new Article("test article", "this is an amazing test article."),
+            new Article("test article no.2", "this is the test article no.2"),
+            new Article("test article no.3", "this is the test article no.3"))
     );
 
     ArticleServiceImpl articleService = new ArticleServiceImpl(repo);
-    ArticlesDTO articlesDTO = new ArticlesDTO(List.of(new Article("test article", "this is an amazing test article.")));
+    ArticlesDTO articlesDTO = new ArticlesDTO(List.of(new Article("test article", "this is an amazing test article."),
+        new Article("test article no.2", "this is the test article no.2"),
+        new Article("test article no.3", "this is the test article no.3"))
+    );
 
     ArticlesDTO actualArticlesDTO = articleService.generateArticlesDTO();
-    assertEquals(articlesDTO.getArticles().get(0).getTitle(), actualArticlesDTO.getArticles().get(0).getTitle());
+    assertEquals(articlesDTO.getArticles().size(), actualArticlesDTO.getArticles().size());
+
+    List<String> titles = new ArrayList<>();
+    for (int i = 0; i < articlesDTO.getArticles().size(); i++) {
+      titles.add(articlesDTO.getArticles().get(i).getTitle());
+    }
+    List<String> actualTitles = new ArrayList<>();
+    for (int i = 0; i < actualArticlesDTO.getArticles().size(); i++) {
+      actualTitles.add(actualArticlesDTO.getArticles().get(i).getTitle());
+    }
+    assertTrue(actualTitles.containsAll(titles));
   }
 
   @Test
@@ -54,8 +70,6 @@ class ArticleServiceImplTest {
     );
 
     ArticleServiceImpl articleService = new ArticleServiceImpl(repo);
-    ArticlesDTO articlesDTO = new ArticlesDTO(List.of(new Article("test article", "this is an amazing test article.")));
-
     ArticlesDTO actualArticlesDTO = articleService.searchArticles(search);
     assertTrue(actualArticlesDTO.getArticles().isEmpty());
   }
