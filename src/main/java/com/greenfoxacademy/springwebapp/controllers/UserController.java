@@ -80,7 +80,7 @@ public class UserController {
   @GetMapping("/admin")
   public ResponseEntity<?> adminAuthorization(Authentication authentication) {
 
-    if (!userAuthenticationService.hasRole("Admin", authentication)){
+    if (!userAuthenticationService.hasRole("Admin", authentication)) {
       return ResponseEntity.status(403).body(new ErrorMessageDTO("Unauthorized access"));
     } else {
       return ResponseEntity.status(200).body("Authorized access");

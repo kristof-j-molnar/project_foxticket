@@ -9,7 +9,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
   public UserAuthenticationServiceImpl() {
   }
 
-  public boolean hasRole(String role, Authentication authentication){
-      return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase("ROLE_"+role));
+  public boolean hasRole(String role, Authentication authentication) {
+    return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase("ROLE_" + role));
   }
 }
