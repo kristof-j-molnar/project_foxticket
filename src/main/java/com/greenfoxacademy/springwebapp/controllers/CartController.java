@@ -56,7 +56,7 @@ public class CartController {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Product ID is required."));
     }
 
-    Optional<User> optUser = userService.findUserByEmail(userAuthenticationService.getUserEmail(auth));
+    Optional<User> optUser = userService.findUserByEmail(userAuthenticationService.getCurrentUserEmail(auth));
     Optional<Product> optProduct = productService.getProductById(productId.getProductId());
     try {
       return optUser.map(user -> optProduct.map(product -> {
