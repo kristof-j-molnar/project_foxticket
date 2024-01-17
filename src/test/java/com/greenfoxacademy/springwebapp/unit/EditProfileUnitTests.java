@@ -47,10 +47,9 @@ public class EditProfileUnitTests {
   }
 
   @Test
-  void validateEditProfileDTO_ShouldReturnRightException_WithWrongEmailField() {
+  void validateEditProfileDTO_WithExistingEmailInRepo_ShouldReturnRightException() {
     EditProfileDTO editProfileDTO = new EditProfileDTO("testDto", "reka@gmail.com", "pass123456");
-    User user1 = new User("reka", "reka@gmail.com", "reka12345", "User");
-    Mockito.when(userRepository.findUserByEmail(user1.getEmail())).thenReturn(Optional.of(user1));
+    Mockito.when(userRepository.existsByEmail(editProfileDTO.getNewEmail())).thenReturn(true);
 
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
         () -> userService.validateEditProfileDTO(editProfileDTO));

@@ -3,12 +3,14 @@ package com.greenfoxacademy.springwebapp.unit;
 import com.greenfoxacademy.springwebapp.dtos.ProductDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductEditRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductListResponseDTO;
+import com.greenfoxacademy.springwebapp.exceptions.ProductTypeNotFoundException;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.ProductType;
 import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import com.greenfoxacademy.springwebapp.services.ProductServiceImp;
 import com.greenfoxacademy.springwebapp.services.ProductTypeService;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -19,9 +21,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ProductServiceImpTest {
 
-  ProductRepository productRepository = Mockito.mock(ProductRepository.class);
-  ProductTypeService productTypeService = Mockito.mock(ProductTypeService.class);
-  ProductServiceImp productService = new ProductServiceImp(productRepository, productTypeService);
+  ProductRepository productRepository;
+  ProductTypeService productTypeService;
+  ProductServiceImp productService;
+
+  @BeforeEach
+  public void fieldInitialization() {
+    productRepository = Mockito.mock(ProductRepository.class);
+    productTypeService = Mockito.mock(ProductTypeService.class);
+    productService = new ProductServiceImp(productRepository, productTypeService);
+  }
 
   @Test
   void getAvailableProducts_ReturnProductListResponseDTO() {
@@ -38,43 +47,59 @@ class ProductServiceImpTest {
   }
 
   @Test
-  void validateProductEditDTO_WithValidProductEditRequestDTO_ReturnNull() {
+  void validateProductEditDTO_WithValidProductEditRequestDTO_ReturnEmptyOptional() {
     ProductEditRequestDTO requestDTO = new ProductEditRequestDTO("1 week pass", 1400, "168 hours",
         "Use this pass for a whole week!", 1L);
 
-    assertNull(productService.validateProductEditDTO(requestDTO));
+    assertEquals(Optional.empty(), productService.validateProductEditRequestDTO(requestDTO));
   }
 
   @Test
-  void validateProductEditDTO_WithNullName_ReturnName() {
+  void validateProductEditDTO_WithNullName_ReturnsOptionalWithCorrectString() {
     ProductEditRequestDTO requestDTO = new ProductEditRequestDTO(null, 1400, "168 hours",
         "Use this pass for a whole week!", 1L);
 
-    assertEquals("Name", productService.validateProductEditDTO(requestDTO));
+    assertEquals(Optional.of("Name is required."), productService.validateProductEditRequestDTO(requestDTO));
   }
 
   @Test
-  void validateProductEditDTO_WithBlankName_ReturnName() {
+  void validateProductEditDTO_WithBlankName_ReturnsOptionalWithCorrectString() {
     ProductEditRequestDTO requestDTO = new ProductEditRequestDTO("       ", 1400, "168 hours",
         "Use this pass for a whole week!", 1L);
 
-    assertEquals("Name", productService.validateProductEditDTO(requestDTO));
+    assertEquals(Optional.of("Name is required."), productService.validateProductEditRequestDTO(requestDTO));
   }
 
   @Test
-  void validateProductEditDTO_WithNullPrice_ReturnPrice() {
+  void validateProductEditDTO_WithNullPrice_ReturnsOptionalWithCorrectString() {
     ProductEditRequestDTO requestDTO = new ProductEditRequestDTO("1 week pass", null, "168 hours",
         "Use this pass for a whole week!", 1L);
 
-    assertEquals("Price", productService.validateProductEditDTO(requestDTO));
+    assertEquals(Optional.of("Price is required."), productService.validateProductEditRequestDTO(requestDTO));
   }
 
   @Test
-  void validateProductEditDTO_WithNullDescription_ReturnDescription() {
+  void validateProductEditDTO_WithNullDescription_ReturnsOptionalWithCorrectString() {
     ProductEditRequestDTO requestDTO = new ProductEditRequestDTO("1 week pass", 1400, "168 hours",
         null, 1L);
 
-    assertEquals("Description", productService.validateProductEditDTO(requestDTO));
+    assertEquals(Optional.of("Description is required."), productService.validateProductEditRequestDTO(requestDTO));
+  }
+
+  @Test
+  void validateProductEditDTO_WithBlankNameAndNullDescription_ReturnsOptionalWithCorrectString() {
+    ProductEditRequestDTO requestDTO = new ProductEditRequestDTO("    ", 1400, "168 hours",
+        null, 1L);
+
+    assertEquals(Optional.of("Name and Description are required."), productService.validateProductEditRequestDTO(requestDTO));
+  }
+
+  @Test
+  void validateProductEditDTO_WithBlankNameNullPriceAndNullDescription_ReturnsOptionalWithCorrectString() {
+    ProductEditRequestDTO requestDTO = new ProductEditRequestDTO("    ", null, "168 hours",
+        null, 1L);
+
+    assertEquals(Optional.of("Name, Price and Description are required."), productService.validateProductEditRequestDTO(requestDTO));
   }
 
   @Test
@@ -84,7 +109,7 @@ class ProductServiceImpTest {
   }
 
   @Test
-  void editProduct_WithValidInput_ReturnsEditedProduct() {
+  void modifyProduct_WithValidInput_ReturnsEditedProduct() throws ProductTypeNotFoundException {
     Product product = new Product("name", 1000, 168, "test product");
     ProductType productType1 = new ProductType("type1");
     productType1.setId(1L);
@@ -99,11 +124,11 @@ class ProductServiceImpTest {
     Product editedProduct = new Product("name2", 1500, 120, "edited test product");
     editedProduct.setType(productType2);
 
-    assertTrue(EqualsBuilder.reflectionEquals(editedProduct, productService.editProduct(product, productEditRequestDTO)));
+    assertTrue(EqualsBuilder.reflectionEquals(editedProduct, productService.modifyProduct(product, productEditRequestDTO)));
   }
 
   @Test
-  void editProduct_WithInvalidTypeId_ThrowsExceptionWithCorrectMessage() {
+  void modifyProduct_WithInvalidTypeId_ThrowsExceptionWithCorrectMessage() {
     Product product = new Product("name", 1000, 168, "test product");
     ProductType productType1 = new ProductType("type1");
     productType1.setId(1L);
@@ -114,6 +139,6 @@ class ProductServiceImpTest {
     ProductEditRequestDTO productEditRequestDTO = new ProductEditRequestDTO("name2", 1500,
         "120 days", "edited test product", 2L);
 
-    assertThrows(IllegalArgumentException.class, () -> productService.editProduct(product, productEditRequestDTO));
+    assertThrows(ProductTypeNotFoundException.class, () -> productService.modifyProduct(product, productEditRequestDTO));
   }
 }

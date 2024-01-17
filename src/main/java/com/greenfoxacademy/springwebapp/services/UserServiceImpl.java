@@ -25,29 +25,28 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean validateEmail(UserRequestDTO userDTO) {
+  public boolean isEmailValid(UserRequestDTO userDTO) {
     return !userDTO.getEmail().isEmpty();
   }
 
   @Override
-  public boolean validateName(UserRequestDTO userDTO) {
+  public boolean isNameValid(UserRequestDTO userDTO) {
     return !userDTO.getName().isEmpty();
   }
 
   @Override
-  public boolean validateEmptyDTO(UserRequestDTO userDTO) {
+  public boolean isUserDTOValid(UserRequestDTO userDTO) {
     return !userDTO.getName().isEmpty() || !userDTO.getEmail().isEmpty() || !userDTO.getPassword().isEmpty();
   }
 
   @Override
-  public boolean findEmail(String email) {
-    Optional<User> foundUser = userRepository.findUserByEmail(email);
-    return foundUser.isEmpty();
+  public boolean existsByEmail(String email) {
+    return userRepository.existsByEmail(email);
   }
 
   @Override
-  public boolean checkIfPasswordIsGood(String password) {
-    return password.isEmpty() || password.length() >= 8;
+  public boolean isPasswordValid(String password) {
+    return password.length() >= 8;
   }
 
   @Override
@@ -116,13 +115,13 @@ public class UserServiceImpl implements UserService {
   @Override
   public void validateEditProfileDTO(EditProfileDTO editProfileDTO) {
 
-    if (editProfileDTO.getNewName().isEmpty() && editProfileDTO.getNewPassword().isEmpty() && editProfileDTO.getNewEmail().isEmpty()) {
+    if (editProfileDTO.getNewName().isEmpty() && editProfileDTO.getNewPassword().isEmpty()
+        && editProfileDTO.getNewEmail().isEmpty()) {
       throw new IllegalArgumentException("Name, password, or email are required.");
-    } else if (!findEmail(editProfileDTO.getNewEmail())) {
+    } else if (existsByEmail(editProfileDTO.getNewEmail())) {
       throw new IllegalArgumentException("Email is already taken.");
-    } else if (!checkIfPasswordIsGood(editProfileDTO.getNewPassword())) {
+    } else if (!isPasswordValid(editProfileDTO.getNewPassword())) {
       throw new IllegalArgumentException("Password must be at least 8 characters.");
     }
   }
 }
-

@@ -38,19 +38,19 @@ public class UserController {
 
   @RequestMapping(value = "/users", method = RequestMethod.POST)
   public ResponseEntity<?> register(@RequestBody UserRequestDTO userRequestDTO) {
-    if (!userService.validateEmptyDTO(userRequestDTO)) {
+    if (!userService.isUserDTOValid(userRequestDTO)) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Name, email and password are required."));
-    } else if (!userService.checkIfPasswordIsGood(userRequestDTO.getPassword())) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Password must be at least 8 characters."));
-    } else if (!userService.findEmail(userRequestDTO.getEmail())) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO("Email is already taken."));
-    } else if (!userService.validateName(userRequestDTO)) {
+    } else if (!userService.isNameValid(userRequestDTO)) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Name is required."));
-    } else if (!userService.validateEmail(userRequestDTO)) {
+    } else if (!userService.isEmailValid(userRequestDTO)) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Email is required."));
     } else if (userRequestDTO.getPassword().isEmpty()) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Password is required."));
-    } else if (userService.validateEmail(userRequestDTO) && userService.validateName(userRequestDTO) && !userRequestDTO.getPassword().isEmpty()) {
+    } else if (!userService.isPasswordValid(userRequestDTO.getPassword())) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Password must be at least 8 characters."));
+    } else if (userService.existsByEmail(userRequestDTO.getEmail())) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Email is already taken."));
+    } else if (userService.isEmailValid(userRequestDTO) && userService.isNameValid(userRequestDTO) && !userRequestDTO.getPassword().isEmpty()) {
       User newUser = userService.generateUser(userRequestDTO);
       userService.saveUser(newUser);
       return ResponseEntity.status(200).body(new UserResponseDTO(newUser.getId(), newUser.getEmail(), newUser.getRole()));

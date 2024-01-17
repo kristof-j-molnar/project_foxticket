@@ -4,13 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenfoxacademy.springwebapp.dtos.ProductEditRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductEditResponseDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
+import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Map;
@@ -22,17 +23,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@TestPropertySource(locations = "classpath:application-test.properties")
+@Transactional
 class ProductControllerTest {
 
   @Autowired
   MockMvc mvc;
   ObjectMapper objectMapper = new ObjectMapper();
+  @Autowired
+  ProductRepository repo;
 
   private String login(UserLoginDTO user) throws Exception {
     String responseContent = mvc.perform(post("/api/users/login")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(user)))
+        .andExpect(status().is(200))
         .andReturn()
         .getResponse()
         .getContentAsString();
@@ -113,6 +117,19 @@ class ProductControllerTest {
   }
 
   @Test
+  void editProduct_WithRequestDTOWithBlankNameNullDescriptionAndNullTypeId_ReturnErrorMessageDTOWithCorrectMessage() throws Exception {
+    String jwt = login(new UserLoginDTO("admin@admin.hu", "adminadmin"));
+    ProductEditRequestDTO requestDTO = new ProductEditRequestDTO("    ", 1400, "168 hours",
+        null, null);
+
+    mvc.perform(patch("/api/products/1").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestDTO)))
+        .andExpect(status().is(400))
+        .andExpect(jsonPath("$['error']").value("Name, Description and Type id are required."));
+  }
+
+  @Test
   void editProduct_WithInvalidPathVariable_Return404() throws Exception {
     String jwt = login(new UserLoginDTO("admin@admin.hu", "adminadmin"));
     ProductEditRequestDTO requestDTO = new ProductEditRequestDTO("1 week pass", 1400, "168 hours",
@@ -130,7 +147,7 @@ class ProductControllerTest {
     ProductEditRequestDTO requestDTO = new ProductEditRequestDTO("test pass 1", 1400, "168 hours",
         "Use this pass for a whole week!", 2L);
 
-    mvc.perform(patch("/api/products/1").header("Authorization", "Bearer " + jwt)
+    mvc.perform(patch("/api/products/3").header("Authorization", "Bearer " + jwt)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(requestDTO)))
         .andExpect(status().is(400))
@@ -146,7 +163,7 @@ class ProductControllerTest {
     mvc.perform(patch("/api/products/1").header("Authorization", "Bearer " + jwt)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(requestDTO)))
-        .andExpect(status().is(400))
+        .andExpect(status().is(404))
         .andExpect(jsonPath("$['error']").value("ProductType does not exist."));
   }
 

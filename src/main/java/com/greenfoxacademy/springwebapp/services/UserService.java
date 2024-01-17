@@ -10,15 +10,15 @@ import java.util.Optional;
 
 public interface UserService {
 
-  boolean validateEmail(UserRequestDTO userDTO);
+  boolean isEmailValid(UserRequestDTO userDTO);
 
-  boolean validateName(UserRequestDTO userDTO);
+  boolean isNameValid(UserRequestDTO userDTO);
 
-  boolean validateEmptyDTO(UserRequestDTO userDTO);
+  boolean isUserDTOValid(UserRequestDTO userDTO);
 
-  boolean findEmail(String email);
+  boolean existsByEmail(String email);
 
-  boolean checkIfPasswordIsGood(String password);
+  boolean isPasswordValid(String password);
 
   User generateUser(UserRequestDTO userRequestDTO);
 
