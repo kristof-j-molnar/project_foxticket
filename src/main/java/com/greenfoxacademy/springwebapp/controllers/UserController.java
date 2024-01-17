@@ -34,6 +34,7 @@ public class UserController {
 
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity<ErrorMessageDTO> handleIllegalArgumentException(IllegalArgumentException e) {
+    e.printStackTrace();
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDTO(e.getMessage()));
   }
 
@@ -62,8 +63,8 @@ public class UserController {
 
   @PostMapping(path = "/users/login")
   public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO) {
-    ErrorMessageDTO error = userService.validateLogin(userLoginDTO);
-    if (error != null) {
+    Optional<ErrorMessageDTO> error = userService.validateLogin(userLoginDTO);
+    if (error.isPresent()) {
       return ResponseEntity.status(400).body(error);
     }
 

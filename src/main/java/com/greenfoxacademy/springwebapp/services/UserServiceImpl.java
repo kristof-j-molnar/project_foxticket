@@ -90,15 +90,15 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ErrorMessageDTO validateLogin(UserLoginDTO userLoginDTO) {
+  public Optional<ErrorMessageDTO> validateLogin(UserLoginDTO userLoginDTO) {
     if (userLoginDTO.getEmail() == null && userLoginDTO.getPassword() == null) {
-      return new ErrorMessageDTO("All fields are required.");
+      return Optional.of(new ErrorMessageDTO("All fields are required."));
     } else if (userLoginDTO.getPassword() == null) {
-      return new ErrorMessageDTO("Password is required.");
+      return Optional.of(new ErrorMessageDTO("Password is required."));
     } else if (userLoginDTO.getEmail() == null) {
-      return new ErrorMessageDTO("E-mail is required.");
+      return Optional.of(new ErrorMessageDTO("E-mail is required."));
     } else {
-      throw new IllegalArgumentException();
+      return Optional.empty();
     }
   }
 
