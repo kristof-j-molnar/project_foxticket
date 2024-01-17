@@ -1,5 +1,7 @@
 package com.greenfoxacademy.springwebapp.dtos;
 
+import com.greenfoxacademy.springwebapp.models.User;
+
 public class UserResponseDTOWithName {
   private Integer id;
 
@@ -7,10 +9,10 @@ public class UserResponseDTOWithName {
 
   private String name;
 
-  public UserResponseDTOWithName(Integer id, String name, String email) {
-    this.id = id;
-    this.email = name;
-    this.name = email;
+  public UserResponseDTOWithName(User user) {
+    this.id = user.getId();
+    this.name = user.getName();
+    this.email = user.getEmail();
   }
 
   public UserResponseDTOWithName() {

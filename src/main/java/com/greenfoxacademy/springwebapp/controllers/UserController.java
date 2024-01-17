@@ -100,7 +100,7 @@ public class UserController {
 
       User editedUser = userService.editUserInformation(userAuthenticationService.getCurrentUserEmail(), editProfileDTO);
 
-      return ResponseEntity.status(200).body(new UserResponseDTOWithName(editedUser.getId(), editedUser.getEmail(), editedUser.getName()));
+      return ResponseEntity.status(200).body(new UserResponseDTOWithName(editedUser));
     } catch (IllegalArgumentException e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDTO(e.getMessage()));
     }

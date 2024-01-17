@@ -72,7 +72,7 @@ public class EditProfileUnitTests {
 
   @Test
   void editUserInformation_ShouldReturnEditedUser_WithRightInputFields() {
-    EditProfileDTO editProfileDTO = new EditProfileDTO("testDto", "reka@gmail.com","pass12345687");
+    EditProfileDTO editProfileDTO = new EditProfileDTO("testDto", "reka@gmail.com", "pass12345687");
     String email = "ferenczy.reka05@gmail.com";
     User user1 = new User("reka", "ferenczy.reka05@gmail.com", passwordEncoder.encode("reka12345"), "User");
     Mockito.when(userRepository.findUserByEmail(user1.getEmail())).thenReturn(Optional.of(user1));
