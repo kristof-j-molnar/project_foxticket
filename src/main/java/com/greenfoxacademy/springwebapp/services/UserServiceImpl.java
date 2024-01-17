@@ -24,9 +24,6 @@ public class UserServiceImpl implements UserService {
     this.passwordEncoder = passwordEncoder;
   }
 
-  public UserServiceImpl() {
-  }
-
   @Override
   public boolean validateEmail(UserRequestDTO userDTO) {
     if (userDTO.getEmail().isEmpty()) {
@@ -109,25 +106,21 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User editUserInformation(String email, EditProfileDTO editProfileDTO) {
-    Optional<User> editableUser = userRepository.findUserByEmail(email);
+    User editableUser = userRepository.findUserByEmail(email).orElseThrow(() -> new NoSuchElementException("User does not exists!"));
 
-    if (editableUser.isPresent()) {
-      User foundUser = editableUser.get();
-      if (!editProfileDTO.getNewPassword().isEmpty()) {
-        foundUser.setPassword(passwordEncoder.encode(editProfileDTO.getNewPassword()));
-        userRepository.save(foundUser);
-      }
-      if (!editProfileDTO.getNewEmail().isEmpty()) {
-        foundUser.setEmail(editProfileDTO.getNewEmail());
-        userRepository.save(foundUser);
-      }
-      if (!editProfileDTO.getNewName().isEmpty()) {
-        foundUser.setName(editProfileDTO.getNewName());
-        userRepository.save(foundUser);
-      }
-      return foundUser;
+    if (!editProfileDTO.getNewPassword().isEmpty()) {
+      editableUser.setPassword(passwordEncoder.encode(editProfileDTO.getNewPassword()));
+      userRepository.save(editableUser);
     }
-    throw new NoSuchElementException("The user does not exist");
+    if (!editProfileDTO.getNewEmail().isEmpty()) {
+      editableUser.setEmail(editProfileDTO.getNewEmail());
+      userRepository.save(editableUser);
+    }
+    if (!editProfileDTO.getNewName().isEmpty()) {
+      editableUser.setName(editProfileDTO.getNewName());
+      userRepository.save(editableUser);
+    }
+    return editableUser;
   }
 
   @Override
@@ -136,7 +129,7 @@ public class UserServiceImpl implements UserService {
     if (foundUser.isEmpty()) {
       return true;
     } else {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("Email is already taken");
     }
   }
 

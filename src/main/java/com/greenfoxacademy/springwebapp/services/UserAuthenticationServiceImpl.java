@@ -8,9 +8,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserAuthenticationServiceImpl implements UserAuthenticationService {
 
-  public UserAuthenticationServiceImpl() {
-  }
-
   @Override
   public boolean hasRole(String role, Authentication authentication) {
     return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase("ROLE_" + role));
@@ -23,7 +20,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     if (principal instanceof MyUserDetailsDTO myUserDetailsDTO) {
       return myUserDetailsDTO.getEmail();
     } else {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("Authentication information in unexpected format");
     }
   }
 }

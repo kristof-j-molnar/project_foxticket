@@ -18,9 +18,9 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class EditProfileUnitTests {
-  UserService userService = new UserServiceImpl();
+  UserService userService;
 
-  PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+  PasswordEncoder passwordEncoder;
 
   UserRepository userRepository;
 
