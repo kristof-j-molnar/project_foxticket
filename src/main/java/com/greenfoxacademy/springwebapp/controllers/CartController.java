@@ -1,6 +1,7 @@
 package com.greenfoxacademy.springwebapp.controllers;
 
 import com.greenfoxacademy.springwebapp.dtos.*;
+import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.services.*;
@@ -8,7 +9,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,31 +39,36 @@ public class CartController {
   @RequestMapping(path = "/cart", method = RequestMethod.GET)
   public ResponseEntity<?> getProductsInCart(Authentication auth) {
     Optional<User> optUser = userService.findUserByEmail((userAuthenticationService.getUserEmail(auth)));
-    return optUser
-        .map(u -> ResponseEntity.status(200).body(cartService.getProductsInCartDTO(u.getId())))
-        .orElseThrow(() -> new EntityNotFoundException(("User is invalid")));
+
+    try {
+      return optUser
+          .map(u -> ResponseEntity.status(200).body(cartService.getProductsInCartDTO(u.getId())))
+          .orElseThrow(() -> new EntityNotFoundException(("User is invalid")));
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
+    }
   }
 
   @Transactional
   @RequestMapping(path = "/cart", method = RequestMethod.POST)
-  public ResponseEntity<?> addProductToTheCart(Authentication auth, @RequestBody ProductAddingRequestDTO productId) {
-    if (productId == null) {
+  public ResponseEntity<?> addProductToTheCart(Authentication auth, @RequestBody(required = false) ProductAddingRequestDTO productId) {
+    if (cartService.isEmptyDTO(productId)) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Product ID is required."));
     }
+
+    Optional<User> optUser = userService.findUserByEmail(userAuthenticationService.getUserEmail(auth));
+    Optional<Product> optProduct = productService.getProductById(productId.getProductId());
     try {
-      ResponseEntity<ProductAddingResponseDTO> response = userService.findUserByEmail(userAuthenticationService.getUserEmail(auth))
-          .map(user -> productService.getProductById(productId.getProductId())
-              .map(product -> {
-                user.getCart().addProduct(product);
-                cartService.save(user.getCart());
-                int amount = cartService.getAmount(user.getCart(), product);
-                return ResponseEntity.status(200).body(new ProductAddingResponseDTO(user.getCart().getId(), productId.getProductId(), amount));
-              })
-              .orElseThrow(() -> new EntityNotFoundException("Product not found")))
-          .orElseThrow(() -> new EntityNotFoundException("User not found"));
-      return response;
+      return optUser.map(user -> optProduct.map(product -> {
+        Cart cart = optUser.get().getCart();
+        cart.addProduct(optProduct.get());
+        cartService.save(cart);
+        int amount = cartService.getAmount(cart, optProduct.get());
+        return ResponseEntity.status(200).body(new ProductAddingResponseDTO(cart.getId(), optProduct.get().getId(), amount));
+      }).orElseThrow(() -> new EntityNotFoundException("Product is not found")))
+          .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
     } catch (EntityNotFoundException e) {
-      return ResponseEntity.status(404).body(e.getMessage());
+      return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }
 }

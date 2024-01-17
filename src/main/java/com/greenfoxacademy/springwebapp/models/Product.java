@@ -2,6 +2,9 @@ package com.greenfoxacademy.springwebapp.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "products")
 public class Product {
@@ -21,13 +24,15 @@ public class Product {
   @ManyToOne
   private ProductType type;
 
-  @ManyToOne
-  private Cart cart;
+  @ManyToMany(mappedBy = "productList")
+  private List<Cart> carts;
 
   public Product() {
+    carts = new ArrayList<>();
   }
 
   public Product(String name, int price, int duration, String description) {
+    this();
     this.name = name;
     this.price = price;
     this.duration = duration;
@@ -78,11 +83,19 @@ public class Product {
     this.type = type;
   }
 
-  public Cart getCart() {
-    return cart;
+  public void setId(Long id) {
+    this.id = id;
   }
 
-  public void setCart(Cart cart) {
-    this.cart = cart;
+  public List<Cart> getCarts() {
+    return carts;
+  }
+
+  public void setCarts(List<Cart> carts) {
+    this.carts = carts;
+  }
+
+  public void addCart(Cart cart) {
+    carts.add(cart);
   }
 }

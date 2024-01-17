@@ -2,18 +2,16 @@ package com.greenfoxacademy.springwebapp.services;
 
 import com.greenfoxacademy.springwebapp.dtos.CartDTO;
 import com.greenfoxacademy.springwebapp.dtos.CartItemDTO;
+import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
 import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,9 +42,20 @@ public class CartServiceImp implements CartService {
   }
 
   public int getAmount(Cart cart, Product product) {
-    return (int) cart.getProductList().stream()
-        .filter(cartItem -> cartItem.getId().equals(product.getId()))
-        .count();
+    int count = 0;
+    for (int i = 0; i < cart.getProductList().size(); i++) {
+      if (cart.getProductList().get(i).getId().equals(product.getId())) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  public boolean isEmptyDTO(ProductAddingRequestDTO product) {
+    if (product == null || product.getProductId() == null) {
+      return true;
+    }
+    return false;
   }
 
   private CartDTO mapToCartDTO(Cart cart) {
