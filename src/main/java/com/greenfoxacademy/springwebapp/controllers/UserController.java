@@ -34,7 +34,6 @@ public class UserController {
 
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity<ErrorMessageDTO> handleIllegalArgumentException(IllegalArgumentException e) {
-    e.printStackTrace();
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDTO(e.getMessage()));
   }
 
