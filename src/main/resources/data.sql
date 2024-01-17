@@ -5,10 +5,10 @@ VALUES ('jegy'),
 INSERT INTO CARTS(ID)
 VALUES (1);
 
-INSERT INTO PRODUCTS (NAME, PRICE, DURATION, DESCRIPTION, TYPE_ID,CART_ID)
-VALUES ('vonaljegy', 480, 90, 'teszt1', 1,1),
-       ('havi diák bérlet', 4000, 9000, 'teszt2', 2,1),
-       ('havi bérlet', 9500, 9000, 'teszt3', 2,1);
+INSERT INTO PRODUCTS (NAME, PRICE, DURATION, DESCRIPTION, TYPE_ID, CART_ID)
+VALUES ('vonaljegy', 480, 90, 'teszt1', 1, 1),
+       ('havi diák bérlet', 4000, 9000, 'teszt2', 2, 1),
+       ('havi bérlet', 9500, 9000, 'teszt3', 2, 1);
 
 INSERT INTO `USERS` (`NAME`, `EMAIL`, `PASSWORD`, `ROLE`, CART_ID)
 VALUES ('Admin', 'admin@admin.com', '$2a$10$uSpukjhKUu2jviDOv6Izi.L0Ukxa267Te314GkvmjX.rvG1pyA.jK', 'ROLE_USER,ROLE_ADMIN',1);
