@@ -24,6 +24,13 @@ public class User {
     this.role = role;
   }
 
+  public User(User user) {
+    this.name = user.getName();
+    this.email = user.getEmail();
+    this.password = user.getPassword();
+    this.role = user.getRole();
+  }
+
   public User() {
   }
 

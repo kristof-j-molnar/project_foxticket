@@ -7,46 +7,45 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
-public class MyUserDetailsDTO implements UserDetails {
-  private Integer userId;
-  private String userName;
-  private String email;
-  private String password;
+public class SecurityUser implements UserDetails {
   private Boolean isAdmin;
   private Boolean isVerified;
-  private List<GrantedAuthority> roles;
 
-  public MyUserDetailsDTO() {
+  private User user;
+
+  public SecurityUser() {
   }
 
-  public MyUserDetailsDTO(User user) {
-    userId = user.getId();
-    userName = user.getName();
-    email = user.getEmail();
-    password = user.getPassword();
+  public SecurityUser(User user) {
+    this.user = user;
     isVerified = true;
     isAdmin = false;
-    roles = Arrays.stream(user.getRole().split(","))
-        .map(SimpleGrantedAuthority::new)
-        .collect(Collectors.toList());
+  }
+
+  public SecurityUser(User user, boolean isAdmin, boolean isVerified) {
+    this.user = user;
+    this.isAdmin = isAdmin;
+    this.isVerified = isVerified;
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return roles;
+    return Arrays.stream(user
+            .getRole()
+            .split(","))
+        .map(role -> new SimpleGrantedAuthority(role.trim()))
+        .toList();
   }
 
   @Override
   public String getPassword() {
-    return password;
+    return user.getPassword();
   }
 
   @Override
   public String getUsername() {
-    return userName;
+    return user.getName();
   }
 
   @Override
@@ -70,7 +69,7 @@ public class MyUserDetailsDTO implements UserDetails {
   }
 
   public Integer getUserId() {
-    return userId;
+    return user.getId();
   }
 
   public Boolean isAdmin() {
@@ -82,6 +81,6 @@ public class MyUserDetailsDTO implements UserDetails {
   }
 
   public String getEmail() {
-    return email;
+    return user.getEmail();
   }
 }

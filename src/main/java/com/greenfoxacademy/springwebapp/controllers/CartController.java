@@ -1,6 +1,6 @@
 package com.greenfoxacademy.springwebapp.controllers;
 
-import com.greenfoxacademy.springwebapp.dtos.MyUserDetailsDTO;
+import com.greenfoxacademy.springwebapp.dtos.SecurityUser;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.services.CartService;
 import com.greenfoxacademy.springwebapp.services.UserService;
@@ -31,8 +31,8 @@ public class CartController {
   public ResponseEntity<?> getProductsInCart() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     Object principal = auth.getPrincipal();
-    if (principal instanceof MyUserDetailsDTO) {
-      Optional<User> optUser = userService.findUserByEmail(((MyUserDetailsDTO) principal).getEmail());
+    if (principal instanceof SecurityUser) {
+      Optional<User> optUser = userService.findUserByEmail(((SecurityUser) principal).getEmail());
       return optUser
           .map(u -> ResponseEntity.status(200).body(cartService.getProductsInCartDTO(u.getId())))
           .orElseThrow(() -> new EntityNotFoundException(("User is invalid")));

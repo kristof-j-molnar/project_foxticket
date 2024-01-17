@@ -1,6 +1,6 @@
 package com.greenfoxacademy.springwebapp.utilities;
 
-import com.greenfoxacademy.springwebapp.dtos.MyUserDetailsDTO;
+import com.greenfoxacademy.springwebapp.dtos.SecurityUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -10,14 +10,15 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class JwtUtil {
+public class JwtBuilder {
   private final Key SECRET_KEY;
 
-  public JwtUtil(@Value("${JWT_SECRET_KEY}") String encodedSecretKey) {
+  public JwtBuilder(@Value("${JWT_SECRET_KEY}") String encodedSecretKey) {
     SECRET_KEY = Keys.hmacShaKeyFor(Base64.getDecoder().decode(encodedSecretKey));
   }
 
@@ -25,28 +26,17 @@ public class JwtUtil {
     return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
   }
 
-  public String generateToken(MyUserDetailsDTO userDetails) {
+  public String generateToken(SecurityUser userDetails) {
     Map<String, Object> claims = new HashMap<>();
     claims.put("userId", userDetails.getUserId());
     claims.put("isVerified", userDetails.isVerified());
     claims.put("isAdmin", userDetails.isAdmin());
-    return createToken(claims);
+    return createToken(claims, userDetails.getEmail());
   }
 
-  private String createToken(Map<String, Object> claims) {
-    return Jwts.builder().setClaims(claims)
+  private String createToken(Map<String, Object> claims, String subject) {
+    return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
         .signWith(SECRET_KEY, SignatureAlgorithm.HS256).compact();
-  }
-
-  public Boolean validateToken(String token, MyUserDetailsDTO userDetails) {
-    Claims claims = Jwts.parserBuilder()
-        .setSigningKey(SECRET_KEY)
-        .build()
-        .parseClaimsJws(token)
-        .getBody();
-
-    return (userDetails.getUserId().equals(claims.get("userId"))
-        && userDetails.isAdmin().equals(claims.get("isAdmin"))
-        && userDetails.isVerified().equals(claims.get("isVerified")));
   }
 }

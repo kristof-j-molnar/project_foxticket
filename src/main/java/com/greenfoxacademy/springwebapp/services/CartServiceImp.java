@@ -6,6 +6,7 @@ import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class CartServiceImp implements CartService {
     this.cartRepository = cartRepository;
   }
 
+  @Transactional
   public CartDTO getProductsInCartDTO(Integer id) {
     return cartRepository.findByUserId(id)
         .map(this::mapToCartDTO)

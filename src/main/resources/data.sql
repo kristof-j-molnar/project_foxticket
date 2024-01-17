@@ -11,7 +11,7 @@ VALUES ('vonaljegy', 480, 90, 'teszt1', 1,1),
        ('havi bérlet', 9500, 9000, 'teszt3', 2,1);
 
 INSERT INTO `USERS` (`NAME`, `EMAIL`, `PASSWORD`, `ROLE`, CART_ID)
-VALUES ('Admin', 'admin@admin.com', 'adminadmin', 'ROLE_USER,ROLE_ADMIN',1);
+VALUES ('Admin', 'admin@admin.com', '$2a$10$uSpukjhKUu2jviDOv6Izi.L0Ukxa267Te314GkvmjX.rvG1pyA.jK', 'ROLE_USER,ROLE_ADMIN',1);
 
 INSERT INTO ARTICLES (TITLE, CONTENT, PUBLISHDATE)
 VALUES ('News about tickets awesome', 'Ipsum Lorum', '2023-12-11');

@@ -1,6 +1,5 @@
 package com.greenfoxacademy.springwebapp.services;
 
-import com.greenfoxacademy.springwebapp.dtos.MyUserDetailsDTO;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,8 +25,8 @@ public class MyUserDetailsService implements UserDetailsService {
     return null;
   }
 
-  public MyUserDetailsDTO loadUserById(Integer userId) {
+  public User loadUserById(Integer userId) {
     Optional<User> foundUser = userRepository.findById(userId);
-    return foundUser.map(MyUserDetailsDTO::new).orElseThrow(() -> new EntityNotFoundException("User ID not found :" + userId));
+    return foundUser.map(User::new).orElseThrow(() -> new EntityNotFoundException("User ID not found :" + userId));
   }
 }
