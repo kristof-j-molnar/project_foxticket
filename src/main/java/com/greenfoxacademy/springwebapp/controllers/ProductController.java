@@ -44,13 +44,13 @@ public class ProductController {
       productToEdit = productOptional.get();
     }
 
-    if (!productToEdit.getName().equals(productEditRequestDTO.getName()) &&
-        productService.existsByName(productEditRequestDTO.getName())) {
+    if (!productToEdit.getName().equals(productEditRequestDTO.getName())
+        && productService.existsByName(productEditRequestDTO.getName())) {
       return ResponseEntity.status(400).body(new ErrorMessageDTO("ProductName already exists."));
     }
 
-    if (!productToEdit.getType().getId().equals(productEditRequestDTO.getTypeId()) &&
-        productTypeService.findById(productEditRequestDTO.getTypeId()).isEmpty()) {
+    if (!productToEdit.getType().getId().equals(productEditRequestDTO.getTypeId())
+        && productTypeService.findById(productEditRequestDTO.getTypeId()).isEmpty()) {
       return ResponseEntity.status(400).body(new ErrorMessageDTO("ProductType does not exist."));
     }
 

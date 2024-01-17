@@ -23,13 +23,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class UserControllerTest {
 
+  private final ObjectMapper mapper = new ObjectMapper();
   @Autowired
   MockMvc mockMvc;
-
   @Autowired
   MyUserDetailsService userDetailsService;
-
-  private final ObjectMapper mapper = new ObjectMapper();
 
   @Test
   void checkJsonValidity_WithMissingFields_ShouldReturnCustomErrorMessage() throws Exception {

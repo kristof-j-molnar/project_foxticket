@@ -20,13 +20,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class RegisterUsersAPITest {
 
+  private final ObjectMapper mapper = new ObjectMapper();
   @Autowired
   MockMvc mockMvc;
-
   @Autowired
   UserService userService;
-
-  private final ObjectMapper mapper = new ObjectMapper();
 
   @Test
   void checkCredentialValidity_WithEmptyCredential_ShouldReturnErrorMessage() throws Exception {
