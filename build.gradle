@@ -20,7 +20,7 @@ repositories {
 
 //Checkstyle
 checkstyle {
-    toolVersion "8.32"
+    toolVersion "10.3.3"
     configFile file("config/checkstyle/checkstyle.xml")
 }
 checkstyleMain {
@@ -67,6 +67,7 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.hamcrest:hamcrest-core:2.2'
     testImplementation 'org.hamcrest:hamcrest:2.2'
+    testImplementation 'org.mockito:mockito-core:5.8.0'
 }
 
 tasks.named('test') {
