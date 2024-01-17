@@ -8,6 +8,7 @@ import com.greenfoxacademy.springwebapp.utilities.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +26,15 @@ public class UserController {
   private UserAuthenticationService userAuthenticationService;
 
   @Autowired
-  public UserController(JwtUtil jwtUtil, UserService userService, UserAuthenticationService userAuthenticationService) {
-    this.jwtUtil = jwtUtil;
+  public UserController(UserService userService, JwtUtil jwtUtil, UserAuthenticationService userAuthenticationService) {
     this.userService = userService;
+    this.jwtUtil = jwtUtil;
     this.userAuthenticationService = userAuthenticationService;
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<ErrorMessageDTO> handleIllegalArgumentException(IllegalArgumentException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDTO(e.getMessage()));
   }
 
   @RequestMapping(value = "/users", method = RequestMethod.POST)
@@ -56,8 +62,8 @@ public class UserController {
 
   @PostMapping(path = "/users/login")
   public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO) {
-    ErrorMessageDTO error = userService.validateLogin(userLoginDTO);
-    if (error != null) {
+    Optional<ErrorMessageDTO> error = userService.validateLogin(userLoginDTO);
+    if (error.isPresent()) {
       return ResponseEntity.status(400).body(error);
     }
 
@@ -86,4 +92,18 @@ public class UserController {
       return ResponseEntity.status(200).body("Authorized access");
     }
   }
+
+  @RequestMapping(value = "/users", method = RequestMethod.PATCH)
+  public ResponseEntity<?> editUserProfile(@RequestBody EditProfileDTO editProfileDTO) {
+    try {
+      userService.validateEditProfileDTO(editProfileDTO);
+
+      User editedUser = userService.editUserInformation(userAuthenticationService.getCurrentUserEmail(), editProfileDTO);
+
+      return ResponseEntity.status(200).body(new UserResponseDTOWithName(editedUser));
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDTO(e.getMessage()));
+    }
+  }
 }
+

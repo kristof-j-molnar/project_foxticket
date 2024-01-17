@@ -1,5 +1,6 @@
 package com.greenfoxacademy.springwebapp.services;
 
+import com.greenfoxacademy.springwebapp.dtos.EditProfileDTO;
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserRequestDTO;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -85,15 +87,15 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ErrorMessageDTO validateLogin(UserLoginDTO userLoginDTO) {
+  public Optional<ErrorMessageDTO> validateLogin(UserLoginDTO userLoginDTO) {
     if (userLoginDTO.getEmail() == null && userLoginDTO.getPassword() == null) {
-      return new ErrorMessageDTO("All fields are required.");
+      return Optional.of(new ErrorMessageDTO("All fields are required."));
     } else if (userLoginDTO.getPassword() == null) {
-      return new ErrorMessageDTO("Password is required.");
+      return Optional.of(new ErrorMessageDTO("Password is required."));
     } else if (userLoginDTO.getEmail() == null) {
-      return new ErrorMessageDTO("E-mail is required.");
+      return Optional.of(new ErrorMessageDTO("E-mail is required."));
     } else {
-      return null;
+      return Optional.empty();
     }
   }
 
@@ -101,4 +103,46 @@ public class UserServiceImpl implements UserService {
   public Boolean validatePassword(User user, UserLoginDTO userLoginDTO) {
     return passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword());
   }
+
+  @Override
+  public User editUserInformation(String email, EditProfileDTO editProfileDTO) {
+    User editableUser = userRepository.findUserByEmail(email).orElseThrow(() -> new NoSuchElementException("User does not exist!"));
+
+    if (!editProfileDTO.getNewPassword().isEmpty()) {
+      editableUser.setPassword(passwordEncoder.encode(editProfileDTO.getNewPassword()));
+      userRepository.save(editableUser);
+    }
+    if (!editProfileDTO.getNewEmail().isEmpty()) {
+      editableUser.setEmail(editProfileDTO.getNewEmail());
+      userRepository.save(editableUser);
+    }
+    if (!editProfileDTO.getNewName().isEmpty()) {
+      editableUser.setName(editProfileDTO.getNewName());
+      userRepository.save(editableUser);
+    }
+    return editableUser;
+  }
+
+  @Override
+  public boolean checkEditableEmail(String email) {
+    Optional<User> foundUser = userRepository.findUserByEmail(email);
+    if (foundUser.isEmpty()) {
+      return true;
+    } else {
+      throw new IllegalArgumentException("Email is already taken");
+    }
+  }
+
+  @Override
+  public void validateEditProfileDTO(EditProfileDTO editProfileDTO) {
+
+    if (editProfileDTO.getNewName().isEmpty() && editProfileDTO.getNewPassword().isEmpty() && editProfileDTO.getNewEmail().isEmpty()) {
+      throw new IllegalArgumentException("Name, password, or email are required.");
+    } else if (!findEmail(editProfileDTO.getNewEmail())) {
+      throw new IllegalArgumentException("Email is already taken.");
+    } else if (!checkIfPasswordIsGood(editProfileDTO.getNewPassword())) {
+      throw new IllegalArgumentException("Password must be at least 8 characters.");
+    }
+  }
 }
+

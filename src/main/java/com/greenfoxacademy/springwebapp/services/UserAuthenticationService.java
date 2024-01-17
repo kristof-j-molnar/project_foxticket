@@ -6,4 +6,5 @@ public interface UserAuthenticationService {
 
   boolean hasRole(String role, Authentication authentication);
 
+  String getCurrentUserEmail();
 }
