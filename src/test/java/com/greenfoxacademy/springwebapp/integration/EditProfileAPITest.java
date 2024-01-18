@@ -3,7 +3,6 @@ package com.greenfoxacademy.springwebapp.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenfoxacademy.springwebapp.dtos.EditProfileDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
@@ -57,7 +57,7 @@ public class EditProfileAPITest {
   @Test
   void editProfile_ShouldReturn400andCorrectErrorMessage_WithAlreadyUsedEmail() throws Exception {
     String jwt = login();
-    EditProfileDTO editProfileDTO = new EditProfileDTO("", "user@user.user", "");
+    EditProfileDTO editProfileDTO = new EditProfileDTO("", "user@user.hu", "");
 
     mvc.perform(patch("/api/users").header("Authorization", "Bearer " + jwt)
             .contentType(MediaType.APPLICATION_JSON)

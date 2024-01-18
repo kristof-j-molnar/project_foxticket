@@ -2,9 +2,13 @@ package com.greenfoxacademy.springwebapp.services;
 
 import com.greenfoxacademy.springwebapp.dtos.CartDTO;
 import com.greenfoxacademy.springwebapp.dtos.CartItemDTO;
+import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
+import com.greenfoxacademy.springwebapp.dtos.ProductAddingResponseDTO;
 import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
+import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
+import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,24 +20,52 @@ import java.util.List;
 public class CartServiceImp implements CartService {
 
   private CartRepository cartRepository;
+  private UserRepository userRepository;
 
   @Autowired
-  public CartServiceImp(CartRepository cartRepository) {
+  public CartServiceImp(CartRepository cartRepository, UserRepository userRepository) {
     this.cartRepository = cartRepository;
+    this.userRepository = userRepository;
   }
 
   @Transactional
   public CartDTO getProductsInCartDTO(Integer id) {
-    return cartRepository.findByUserId(id)
-        .map(this::mapToCartDTO)
-        .orElseThrow(() -> new EntityNotFoundException(("User is not found")));
+    User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User is not found"));
+    return mapToCartDTO(user.getCart());
   }
 
   private CartDTO mapToCartDTO(Cart cart) {
-    List<Product> productList = cart.getProductList();
     CartDTO cartDto = new CartDTO();
-    productList.forEach(product ->
-        cartDto.add(new CartItemDTO(product.getId(), product.getName(), product.getPrice())));
+    if (cart != null || !cart.getProductList().isEmpty()) {
+      List<Product> productList = cart.getProductList();
+      productList.stream().map(CartItemDTO::new).forEach(cartDto::add);
+    }
     return cartDto;
+  }
+
+  public void save(Cart cart) {
+    cartRepository.save(cart);
+  }
+
+  public int getAmount(Cart cart, Product product) {
+    int count = 0;
+    for (Product p : cart.getProductList()) {
+      if (p.getId().equals(product.getId())) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  public boolean isEmptyAddRequest(ProductAddingRequestDTO product) {
+    return product == null || product.getProductId() == null;
+  }
+
+  public ProductAddingResponseDTO addProduct(User user, Product product) {
+    Cart cart = user.getCart();
+    cart.addProduct(product);
+    cartRepository.save(cart);
+    int amount = getAmount(cart, product);
+    return new ProductAddingResponseDTO(cart.getId(), product.getId(), amount);
   }
 }

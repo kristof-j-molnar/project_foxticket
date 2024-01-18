@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImp implements ProductService {
@@ -26,5 +27,9 @@ public class ProductServiceImp implements ProductService {
       productDTOs.add(new ProductDTO(product.getId(), product.getName(), product.getPrice(), product.getDuration(), product.getDescription(), product.getType().getName()));
     }
     return productDTOs;
+  }
+
+  public Optional<Product> getProductById(Long productId) {
+    return productRepository.findById(productId);
   }
 }

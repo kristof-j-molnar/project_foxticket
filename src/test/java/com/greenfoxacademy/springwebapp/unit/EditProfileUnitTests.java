@@ -2,6 +2,7 @@ package com.greenfoxacademy.springwebapp.unit;
 
 import com.greenfoxacademy.springwebapp.dtos.EditProfileDTO;
 import com.greenfoxacademy.springwebapp.models.User;
+import com.greenfoxacademy.springwebapp.repositories.CartRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import com.greenfoxacademy.springwebapp.services.*;
 import org.junit.jupiter.api.Assertions;
@@ -24,9 +25,12 @@ public class EditProfileUnitTests {
 
   UserRepository userRepository;
 
+  CartRepository cartRepository;
+
   @BeforeEach
   void init() {
     userRepository = Mockito.mock(UserRepository.class);
+    cartRepository = Mockito.mock(CartRepository.class);
     passwordEncoder = new BCryptPasswordEncoder();
     userService = new UserServiceImpl(userRepository, passwordEncoder);
   }

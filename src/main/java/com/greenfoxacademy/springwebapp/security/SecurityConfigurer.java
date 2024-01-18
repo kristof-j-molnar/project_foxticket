@@ -30,17 +30,14 @@ public class SecurityConfigurer {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**", "/api/news", "/api/products", "/api/cart", "/test"));
 
+    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**", "/api/news", "/api/hello", "/api/cart"));
     http.authorizeHttpRequests(authorize -> authorize
-
         .requestMatchers("/admin").hasRole("ADMIN")
-            .requestMatchers("/api/users/**", "/api/news")
-            .permitAll()
-            .anyRequest()
-            .authenticated())
-        .httpBasic(basic -> basic.authenticationEntryPoint(((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), "no-no"))));
-
+        .requestMatchers("/api/users/**", "/api/news", "/api/cart")
+        .permitAll()
+        .anyRequest()
+        .authenticated()).httpBasic(basic -> basic.authenticationEntryPoint(((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), "no-no"))));
     http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }

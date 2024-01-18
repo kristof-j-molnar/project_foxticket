@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
-  @Query(value = "SELECT carts.id  FROM carts JOIN users ON carts.id = cart_id", nativeQuery = true)
+  @Query(value = "SELECT carts.id  FROM carts JOIN users ON carts.id = cart_id WHERE users.id = :id", nativeQuery = true)
   Optional<Cart> findByUserId(Integer id);
 }
 

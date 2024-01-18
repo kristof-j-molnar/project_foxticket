@@ -21,9 +21,6 @@ public class Product {
   @ManyToOne
   private ProductType type;
 
-  @ManyToOne
-  private Cart cart;
-
   public Product() {
   }
 
@@ -78,11 +75,7 @@ public class Product {
     this.type = type;
   }
 
-  public Cart getCart() {
-    return cart;
-  }
-
-  public void setCart(Cart cart) {
-    this.cart = cart;
+  public void setId(Long id) {
+    this.id = id;
   }
 }
