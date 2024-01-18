@@ -94,11 +94,11 @@ public class UserController {
   }
 
   @RequestMapping(value = "/users", method = RequestMethod.PATCH)
-  public ResponseEntity<?> editUserProfile(@RequestBody EditProfileDTO editProfileDTO) {
+  public ResponseEntity<?> editUserProfile(@RequestBody EditProfileDTO editProfileDTO, Authentication auth) {
     try {
       userService.validateEditProfileDTO(editProfileDTO);
 
-      User editedUser = userService.editUserInformation(userAuthenticationService.getCurrentUserEmail(), editProfileDTO);
+      User editedUser = userService.editUserInformation(userAuthenticationService.getCurrentUserEmail(auth), editProfileDTO);
 
       return ResponseEntity.status(200).body(new UserResponseDTOWithName(editedUser));
     } catch (IllegalArgumentException e) {

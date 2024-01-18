@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Transactional
 public class EditProfileAPITest {
 
   @Autowired
@@ -55,7 +57,7 @@ public class EditProfileAPITest {
   @Test
   void editProfile_ShouldReturn400andCorrectErrorMessage_WithAlreadyUsedEmail() throws Exception {
     String jwt = login();
-    EditProfileDTO editProfileDTO = new EditProfileDTO("", "user@user.user", "");
+    EditProfileDTO editProfileDTO = new EditProfileDTO("", "user@user.hu", "");
 
     mvc.perform(patch("/api/users").header("Authorization", "Bearer " + jwt)
             .contentType(MediaType.APPLICATION_JSON)

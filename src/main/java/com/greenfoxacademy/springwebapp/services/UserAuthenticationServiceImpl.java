@@ -2,7 +2,6 @@ package com.greenfoxacademy.springwebapp.services;
 
 import com.greenfoxacademy.springwebapp.dtos.MyUserDetailsDTO;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,14 +12,11 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase("ROLE_" + role));
   }
 
-  @Override
-  public String getCurrentUserEmail() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+  public String getCurrentUserEmail(Authentication authentication) {
     Object principal = authentication.getPrincipal();
-    if (principal instanceof MyUserDetailsDTO myUserDetailsDTO) {
-      return myUserDetailsDTO.getEmail();
-    } else {
-      throw new IllegalArgumentException("Authentication information in unexpected format");
+    if (principal instanceof MyUserDetailsDTO user) {
+      return (user.getEmail());
     }
+    throw new IllegalStateException("Authentication principal is not an instance of MyUserDetailsDTO");
   }
 }

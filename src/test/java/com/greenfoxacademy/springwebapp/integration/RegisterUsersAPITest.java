@@ -52,7 +52,7 @@ public class RegisterUsersAPITest {
 
   @Test
   void checkCorrectEmailValidity_WithAlreadyExistingEmail_ShouldReturnCorrectErrorMessage() throws Exception {
-    UserRequestDTO userRequestDTO = new UserRequestDTO("Julcsi", "user@user.user", "hgjhdfjhfcj", "USER");
+    UserRequestDTO userRequestDTO = new UserRequestDTO("Julcsi", "user@user.hu", "hgjhdfjhfcj", "USER");
 
     mockMvc.perform(post("/api/users")
             .contentType(MediaType.APPLICATION_JSON)
