@@ -1,12 +1,12 @@
 package com.greenfoxacademy.springwebapp.security;
 
 import com.greenfoxacademy.springwebapp.filters.JwtRequestFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -53,6 +53,7 @@ public class SecurityConfigurer {
     return http.build();
   }
 
+
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
@@ -60,6 +61,10 @@ public class SecurityConfigurer {
 
   @Bean
   public AccessDeniedHandler accessDeniedHandler() {
-    return new CustomAccessDeniedHandler();
+    return (request, response, accessDeniedException) -> {
+      response.setContentType("application/json;charset=UTF-8");
+      response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+      response.getWriter().write("{\"message\":\"Access Denied\",\"error\":\"Unauthorized\"}");
+    };
   }
 }

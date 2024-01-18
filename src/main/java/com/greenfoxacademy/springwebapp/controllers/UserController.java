@@ -84,21 +84,17 @@ public class UserController {
   }
 
   @GetMapping("/admin")
-  public ResponseEntity<?> adminAuthorization(Authentication authentication) {
-
-    if (!userAuthenticationService.hasRole("Admin", authentication)) {
-      return ResponseEntity.status(403).body(new ErrorMessageDTO("Unauthorized access"));
-    } else {
-      return ResponseEntity.status(200).body("Authorized access");
-    }
+  public ResponseEntity<?> adminAuthorization() {
+    return ResponseEntity.status(200).body("Authorized access");
   }
 
+
   @RequestMapping(value = "/users", method = RequestMethod.PATCH)
-  public ResponseEntity<?> editUserProfile(@RequestBody EditProfileDTO editProfileDTO, Authentication auth) {
+  public ResponseEntity<?> editUserProfile(@RequestBody EditProfileDTO editProfileDTO, Authentication authentication) {
     try {
       userService.validateEditProfileDTO(editProfileDTO);
 
-      User editedUser = userService.editUserInformation(userAuthenticationService.getCurrentUserEmail(auth), editProfileDTO);
+      User editedUser = userService.editUserInformation(userAuthenticationService.getCurrentUserEmail(authentication), editProfileDTO);
 
       return ResponseEntity.status(200).body(new UserResponseDTOWithName(editedUser));
     } catch (IllegalArgumentException e) {
