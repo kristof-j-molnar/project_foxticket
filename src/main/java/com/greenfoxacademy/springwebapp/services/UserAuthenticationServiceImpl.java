@@ -14,8 +14,8 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
 
   public String getCurrentUserEmail(Authentication authentication) {
     Object principal = authentication.getPrincipal();
-    if (principal instanceof MyUserDetailsDTO) {
-      return ((MyUserDetailsDTO) principal).getEmail();
+    if (principal instanceof MyUserDetailsDTO user) {
+      return (user.getEmail());
     }
     throw new IllegalStateException("Authentication principal is not an instance of MyUserDetailsDTO");
   }
