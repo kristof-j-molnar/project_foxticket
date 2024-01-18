@@ -3,6 +3,7 @@ package com.greenfoxacademy.springwebapp.services;
 import com.greenfoxacademy.springwebapp.dtos.CartDTO;
 import com.greenfoxacademy.springwebapp.dtos.CartItemDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
+import com.greenfoxacademy.springwebapp.dtos.ProductAddingResponseDTO;
 import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.User;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CartServiceImp implements CartService {
@@ -28,13 +28,17 @@ public class CartServiceImp implements CartService {
   }
 
   public CartDTO getProductsInCartDTO(Integer id) {
-    Optional<User> optUser = userRepository.findById(id);
-    if (optUser.isPresent() && (optUser.get().getCart() == null || optUser.get().getCart().getProductList().isEmpty())) {
-      return new CartDTO();
+    User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User is not found"));
+    return mapToCartDTO(user.getCart());
+  }
+
+  private CartDTO mapToCartDTO(Cart cart) {
+    CartDTO cartDto = new CartDTO();
+    if (cart != null || !cart.getProductList().isEmpty()) {
+      List<Product> productList = cart.getProductList();
+      productList.stream().map(CartItemDTO::new).forEach(cartDto::add);
     }
-    return cartRepository.findByUserId(id)
-        .map(this::mapToCartDTO)
-        .orElseThrow(() -> new EntityNotFoundException("User is not found"));
+    return cartDto;
   }
 
   public void save(Cart cart) {
@@ -43,25 +47,23 @@ public class CartServiceImp implements CartService {
 
   public int getAmount(Cart cart, Product product) {
     int count = 0;
-    for (int i = 0; i < cart.getProductList().size(); i++) {
-      if (cart.getProductList().get(i).getId().equals(product.getId())) {
+    for (Product p : cart.getProductList()) {
+      if (p.getId().equals(product.getId())) {
         count++;
       }
     }
     return count;
   }
 
-  public boolean isEmptyDTO(ProductAddingRequestDTO product) {
-    if (product == null || product.getProductId() == null) {
-      return true;
-    }
-    return false;
+  public boolean isEmptyAddRequest(ProductAddingRequestDTO product) {
+    return product == null || product.getProductId() == null;
   }
 
-  private CartDTO mapToCartDTO(Cart cart) {
-    List<Product> productList = cart.getProductList();
-    CartDTO cartDto = new CartDTO();
-    productList.forEach(product -> cartDto.add(new CartItemDTO(product.getId(), product.getName(), product.getPrice())));
-    return cartDto;
+  public ProductAddingResponseDTO addProduct(User user, Product product) {
+    Cart cart = user.getCart();
+    cart.addProduct(product);
+    cartRepository.save(cart);
+    int amount = getAmount(cart, product);
+    return new ProductAddingResponseDTO(cart.getId(), product.getId(), amount);
   }
 }

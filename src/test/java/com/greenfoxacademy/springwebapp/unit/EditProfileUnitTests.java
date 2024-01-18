@@ -32,7 +32,7 @@ public class EditProfileUnitTests {
     userRepository = Mockito.mock(UserRepository.class);
     cartRepository = Mockito.mock(CartRepository.class);
     passwordEncoder = new BCryptPasswordEncoder();
-    userService = new UserServiceImpl(userRepository, passwordEncoder, cartRepository);
+    userService = new UserServiceImpl(userRepository, passwordEncoder);
   }
 
   @Test

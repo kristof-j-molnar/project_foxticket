@@ -20,19 +20,19 @@ public class CartServiceImpTest {
 
   @Test
   void getProductInCart_ReturnCartDTOAnd200() {
-    var repo1 = Mockito.mock(CartRepository.class);
-    var repo2 = Mockito.mock(UserRepository.class);
+    var repoCart = Mockito.mock(CartRepository.class);
+    var repoUser = Mockito.mock(UserRepository.class);
     User user = new User("user", "lacika.com", "pass", "User");
     Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
     ProductType t1 = new ProductType("Jegy");
     t1.addProduct(p1);
-    Cart cart = new Cart(user);
+    Cart cart = user.getCart();
     cart.addProduct(p1);
     int id = 1;
-    Mockito.when(repo1.findByUserId(id)).thenReturn(Optional.of(cart));
-    Mockito.when(repo2.findById(id)).thenReturn(Optional.of(user));
+    Mockito.when(repoCart.findByUserId(id)).thenReturn(Optional.of(cart));
+    Mockito.when(repoUser.findById(id)).thenReturn(Optional.of(user));
 
-    CartServiceImp cartService = new CartServiceImp(repo1, repo2);
+    CartServiceImp cartService = new CartServiceImp(repoCart, repoUser);
     CartDTO cartDTO = new CartDTO();
     cartDTO.add(new CartItemDTO(1L, "Vonaljegy", 480));
 

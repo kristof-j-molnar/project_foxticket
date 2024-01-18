@@ -13,10 +13,10 @@ public class Cart {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "cart", fetch = FetchType.EAGER)
+  @OneToOne(cascade = CascadeType.ALL, mappedBy = "cart", fetch = FetchType.LAZY)
   private User user;
 
-  @ManyToMany(fetch = FetchType.LAZY)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "cart_product",
       joinColumns = @JoinColumn(name = "cart_id"),
       inverseJoinColumns = @JoinColumn(name = "product_id"))
@@ -24,11 +24,6 @@ public class Cart {
 
   public Cart() {
     productList = new ArrayList<>();
-  }
-
-  public Cart(User user) {
-    this();
-    addUser(user);
   }
 
   public Long getId() {
@@ -51,14 +46,8 @@ public class Cart {
     this.productList = productList;
   }
 
-  public void addUser(User user) {
-    this.user = user;
-    user.setCart(this);
-  }
-
   public void addProduct(Product product) {
     productList.add(product);
-    product.addCart(this);
   }
 }
 

@@ -4,9 +4,7 @@ import com.greenfoxacademy.springwebapp.dtos.EditProfileDTO;
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserRequestDTO;
-import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.User;
-import com.greenfoxacademy.springwebapp.repositories.CartRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,13 +17,11 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
   private UserRepository userRepository;
   private PasswordEncoder passwordEncoder;
-  private CartRepository cartRepository;
 
   @Autowired
-  public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, CartRepository cartRepository) {
+  public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
-    this.cartRepository = cartRepository;
   }
 
   @Override
@@ -76,11 +72,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User generateUser(UserRequestDTO userRequestDTO) {
-    Cart cart = new Cart();
-    cartRepository.save(cart);
     User newUser = new User(userRequestDTO.getName(), userRequestDTO.getEmail(), passwordEncoder.encode(userRequestDTO.getPassword()), "USER");
-    cart.addUser(newUser);
-    cartRepository.save(cart);
     return newUser;
   }
 

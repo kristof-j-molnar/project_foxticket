@@ -14,10 +14,12 @@ public class User {
   private String email;
   private String password;
   private String role;
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "cart_id")
   private Cart cart;
 
   public User(String name, String email, String password, String role) {
+    this();
     this.name = name;
     this.email = email;
     this.password = password;
@@ -25,6 +27,7 @@ public class User {
   }
 
   public User() {
+    setCart(new Cart());
   }
 
   public Integer getId() {
@@ -69,5 +72,8 @@ public class User {
 
   public void setCart(Cart cart) {
     this.cart = cart;
+    if (cart != null) {
+      cart.setUser(this);
+    }
   }
 }
