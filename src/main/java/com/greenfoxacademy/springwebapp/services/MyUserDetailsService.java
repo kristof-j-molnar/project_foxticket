@@ -27,6 +27,6 @@ public class MyUserDetailsService implements UserDetailsService {
 
   public User loadUserById(Integer userId) {
     Optional<User> foundUser = userRepository.findById(userId);
-    return foundUser.map(User::new).orElseThrow(() -> new EntityNotFoundException("User ID not found :" + userId));
+    return foundUser.orElseThrow(() -> new EntityNotFoundException("User ID not found :" + userId));
   }
 }
