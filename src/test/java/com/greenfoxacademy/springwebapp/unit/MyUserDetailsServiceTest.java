@@ -23,7 +23,7 @@ class MyUserDetailsServiceTest {
     Mockito.when(mock.findById(id)).thenReturn(Optional.of(user));
     myUserDetailsService = new MyUserDetailsService(mock);
 
-    String userNameActual = myUserDetailsService.loadUserById(id).getUsername();
+    String userNameActual = myUserDetailsService.loadUserById(id).getName();
     String userEmailActual = myUserDetailsService.loadUserById(id).getEmail();
     String userPasswordActual = myUserDetailsService.loadUserById(id).getPassword();
     assertEquals(user.getName(), userNameActual);

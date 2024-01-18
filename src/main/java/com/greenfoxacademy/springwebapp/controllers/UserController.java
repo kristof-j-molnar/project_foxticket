@@ -4,7 +4,7 @@ import com.greenfoxacademy.springwebapp.dtos.*;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.services.UserAuthenticationService;
 import com.greenfoxacademy.springwebapp.services.UserService;
-import com.greenfoxacademy.springwebapp.utilities.JwtUtil;
+import com.greenfoxacademy.springwebapp.utilities.JwtBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +19,17 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class UserController {
 
-  private JwtUtil jwtUtil;
+  private JwtBuilder jwtBuilder;
   private UserService userService;
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   private UserAuthenticationService userAuthenticationService;
 
   @Autowired
-  public UserController(UserService userService, JwtUtil jwtUtil, UserAuthenticationService userAuthenticationService) {
+  public UserController(UserService userService, UserAuthenticationService userAuthenticationService, JwtBuilder jwtBuilder) {
     this.userService = userService;
-    this.jwtUtil = jwtUtil;
     this.userAuthenticationService = userAuthenticationService;
+    this.jwtBuilder = jwtBuilder;
   }
 
   @ExceptionHandler(IllegalArgumentException.class)
@@ -77,8 +77,8 @@ public class UserController {
       return ResponseEntity.status(404).body(new ErrorMessageDTO("Email or password is incorrect"));
     } else {
       User user = optionalUser.get();
-      MyUserDetailsDTO myUserDetailsDTO = new MyUserDetailsDTO(user);
-      String jwt = jwtUtil.generateToken(myUserDetailsDTO);
+      SecurityUser securityUser = new SecurityUser(user);
+      String jwt = jwtBuilder.generateToken(securityUser);
       return ResponseEntity.status(200).body(new TokenDTO("ok", jwt));
     }
   }

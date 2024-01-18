@@ -1,6 +1,6 @@
 package com.greenfoxacademy.springwebapp.services;
 
-import com.greenfoxacademy.springwebapp.dtos.MyUserDetailsDTO;
+import com.greenfoxacademy.springwebapp.dtos.SecurityUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +14,10 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
 
   public String getCurrentUserEmail(Authentication authentication) {
     Object principal = authentication.getPrincipal();
-    if (principal instanceof MyUserDetailsDTO user) {
-      return (user.getEmail());
+    if (principal instanceof SecurityUser myUserDetailsDTO) {
+      return myUserDetailsDTO.getEmail();
+    } else {
+      throw new IllegalArgumentException("Authentication information in unexpected format");
     }
-    throw new IllegalStateException("Authentication principal is not an instance of MyUserDetailsDTO");
   }
 }
