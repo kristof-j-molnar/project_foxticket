@@ -45,16 +45,6 @@ public class CartServiceImp implements CartService {
     cartRepository.save(cart);
   }
 
-  public int getAmount(Cart cart, Product product) {
-    int count = 0;
-    for (Product p : cart.getProductList()) {
-      if (p.getId().equals(product.getId())) {
-        count++;
-      }
-    }
-    return count;
-  }
-
   public boolean isEmptyAddRequest(ProductAddingRequestDTO product) {
     return product == null || product.getProductId() == null;
   }
@@ -65,5 +55,15 @@ public class CartServiceImp implements CartService {
     cartRepository.save(cart);
     int amount = getAmount(cart, product);
     return new ProductAddingResponseDTO(cart.getId(), product.getId(), amount);
+  }
+
+  private int getAmount(Cart cart, Product product) {
+    int count = 0;
+    for (Product p : cart.getProductList()) {
+      if (p.getId().equals(product.getId())) {
+        count++;
+      }
+    }
+    return count;
   }
 }
