@@ -7,10 +7,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SecurityUser implements UserDetails {
   private Boolean isAdmin;
   private Boolean isVerified;
+  private List<GrantedAuthority> roles;
 
   private User user;
 
@@ -21,21 +24,22 @@ public class SecurityUser implements UserDetails {
     this.user = user;
     isVerified = true;
     isAdmin = false;
+    roles = Arrays.stream(user
+            .getRole()
+            .split(","))
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toList());
   }
 
   public SecurityUser(User user, boolean isAdmin, boolean isVerified) {
-    this.user = user;
+    this(user);
     this.isAdmin = isAdmin;
     this.isVerified = isVerified;
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return Arrays.stream(user
-            .getRole()
-            .split(","))
-        .map(role -> new SimpleGrantedAuthority(role.trim()))
-        .toList();
+    return roles;
   }
 
   @Override
