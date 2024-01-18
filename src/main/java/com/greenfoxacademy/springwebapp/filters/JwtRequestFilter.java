@@ -33,12 +33,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+  protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    return SecurityContextHolder.getContext().getAuthentication() != null;
+  }
 
-    if (SecurityContextHolder.getContext().getAuthentication() != null) {
-      chain.doFilter(request, response);
-      return;
-    }
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
 
     String jwt = getJwtFromHeader(request);
 
