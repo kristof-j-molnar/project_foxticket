@@ -4,6 +4,7 @@ import com.greenfoxacademy.springwebapp.services.UserAuthenticationService;
 import com.greenfoxacademy.springwebapp.services.UserAuthenticationServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,7 +27,6 @@ public class AdminRoleUnitTest {
     Collection<? extends GrantedAuthority> authorities = Arrays.asList(authority);
     Authentication authentication = new UsernamePasswordAuthenticationToken("testAdmin", "test12345", authorities);
 
-
     Boolean expectedBoolean = true;
     Boolean actualBoolean = userAuthenticationService.hasRole("Admin", authentication);
     assertEquals(expectedBoolean, actualBoolean);
@@ -42,7 +42,6 @@ public class AdminRoleUnitTest {
     Boolean expectedBoolean = false;
     Boolean actualBoolean = userAuthenticationService.hasRole("Admin", authentication1);
     Assertions.assertEquals(expectedBoolean, actualBoolean);
-
   }
 
   @Test
