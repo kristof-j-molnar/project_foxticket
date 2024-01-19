@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api")
 public class CartController {
-  private final CartService cartService;
-  private final UserService userService;
+  private CartService cartService;
+  private UserService userService;
 
-  private final ProductService productService;
+  private ProductService productService;
 
-  private final UserAuthenticationService userAuthenticationService;
+  private UserAuthenticationService userAuthenticationService;
 
   @Autowired
   public CartController(CartService cartService, UserService userService, ProductService productService, UserAuthenticationService userAuthenticationService) {
