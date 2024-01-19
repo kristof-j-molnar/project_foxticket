@@ -13,8 +13,6 @@ public interface CartService {
 
   void save(Cart cart);
 
-  int getAmount(Cart cart, Product product);
-
   boolean isEmptyAddRequest(ProductAddingRequestDTO productAddingRequestDTO);
 
   ProductAddingResponseDTO addProduct(User user, Product product);
