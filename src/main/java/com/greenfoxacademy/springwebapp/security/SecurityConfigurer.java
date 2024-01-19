@@ -38,15 +38,19 @@ public class SecurityConfigurer {
     http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**", "/api/news", "/api/hello"));
 
     http.authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("/api/admin").hasRole("ADMIN")
-        .requestMatchers("/api/users/**", "/api/news", "/api/cart", "/api/products")
-        .permitAll());
+            .requestMatchers("/api/admin").hasRole("ADMIN")
+            .requestMatchers("/api/news", "/api/cart", "/api/products")
+            .authenticated()
+            .requestMatchers("/api/users/**")
+            .permitAll())
+        .httpBasic(basic -> basic.authenticationEntryPoint(((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), "no-no"))));
 
     http.exceptionHandling(
         customizer -> customizer.accessDeniedHandler(((request, response, accessDeniedException) -> {
           response.setStatus(HttpStatus.FORBIDDEN.value());
           response.getWriter().write("Unauthorized access");
         })));
+
 
     http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
