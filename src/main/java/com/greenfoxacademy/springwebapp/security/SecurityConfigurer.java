@@ -1,7 +1,6 @@
 package com.greenfoxacademy.springwebapp.security;
 
 import com.greenfoxacademy.springwebapp.filters.JwtRequestFilter;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,20 +11,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfigurer {
 
-  private JwtRequestFilter jwtRequestFilter;
-
-  private AccessDeniedHandler accessDeniedHandler;
+  private final JwtRequestFilter jwtRequestFilter;
 
   @Autowired
-  public SecurityConfigurer(JwtRequestFilter jwtRequestFilter, AccessDeniedHandler accessDeniedHandler) {
+  public SecurityConfigurer(JwtRequestFilter jwtRequestFilter) {
     this.jwtRequestFilter = jwtRequestFilter;
-    this.accessDeniedHandler = accessDeniedHandler;
   }
 
   @Bean
@@ -57,18 +52,8 @@ public class SecurityConfigurer {
     return http.build();
   }
 
-
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
-  }
-
-  @Bean
-  public AccessDeniedHandler accessDeniedHandler() {
-    return (request, response, accessDeniedException) -> {
-      response.setContentType("application/json;charset=UTF-8");
-      response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-      response.getWriter().write("{\"message\":\"Access Denied\",\"error\":\"Unauthorized\"}");
-    };
   }
 }
