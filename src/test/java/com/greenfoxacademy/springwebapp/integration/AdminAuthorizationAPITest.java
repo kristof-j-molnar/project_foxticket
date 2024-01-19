@@ -33,7 +33,7 @@ public class AdminAuthorizationAPITest {
     String jwt = loginAdmin();
 
     mvc.perform(MockMvcRequestBuilders.get("/api/admin").header("Authorization", "Bearer " + jwt))
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.content().string("Authorized access"));
 
   }
@@ -43,8 +43,8 @@ public class AdminAuthorizationAPITest {
     String jwt = loginUser();
 
     mvc.perform(MockMvcRequestBuilders.get("/api/admin").header("Authorization", "Bearer " + jwt))
-        .andExpect(MockMvcResultMatchers.status().is(403))
-        .andExpect(jsonPath("$['error']").value("Unauthorized access"));
+        .andExpect(status().isForbidden())
+        .andExpect(MockMvcResultMatchers.content().string("Unauthorized access"));
 
   }
 
@@ -79,6 +79,5 @@ public class AdminAuthorizationAPITest {
 
     Map<String, String> map = objectMapper.readValue(responseContent, Map.class);
     return map.get("token");
-
   }
 }
