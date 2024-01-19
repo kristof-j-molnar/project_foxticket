@@ -6,7 +6,6 @@ import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.services.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api")
-@Lazy
 public class CartController {
   private final CartService cartService;
   private final UserService userService;
