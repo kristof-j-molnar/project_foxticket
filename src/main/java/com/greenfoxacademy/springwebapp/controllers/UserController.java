@@ -86,7 +86,6 @@ public class UserController {
   @GetMapping("/admin")
   public ResponseEntity<?> adminAuthorization() {
     return ResponseEntity.status(200).body("Authorized access");
-
   }
 
 
