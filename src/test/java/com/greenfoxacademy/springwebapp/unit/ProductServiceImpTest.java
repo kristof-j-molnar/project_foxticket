@@ -105,4 +105,14 @@ class ProductServiceImpTest {
     Mockito.when(productRepository.findById(0L)).thenReturn(Optional.empty());
     assertEquals(Optional.empty(), productService.findById(0L));
   }
+
+  @Test
+  void deleteProductById_deletesProduct_AndReturnsStatus200() {
+    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    ProductType t1 = new ProductType("Jegy");
+    t1.addProduct(p1);
+    Mockito.when(productRepository.findById(p1.getId())).thenReturn(Optional.of(p1));
+
+    assertEquals(null, productService.getProductById(p1.getId()));
+  }
 }

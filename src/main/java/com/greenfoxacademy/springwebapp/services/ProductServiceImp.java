@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -129,5 +130,14 @@ public class ProductServiceImp implements ProductService {
     Product editedProduct = modifyProduct(productToEdit, requestDTO);
     save(editedProduct);
     return getProductEditResponseDTO(editedProduct);
+  }
+
+  @Override
+  public void deleteProductById(Long productId) {
+    Product productToDelete = productRepository.findById(productId).orElseThrow(() -> new NoSuchElementException("The product does not exist!"));
+
+    if (productToDelete != null) {
+      productRepository.delete(productToDelete);
+    }
   }
 }
