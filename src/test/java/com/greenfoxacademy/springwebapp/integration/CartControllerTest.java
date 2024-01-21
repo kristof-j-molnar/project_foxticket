@@ -50,8 +50,8 @@ class CartControllerTest {
     ProductAddingRequestDTO request = new ProductAddingRequestDTO(1L);
 
     mvc.perform(post("/api/cart").header("Authorization", "Bearer " + jwt)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(request)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().is(200))
         .andExpect(jsonPath("$['cartId']").value(2))
         .andExpect(jsonPath("$['productId']").value(1))

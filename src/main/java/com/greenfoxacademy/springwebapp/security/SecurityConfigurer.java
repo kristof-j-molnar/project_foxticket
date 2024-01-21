@@ -30,7 +30,7 @@ public class SecurityConfigurer {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**", "/api/news", "/api/hello"));
+    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**", "/api/news", "/api/cart"));
 
     http.authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/api/admin").hasRole("ADMIN")
