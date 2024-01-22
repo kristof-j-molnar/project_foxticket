@@ -3,13 +3,11 @@ package com.greenfoxacademy.springwebapp.unit;
 import com.greenfoxacademy.springwebapp.dtos.ProductDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductEditRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductListResponseDTO;
-import com.greenfoxacademy.springwebapp.exceptions.ProductTypeNotFoundException;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.ProductType;
 import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import com.greenfoxacademy.springwebapp.services.ProductServiceImp;
 import com.greenfoxacademy.springwebapp.services.ProductTypeService;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,7 +15,7 @@ import org.mockito.Mockito;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ProductServiceImpTest {
 
@@ -106,39 +104,5 @@ class ProductServiceImpTest {
   void findById_WithNotExistingId_ReturnEmptyOptional() {
     Mockito.when(productRepository.findById(0L)).thenReturn(Optional.empty());
     assertEquals(Optional.empty(), productService.findById(0L));
-  }
-
-  @Test
-  void modifyProduct_WithValidInput_ReturnsEditedProduct() throws ProductTypeNotFoundException {
-    Product product = new Product("name", 1000, 168, "test product");
-    ProductType productType1 = new ProductType("type1");
-    productType1.setId(1L);
-    product.setType(productType1);
-
-    ProductType productType2 = new ProductType("type2");
-    productType2.setId(2L);
-    Mockito.when(productTypeService.findById(2L)).thenReturn(Optional.of(productType2));
-
-    ProductEditRequestDTO productEditRequestDTO = new ProductEditRequestDTO("name2", 1500,
-        "120 days", "edited test product", 2L);
-    Product editedProduct = new Product("name2", 1500, 120, "edited test product");
-    editedProduct.setType(productType2);
-
-    assertTrue(EqualsBuilder.reflectionEquals(editedProduct, productService.modifyProduct(product, productEditRequestDTO)));
-  }
-
-  @Test
-  void modifyProduct_WithInvalidTypeId_ThrowsExceptionWithCorrectMessage() {
-    Product product = new Product("name", 1000, 168, "test product");
-    ProductType productType1 = new ProductType("type1");
-    productType1.setId(1L);
-    product.setType(productType1);
-
-    Mockito.when(productTypeService.findById(2L)).thenReturn(Optional.empty());
-
-    ProductEditRequestDTO productEditRequestDTO = new ProductEditRequestDTO("name2", 1500,
-        "120 days", "edited test product", 2L);
-
-    assertThrows(ProductTypeNotFoundException.class, () -> productService.modifyProduct(product, productEditRequestDTO));
   }
 }

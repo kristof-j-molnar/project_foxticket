@@ -28,17 +28,15 @@ public class ProductController {
     return ResponseEntity.status(200).body(productService.getAvailableProductsInDTO());
   }
 
-  @RequestMapping(path = "/{productId}", method = RequestMethod.PATCH)
+  @PatchMapping(path = "/{productId}")
   public ResponseEntity<?> editProduct(@PathVariable Long productId, @RequestBody ProductEditRequestDTO productEditRequestDTO) {
-    ProductEditResponseDTO responseDTO;
     try {
-      responseDTO = productService.editProduct(productId, productEditRequestDTO);
+      ProductEditResponseDTO responseDTO = productService.editProduct(productId, productEditRequestDTO);
+      return ResponseEntity.status(200).body(responseDTO);
     } catch (EmptyFieldsException | UniqueNameViolationException e) {
       return ResponseEntity.status(400).body(new ErrorMessageDTO(e.getMessage()));
     } catch (ProductNotFoundException | ProductTypeNotFoundException e) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
-
-    return ResponseEntity.status(200).body(responseDTO);
   }
 }

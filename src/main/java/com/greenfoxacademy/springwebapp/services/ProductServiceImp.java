@@ -30,26 +30,21 @@ public class ProductServiceImp implements ProductService {
     this.productTypeService = productTypeService;
   }
 
-  public static Optional<String> getErrorMessageByMissingFields(List<String> missingFields) {
-    if (missingFields.isEmpty()) {
-      return Optional.empty();
-    }
+  private static Optional<String> getErrorMessageByMissingFields(List<String> missingFields) {
+    final int size = missingFields.size();
+    return switch (size) {
+      case 0 -> Optional.empty();
+      case 1 -> Optional.of(String.format("%s is required.", missingFields.get(0)));
+      default -> Optional.of(String.format("%s and %s are required.",
+          String.join(", ", missingFields.subList(0, size - 1)),
+          missingFields.get(size - 1)));
+    };
+  }
 
-    String response = missingFields.get(0);
-    if (missingFields.size() == 1) {
-      response = response.concat(" is required.");
-    } else {
-      for (int i = 1; i < missingFields.size(); i++) {
-        if (i == (missingFields.size() - 1)) {
-          response = response.concat(" and " + missingFields.get(i));
-        } else {
-          response = response.concat(", " + missingFields.get(i));
-        }
-      }
-      response = response.concat(" are required.");
-    }
-
-    return Optional.of(response);
+  private static ProductEditResponseDTO getProductEditResponseDTO(Product editedProduct) {
+    return new ProductEditResponseDTO(editedProduct.getId(), editedProduct.getName(),
+        editedProduct.getPrice(), String.valueOf(editedProduct.getDuration()).concat(" hours"),
+        editedProduct.getDescription(), editedProduct.getType().getName());
   }
 
   @Override
@@ -98,8 +93,7 @@ public class ProductServiceImp implements ProductService {
     return getErrorMessageByMissingFields(missingFields);
   }
 
-  @Override
-  public Product modifyProduct(Product product, ProductEditRequestDTO productEditRequestDTO) throws ProductTypeNotFoundException {
+  private Product modifyProduct(Product product, ProductEditRequestDTO productEditRequestDTO) {
     product.setName(productEditRequestDTO.getName());
     product.setPrice(productEditRequestDTO.getPrice());
     product.setDuration(Integer.parseInt(productEditRequestDTO.getDuration().split(" ")[0]));
@@ -118,20 +112,11 @@ public class ProductServiceImp implements ProductService {
   }
 
   @Override
-  public ProductEditResponseDTO getProductEditResponseDTO(Product editedProduct) {
-    return new ProductEditResponseDTO(editedProduct.getId(), editedProduct.getName(),
-        editedProduct.getPrice(), String.valueOf(editedProduct.getDuration()).concat(" hours"),
-        editedProduct.getDescription(), editedProduct.getType().getName());
-  }
+  public ProductEditResponseDTO editProduct(Long productId, ProductEditRequestDTO requestDTO) {
 
-  @Override
-  public ProductEditResponseDTO editProduct(Long productId, ProductEditRequestDTO requestDTO)
-      throws EmptyFieldsException, ProductNotFoundException, ProductTypeNotFoundException, UniqueNameViolationException {
-
-    Optional<String> errorMessage = validateProductEditRequestDTO(requestDTO);
-    if (errorMessage.isPresent()) {
-      throw new EmptyFieldsException(errorMessage.get());
-    }
+    validateProductEditRequestDTO(requestDTO).ifPresent(message -> {
+      throw new EmptyFieldsException(message);
+    });
 
     Product productToEdit = findById(productId)
         .orElseThrow(() -> new ProductNotFoundException("Product does not exist."));
