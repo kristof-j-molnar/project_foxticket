@@ -14,16 +14,19 @@ public class ProductDTO {
 
   private String type;
 
+  private boolean isDeleted;
+
   public ProductDTO() {
   }
 
-  public ProductDTO(Long id, String name, int price, int duration, String description, String type) {
+  public ProductDTO(Long id, String name, int price, int duration, String description, String type, boolean isDeleted) {
     this.id = id;
     this.name = name;
     this.price = price;
     this.duration = duration;
     this.description = description;
     this.type = type;
+    this.isDeleted = isDeleted;
   }
 
   public Long getId() {

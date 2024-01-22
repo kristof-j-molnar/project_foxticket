@@ -38,7 +38,7 @@ public class CartServiceImpTest {
   @Test
   void getProductInCart_ReturnCartDTO() {
     User user = new User("user", "lacika.com", "pass", "User");
-    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!", false);
     ProductType t1 = new ProductType("Jegy");
     t1.addProduct(p1);
     Cart cart = user.getCart();
@@ -57,7 +57,7 @@ public class CartServiceImpTest {
   @Test
   void addProductInCart_ReturnResponseDTO() {
     User user = new User("user", "lacika.com", "pass", "User");
-    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!", false);
     ProductType t1 = new ProductType("Jegy");
     t1.addProduct(p1);
     Cart cart = user.getCart();

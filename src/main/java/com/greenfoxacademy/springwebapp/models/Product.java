@@ -19,17 +19,28 @@ public class Product {
 
   private String description;
 
+  private boolean isDeleted;
+
   @ManyToOne
   private ProductType type;
 
   public Product() {
   }
 
-  public Product(String name, int price, int duration, String description) {
+  public Product(String name, int price, int duration, String description, boolean isDeleted) {
     this.name = name;
     this.price = price;
     this.duration = duration;
     this.description = description;
+    this.isDeleted = isDeleted;
+  }
+
+  public boolean isDeleted() {
+    return isDeleted;
+  }
+
+  public void setDeleted(boolean deleted) {
+    isDeleted = deleted;
   }
 
   public Long getId() {

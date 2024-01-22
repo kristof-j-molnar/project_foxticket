@@ -18,6 +18,6 @@ public interface ProductService {
 
   ProductEditResponseDTO editProduct(Long productId, ProductEditRequestDTO requestDTO);
 
-  void deleteProductById(Long id);
+  Product deleteProductById(Long id);
 }
 

@@ -9,11 +9,9 @@ import com.greenfoxacademy.springwebapp.exceptions.ProductNotFoundException;
 import com.greenfoxacademy.springwebapp.exceptions.ProductTypeNotFoundException;
 import com.greenfoxacademy.springwebapp.exceptions.UniqueNameViolationException;
 import com.greenfoxacademy.springwebapp.services.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.greenfoxacademy.springwebapp.services.UserAuthenticationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.greenfoxacademy.springwebapp.services.UserAuthenticationService;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,15 +22,14 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping(path = "/api/products")
 public class ProductController {
-
   private final ProductService productService;
   private UserAuthenticationService userAuthenticationService;
 
-  @Autowired
   public ProductController(ProductService productService, UserAuthenticationService userAuthenticationService) {
     this.productService = productService;
     this.userAuthenticationService = userAuthenticationService;
   }
+
 
   @GetMapping
   public ResponseEntity<ProductListResponseDTO> getAvailableProducts() {
@@ -51,16 +48,13 @@ public class ProductController {
     }
   }
 
-  @RequestMapping(path = "/products/{productId}", method = RequestMethod.DELETE)
-  public ResponseEntity<?> deleteProduct(@PathVariable Long productId, Authentication authentication) {
+  @RequestMapping(path = "/products/{productId}", method = RequestMethod.POST)
+  public ResponseEntity<?> deleteProduct(@PathVariable Long productId) {
     try {
-      if (userAuthenticationService.hasRole("Admin", authentication)) {
-        productService.deleteProductById(productId);
-        return ResponseEntity.status(200).build();
-      }
+      productService.deleteProductById(productId);
+      return ResponseEntity.status(200).build();
     } catch (NoSuchElementException e) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
-    throw new IllegalArgumentException("You need admin role to delete a product!!!");
   }
 }
