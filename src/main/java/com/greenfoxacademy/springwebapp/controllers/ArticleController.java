@@ -8,7 +8,6 @@ import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
 
 import com.greenfoxacademy.springwebapp.services.UserAuthenticationService;
 import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
