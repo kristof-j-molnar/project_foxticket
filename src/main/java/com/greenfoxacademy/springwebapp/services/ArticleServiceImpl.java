@@ -36,7 +36,7 @@ public class ArticleServiceImpl implements ArticleService {
     if (articleRequest == null || articleRequest.getContent() == null || articleRequest.getContent().isEmpty() || articleRequest.getTitle() == null || articleRequest.getTitle().isEmpty()) {
       throw new IllegalArgumentException("Title or content are required");
     }
-    if (articleRepository.existsArticleByTitle(articleRequest.getTitle())) {
+    if (articleRepository.existsByTitle(articleRequest.getTitle())) {
       throw new EntityExistsException("News title already exists");
     }
     Article newArticle = new Article(articleRequest.getTitle(), articleRequest.getContent());

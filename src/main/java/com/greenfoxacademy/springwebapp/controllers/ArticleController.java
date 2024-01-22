@@ -9,7 +9,6 @@ import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
 import com.greenfoxacademy.springwebapp.services.UserAuthenticationService;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
@@ -41,10 +40,7 @@ public class ArticleController {
   }
 
   @PostMapping
-  public ResponseEntity<?> addNews(@RequestBody(required = false) ArticleAddingRequestDTO article, Authentication authentication) {
-    if (!userAuthenticationService.hasRole("Admin", authentication)) {
-      return ResponseEntity.status(403).body(new ErrorMessageDTO("Unauthorized access"));
-    }
+  public ResponseEntity<?> addNews(@RequestBody(required = false) ArticleAddingRequestDTO article) {
     try {
       return ResponseEntity.status(200).body(articleService.addNews(article));
     } catch (IllegalArgumentException | EntityExistsException e) {
