@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfigurer {
 
-  private JwtRequestFilter jwtRequestFilter;
+  private final JwtRequestFilter jwtRequestFilter;
 
   @Autowired
   public SecurityConfigurer(JwtRequestFilter jwtRequestFilter) {
@@ -30,15 +30,25 @@ public class SecurityConfigurer {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**", "/api/news", "/api/cart"));
 
-    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**", "/api/news", "/api/hello", "/api/cart"));
     http.authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("/admin").hasRole("ADMIN")
-        .requestMatchers("/api/users/**", "/api/news", "/api/cart")
-        .permitAll()
-        .anyRequest()
-        .authenticated()).httpBasic(basic -> basic.authenticationEntryPoint(((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), "no-no"))));
+            .requestMatchers("/api/admin").hasRole("ADMIN")
+            .requestMatchers("/api/news", "/api/cart", "/api/products")
+            .authenticated()
+            .requestMatchers("/api/users/**")
+            .permitAll())
+        .httpBasic(basic -> basic.authenticationEntryPoint(((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), "no-no"))));
+
+    http.exceptionHandling(
+        customizer -> customizer.accessDeniedHandler(((request, response, accessDeniedException) -> {
+          response.setStatus(HttpStatus.FORBIDDEN.value());
+          response.getWriter().write("Unauthorized access");
+        })));
+
+
     http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
     return http.build();
   }
 
