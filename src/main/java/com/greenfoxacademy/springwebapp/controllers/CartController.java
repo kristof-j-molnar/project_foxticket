@@ -57,5 +57,20 @@ public class CartController {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }
+
+  @Transactional
+  @RequestMapping(path = "/cart/addMultiple", method = RequestMethod.POST)
+  public ResponseEntity<?> addMultipleProductToTheCart(Authentication auth, @RequestBody(required = false) MultipleProductsAddingRequestDTO productWithAmount) {
+    if (cartService.isEmptyMultipleAddRequest(productWithAmount)) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO("Product ID is required."));
+    }
+    try {
+      User user = userService.findUserByEmail(userAuthenticationService.getCurrentUserEmail(auth)).orElseThrow(() -> new EntityNotFoundException("User is invalid"));
+      Product product = productService.getProductById(productWithAmount.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product is not found"));
+      return ResponseEntity.status(200).body(cartService.addMultipleProduct(user, product, productWithAmount.getAmount()));
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
+    }
+  }
 }
 

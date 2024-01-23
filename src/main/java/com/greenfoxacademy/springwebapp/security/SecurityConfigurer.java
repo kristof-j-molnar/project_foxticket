@@ -31,12 +31,12 @@ public class SecurityConfigurer {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**", "/api/news", "/api/cart"));
+    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**", "/api/news", "/api/cart/**"));
 
     http.authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/api/admin").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/news").hasRole("ADMIN")
-            .requestMatchers("/api/news", "/api/cart", "/api/products")
+            .requestMatchers("/api/news","/api/cart/**", "/api/products")
             .authenticated()
             .requestMatchers("/api/users/**")
             .permitAll())

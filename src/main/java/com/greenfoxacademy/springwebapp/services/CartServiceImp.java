@@ -1,9 +1,6 @@
 package com.greenfoxacademy.springwebapp.services;
 
-import com.greenfoxacademy.springwebapp.dtos.CartDTO;
-import com.greenfoxacademy.springwebapp.dtos.CartItemDTO;
-import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
-import com.greenfoxacademy.springwebapp.dtos.ProductAddingResponseDTO;
+import com.greenfoxacademy.springwebapp.dtos.*;
 import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.User;
@@ -67,5 +64,21 @@ public class CartServiceImp implements CartService {
       }
     }
     return count;
+  }
+
+  public boolean isEmptyMultipleAddRequest(MultipleProductsAddingRequestDTO productWithAmount) {
+    return productWithAmount == null || productWithAmount.getProductId() == null || productWithAmount.getAmount() == null;
+  }
+
+  public MultipleProductsAddingResponseListDTO addMultipleProduct(User user, Product product, Integer amount) {
+    Cart cart = user.getCart();
+    MultipleProductsAddingResponseListDTO itemsDTO = new MultipleProductsAddingResponseListDTO();
+
+    for (int i = 0; i < amount; i++) {
+      cart.addProduct(product);
+      cartRepository.save(cart);
+      itemsDTO.add(new MultipleProductsAddingResponseItemDTO((long) cart.getProductList().size(), product.getId()));
+    }
+    return itemsDTO;
   }
 }
