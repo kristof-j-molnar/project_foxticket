@@ -5,7 +5,7 @@ import java.util.List;
 
 public class CartDTO {
 
-  private List<CartItemDTO> cart;
+  private final List<CartItemDTO> cart;
 
   public CartDTO() {
     cart = new ArrayList<>();

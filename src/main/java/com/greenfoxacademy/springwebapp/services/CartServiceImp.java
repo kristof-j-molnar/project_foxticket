@@ -19,8 +19,8 @@ import java.util.List;
 @Service
 public class CartServiceImp implements CartService {
 
-  private CartRepository cartRepository;
-  private UserRepository userRepository;
+  private final CartRepository cartRepository;
+  private final UserRepository userRepository;
 
   @Autowired
   public CartServiceImp(CartRepository cartRepository, UserRepository userRepository) {

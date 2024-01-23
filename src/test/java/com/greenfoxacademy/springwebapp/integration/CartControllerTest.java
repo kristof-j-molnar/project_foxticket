@@ -3,6 +3,7 @@ package com.greenfoxacademy.springwebapp.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Transactional
 class CartControllerTest {
 
   @Autowired
@@ -31,7 +32,6 @@ class CartControllerTest {
   ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
-  @Transactional
   void getProductsInCart_ReturnAListAnd200() throws Exception {
     String jwt = login();
 

@@ -31,10 +31,10 @@ public class SecurityConfigurer {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/users/**", "/api/news", "/api/cart"));
+    http.csrf(csrf -> csrf.disable());
 
     http.authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/api/admin").hasRole("ADMIN")
+            .requestMatchers("/api/admin", "/api/products/{userId}").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/news").hasRole("ADMIN")
             .requestMatchers("/api/news", "/api/cart", "/api/products")
             .authenticated()
@@ -47,7 +47,6 @@ public class SecurityConfigurer {
           response.setStatus(HttpStatus.FORBIDDEN.value());
           response.getWriter().write("Unauthorized access");
         })));
-
 
     http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 

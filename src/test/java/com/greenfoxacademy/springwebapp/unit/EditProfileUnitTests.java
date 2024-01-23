@@ -4,7 +4,8 @@ import com.greenfoxacademy.springwebapp.dtos.EditProfileDTO;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
-import com.greenfoxacademy.springwebapp.services.*;
+import com.greenfoxacademy.springwebapp.services.UserService;
+import com.greenfoxacademy.springwebapp.services.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,10 +47,9 @@ public class EditProfileUnitTests {
   }
 
   @Test
-  void validateEditProfileDTO_ShouldReturnRightException_WithWrongEmailField() {
+  void validateEditProfileDTO_WithExistingEmailInRepo_ShouldReturnRightException() {
     EditProfileDTO editProfileDTO = new EditProfileDTO("testDto", "reka@gmail.com", "pass123456");
-    User user1 = new User("reka", "reka@gmail.com", "reka12345", "User");
-    Mockito.when(userRepository.findUserByEmail(user1.getEmail())).thenReturn(Optional.of(user1));
+    Mockito.when(userRepository.existsByEmail(editProfileDTO.getNewEmail())).thenReturn(true);
 
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
         () -> userService.validateEditProfileDTO(editProfileDTO));

@@ -1,8 +1,8 @@
 package com.greenfoxacademy.springwebapp.dtos;
 
 public class TokenDTO {
-  private String status;
-  private String token;
+  private final String status;
+  private final String token;
 
   public TokenDTO(String status, String token) {
     this.status = status;
