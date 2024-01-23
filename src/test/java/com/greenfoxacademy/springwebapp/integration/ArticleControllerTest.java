@@ -2,6 +2,7 @@ package com.greenfoxacademy.springwebapp.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,17 +16,18 @@ import java.util.Map;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Transactional
 class ArticleControllerTest {
 
+  ObjectMapper objectMapper = new ObjectMapper();
   @Autowired
   private MockMvc mockMvc;
-
-  ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
   public void getArticles_withSearchParam_returnsFilteredArticles() throws Exception {

@@ -1,8 +1,12 @@
 package com.greenfoxacademy.springwebapp.controllers;
 
-import com.greenfoxacademy.springwebapp.dtos.*;
+import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
+import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
+
 import com.greenfoxacademy.springwebapp.models.User;
-import com.greenfoxacademy.springwebapp.services.*;
+import com.greenfoxacademy.springwebapp.services.CartService;
+import com.greenfoxacademy.springwebapp.services.UserAuthenticationService;
+import com.greenfoxacademy.springwebapp.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CartController {
   private CartService cartService;
   private UserService userService;
-
   private UserAuthenticationService userAuthenticationService;
 
   @Autowired

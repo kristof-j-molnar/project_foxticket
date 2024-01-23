@@ -15,8 +15,8 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-  private UserRepository userRepository;
-  private PasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @Autowired
   public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -25,49 +25,28 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean validateEmail(UserRequestDTO userDTO) {
-    if (userDTO.getEmail().isEmpty()) {
-      return false;
-    } else {
-      return true;
-    }
+  public boolean isEmailValid(UserRequestDTO userDTO) {
+    return !userDTO.getEmail().isEmpty();
   }
 
   @Override
-  public boolean validateName(UserRequestDTO userDTO) {
-    if (userDTO.getName().isEmpty()) {
-      return false;
-    } else {
-      return true;
-    }
+  public boolean isNameValid(UserRequestDTO userDTO) {
+    return !userDTO.getName().isEmpty();
   }
 
   @Override
-  public boolean validateEmptyDTO(UserRequestDTO userDTO) {
-    if (userDTO.getName().isEmpty() && userDTO.getEmail().isEmpty() && userDTO.getPassword().isEmpty()) {
-      return false;
-    } else {
-      return true;
-    }
+  public boolean isUserDTOValid(UserRequestDTO userDTO) {
+    return !userDTO.getName().isEmpty() || !userDTO.getEmail().isEmpty() || !userDTO.getPassword().isEmpty();
   }
 
   @Override
-  public boolean findEmail(String email) {
-    Optional<User> foundUser = userRepository.findUserByEmail(email);
-    if (foundUser.isEmpty()) {
-      return true;
-    } else {
-      return false;
-    }
+  public boolean existsByEmail(String email) {
+    return userRepository.existsByEmail(email);
   }
 
   @Override
-  public boolean checkIfPasswordIsGood(String password) {
-    if (!password.isEmpty() && password.length() < 8) {
-      return false;
-    } else {
-      return true;
-    }
+  public boolean isPasswordValid(String password) {
+    return password.length() >= 8;
   }
 
   @Override
@@ -136,13 +115,13 @@ public class UserServiceImpl implements UserService {
   @Override
   public void validateEditProfileDTO(EditProfileDTO editProfileDTO) {
 
-    if (editProfileDTO.getNewName().isEmpty() && editProfileDTO.getNewPassword().isEmpty() && editProfileDTO.getNewEmail().isEmpty()) {
+    if (editProfileDTO.getNewName().isEmpty() && editProfileDTO.getNewPassword().isEmpty()
+        && editProfileDTO.getNewEmail().isEmpty()) {
       throw new IllegalArgumentException("Name, password, or email are required.");
-    } else if (!findEmail(editProfileDTO.getNewEmail())) {
+    } else if (existsByEmail(editProfileDTO.getNewEmail())) {
       throw new IllegalArgumentException("Email is already taken.");
-    } else if (!checkIfPasswordIsGood(editProfileDTO.getNewPassword())) {
+    } else if (!isPasswordValid(editProfileDTO.getNewPassword())) {
       throw new IllegalArgumentException("Password must be at least 8 characters.");
     }
   }
 }
-

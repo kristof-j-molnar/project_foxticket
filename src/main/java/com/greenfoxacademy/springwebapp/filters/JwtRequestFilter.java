@@ -32,6 +32,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     this.userDetailsService = userDetailsService;
   }
 
+  private static String getJwtFromHeader(HttpServletRequest request) {
+    final String authorizationHeader = request.getHeader("Authorization");
+    String jwt = null;
+    if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+      jwt = authorizationHeader.substring(7);
+    }
+    return jwt;
+  }
+
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
     return SecurityContextHolder.getContext().getAuthentication() != null;
@@ -61,15 +70,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-  }
-
-  private static String getJwtFromHeader(HttpServletRequest request) {
-    final String authorizationHeader = request.getHeader("Authorization");
-    String jwt = null;
-    if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-      jwt = authorizationHeader.substring(7);
-    }
-    return jwt;
   }
 
   private SecurityUser getUserDetailsFromJwt(String jwt) {

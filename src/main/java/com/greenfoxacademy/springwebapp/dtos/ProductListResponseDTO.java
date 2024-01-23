@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ProductListResponseDTO {
 
-  private List<ProductDTO> products;
+  private final List<ProductDTO> products;
 
   public ProductListResponseDTO() {
     products = new ArrayList<>();

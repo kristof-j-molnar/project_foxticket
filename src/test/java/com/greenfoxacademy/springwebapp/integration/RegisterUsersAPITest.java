@@ -3,6 +3,7 @@ package com.greenfoxacademy.springwebapp.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenfoxacademy.springwebapp.dtos.UserRequestDTO;
 import com.greenfoxacademy.springwebapp.services.UserService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,15 +19,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Transactional
 public class RegisterUsersAPITest {
 
+  private final ObjectMapper mapper = new ObjectMapper();
   @Autowired
   MockMvc mockMvc;
-
   @Autowired
   UserService userService;
-
-  private ObjectMapper mapper = new ObjectMapper();
 
   @Test
   void checkCredentialValidity_WithEmptyCredential_ShouldReturnErrorMessage() throws Exception {

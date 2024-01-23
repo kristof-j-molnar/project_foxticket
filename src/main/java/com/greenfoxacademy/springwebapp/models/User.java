@@ -14,7 +14,7 @@ public class User {
   private String email;
   private String password;
   private String role;
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne(cascade = CascadeType.ALL, optional = false)
   @JoinColumn(name = "cart_id")
   private Cart cart;
 

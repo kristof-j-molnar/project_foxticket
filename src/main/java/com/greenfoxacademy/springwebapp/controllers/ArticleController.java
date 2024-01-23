@@ -2,27 +2,22 @@ package com.greenfoxacademy.springwebapp.controllers;
 
 import com.greenfoxacademy.springwebapp.dtos.ArticleAddingRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ArticlesDTO;
-
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
-
-import com.greenfoxacademy.springwebapp.services.UserAuthenticationService;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/news")
 public class ArticleController {
 
-  private ArticleServiceImpl articleService;
-  private UserAuthenticationService userAuthenticationService;
+  private final ArticleServiceImpl articleService;
 
   @Autowired
-  public ArticleController(ArticleServiceImpl articleService, UserAuthenticationService userAuthenticationService) {
+  public ArticleController(ArticleServiceImpl articleService) {
     this.articleService = articleService;
-    this.userAuthenticationService = userAuthenticationService;
   }
 
   @GetMapping
