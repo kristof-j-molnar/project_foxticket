@@ -16,4 +16,8 @@ public interface CartService {
   boolean isEmptyAddRequest(ProductAddingRequestDTO productAddingRequestDTO);
 
   ProductAddingResponseDTO addProduct(User user, Product product);
+
+  void removeProduct(User user, Product product);
+
+  void clearCart(User user);
 }

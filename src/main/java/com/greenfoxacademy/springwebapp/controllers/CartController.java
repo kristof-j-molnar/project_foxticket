@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -59,5 +56,36 @@ public class CartController {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }
-}
+  @Transactional
+  @RequestMapping(path = "/cart/{itemId}", method = RequestMethod.DELETE)
+  public ResponseEntity<?> removeProductFromCart(@PathVariable Long itemId, Authentication auth) {
+    try {
+      User user = userService.findUserByEmail(userAuthenticationService.getCurrentUserEmail(auth))
+          .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
 
+      Product product = productService.getProductById(itemId)
+          .orElseThrow(() -> new EntityNotFoundException("Product not found in the cart"));
+
+      cartService.removeProduct(user, product);
+
+      return ResponseEntity.status(200).body(new ConfirmationMessageDTO("Item removed from the shopping cart"));
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
+    }
+  }
+
+  @Transactional
+  @RequestMapping(path = "/cart", method = RequestMethod.DELETE)
+  public ResponseEntity<?> clearCart(Authentication auth) {
+    try {
+      User user = userService.findUserByEmail(userAuthenticationService.getCurrentUserEmail(auth))
+          .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
+
+      cartService.clearCart(user);
+
+      return ResponseEntity.status(200).body(new ConfirmationMessageDTO("All items removed from the shopping cart"));
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
+    }
+  }
+}

@@ -38,7 +38,7 @@ public class SecurityConfigurer {
             .requestMatchers(HttpMethod.POST, "/api/news").hasRole("ADMIN")
             .requestMatchers("/api/news", "/api/cart", "/api/products")
             .authenticated()
-            .requestMatchers("/api/users/**")
+            .requestMatchers("/api/users/login")
             .permitAll())
         .httpBasic(basic -> basic.authenticationEntryPoint(((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), "no-no"))));
 

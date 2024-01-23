@@ -68,4 +68,26 @@ public class CartServiceImp implements CartService {
     }
     return count;
   }
+
+  @Override
+  public void removeProduct(User user, Product product) {
+    Cart cart = user.getCart();
+
+    if (cart != null || !cart.getProductList().isEmpty()) {
+      cart.getProductList().remove(product);
+
+      cartRepository.save(cart);
+    }
+  }
+
+  @Override
+  public void clearCart(User user) {
+    Cart cart = user.getCart();
+
+    if (cart != null) {
+      cart.getProductList().clear();
+
+      cartRepository.save(cart);
+    }
+  }
 }
