@@ -1,14 +1,13 @@
 package com.greenfoxacademy.springwebapp.controllers;
 
+import com.greenfoxacademy.springwebapp.dtos.ArticleAddingRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ArticlesDTO;
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/news")
@@ -32,6 +31,15 @@ public class ArticleController {
       }
     } else {
       return ResponseEntity.ok(articleService.generateArticlesDTO());
+    }
+  }
+
+  @PostMapping
+  public ResponseEntity<?> addNews(@RequestBody(required = false) ArticleAddingRequestDTO article) {
+    try {
+      return ResponseEntity.status(200).body(articleService.addNews(article));
+    } catch (IllegalArgumentException | EntityExistsException e) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }
 }
