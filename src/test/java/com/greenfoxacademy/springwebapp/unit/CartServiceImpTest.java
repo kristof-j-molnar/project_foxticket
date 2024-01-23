@@ -1,14 +1,13 @@
 package com.greenfoxacademy.springwebapp.unit;
 
-import com.greenfoxacademy.springwebapp.dtos.CartDTO;
-import com.greenfoxacademy.springwebapp.dtos.CartItemDTO;
-import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
-import com.greenfoxacademy.springwebapp.dtos.ProductAddingResponseDTO;
+import com.greenfoxacademy.springwebapp.dtos.*;
 import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.ProductType;
 import com.greenfoxacademy.springwebapp.models.User;
+import com.greenfoxacademy.springwebapp.repositories.CartItemRepository;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
+import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import com.greenfoxacademy.springwebapp.services.CartService;
 import com.greenfoxacademy.springwebapp.services.CartServiceImp;
@@ -28,11 +27,17 @@ public class CartServiceImpTest {
 
   CartRepository cartRepository;
 
+  ProductRepository productRepository;
+
+  CartItemRepository cartItemRepository;
+
   @BeforeEach
   void init() {
     userRepository = Mockito.mock(UserRepository.class);
     cartRepository = Mockito.mock(CartRepository.class);
-    cartService = new CartServiceImp(cartRepository, userRepository);
+    productRepository = Mockito.mock(ProductRepository.class);
+    cartItemRepository = Mockito.mock(CartItemRepository.class);
+    cartService = new CartServiceImp(cartRepository, userRepository, productRepository,cartItemRepository);
   }
 
   @Test
@@ -55,7 +60,7 @@ public class CartServiceImpTest {
   }
 
   @Test
-  void addProductInCart_ReturnResponseDTO() {
+  void addProductInCart_withOneProduct_ReturnResponseDTO() {
     User user = new User("user", "lacika.com", "pass", "User");
     Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
     ProductType t1 = new ProductType("Jegy");
@@ -64,31 +69,58 @@ public class CartServiceImpTest {
     int id = 1;
     Mockito.when(userRepository.findById(id)).thenReturn(Optional.of(user));
     Mockito.when(cartRepository.findByUserId(id)).thenReturn(Optional.of(cart));
-    p1.setId((long) id);
+    Mockito.when(productRepository.findById((long) id)).thenReturn(Optional.of(p1));
 
+    p1.setId((long) id);
+    ProductAddingRequestDTO request = new ProductAddingRequestDTO(1L, 1);
     ProductAddingResponseDTO expected = new ProductAddingResponseDTO(1L, 1L, 1);
 
-    ProductAddingResponseDTO actual = cartService.addProduct(user, p1);
+    ProductAddingResponseDTO actual = cartService.addProduct(user, request);
     assertEquals(expected.getAmount(), actual.getAmount());
   }
 
   @Test
-  void isEmptyAddRequest_ReturnTrue() {
-    ProductAddingRequestDTO product = new ProductAddingRequestDTO(null);
-    boolean actual = cartService.isEmptyAddRequest(product);
-    assertTrue(actual);
+  void addProductInCart_withEmptyProductAmount_ReturnResponseDTO() {
+    User user = new User("user", "lacika.com", "pass", "User");
+    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    ProductType t1 = new ProductType("Jegy");
+    t1.addProduct(p1);
+    Cart cart = user.getCart();
+    int id = 1;
+    Mockito.when(userRepository.findById(id)).thenReturn(Optional.of(user));
+    Mockito.when(cartRepository.findByUserId(id)).thenReturn(Optional.of(cart));
+    Mockito.when(productRepository.findById((long) id)).thenReturn(Optional.of(p1));
+
+    p1.setId((long) id);
+    ProductAddingRequestDTO request = new ProductAddingRequestDTO(1L, 2);
+    ProductAddingResponseDTO expected = new ProductAddingResponseDTO(1L, 1L, 1);
+
+    ProductAddingResponseDTO actual = cartService.addProduct(user, request);
+    assertEquals(expected.getAmount(), actual.getAmount());
   }
 
   @Test
-  void isEmptyAddRequest_ReturnTrue2() {
-    boolean actual = cartService.isEmptyAddRequest(null);
-    assertTrue(actual);
-  }
+  void addMultipleProductInCart_ReturnResponseDTO() {
+    User user = new User("user", "lacika.com", "pass", "User");
+    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    ProductType t1 = new ProductType("Jegy");
+    t1.addProduct(p1);
+    Cart cart = user.getCart();
+    int id = 1;
+    Mockito.when(userRepository.findById(id)).thenReturn(Optional.of(user));
+    Mockito.when(cartRepository.findByUserId(id)).thenReturn(Optional.of(cart));
+    Mockito.when(productRepository.findById((long) id)).thenReturn(Optional.of(p1));
 
-  @Test
-  void isEmptyAddRequest_ReturnFalse() {
-    ProductAddingRequestDTO product = new ProductAddingRequestDTO(1L);
-    boolean actual = cartService.isEmptyAddRequest(product);
-    assertFalse(actual);
+    p1.setId((long) id);
+    ProductAddingRequestDTO request = new ProductAddingRequestDTO(1L, 2);
+    MultipleProductsAddingResponseListDTO expected = new MultipleProductsAddingResponseListDTO();
+    MultipleProductsAddingResponseItemDTO item1 = new MultipleProductsAddingResponseItemDTO(1L, 1L);
+    MultipleProductsAddingResponseItemDTO item2 = new MultipleProductsAddingResponseItemDTO(2L, 1L);
+    expected.add(item1);
+    expected.add(item2);
+
+    MultipleProductsAddingResponseListDTO actual = cartService.addMultipleProduct(user, request);
+    assertEquals(expected.getItems().size(), actual.getItems().size());
+    assertEquals(expected.getItems().get(0).getProductId(), actual.getItems().get(0).getProductId());
   }
 }

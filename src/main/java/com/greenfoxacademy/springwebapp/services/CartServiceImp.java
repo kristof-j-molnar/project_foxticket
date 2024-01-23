@@ -4,7 +4,9 @@ import com.greenfoxacademy.springwebapp.dtos.*;
 import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.User;
+import com.greenfoxacademy.springwebapp.repositories.CartItemRepository;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
+import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -19,10 +21,16 @@ public class CartServiceImp implements CartService {
   private CartRepository cartRepository;
   private UserRepository userRepository;
 
+  private ProductRepository productRepository;
+
+  private CartItemRepository cartItemRepository;
+
   @Autowired
-  public CartServiceImp(CartRepository cartRepository, UserRepository userRepository) {
+  public CartServiceImp(CartRepository cartRepository, UserRepository userRepository, ProductRepository productRepository, CartItemRepository cartItemRepository) {
     this.cartRepository = cartRepository;
     this.userRepository = userRepository;
+    this.productRepository = productRepository;
+    this.cartItemRepository = cartItemRepository;
   }
 
   @Transactional
@@ -44,16 +52,35 @@ public class CartServiceImp implements CartService {
     cartRepository.save(cart);
   }
 
-  public boolean isEmptyAddRequest(ProductAddingRequestDTO product) {
-    return product == null || product.getProductId() == null;
-  }
-
-  public ProductAddingResponseDTO addProduct(User user, Product product) {
+  @Transactional
+  public ProductAddingResponseDTO addProduct(User user, ProductAddingRequestDTO productDTO) {
+    Product product = getProductById(productDTO.getProductId());
     Cart cart = user.getCart();
     cart.addProduct(product);
     cartRepository.save(cart);
     int amount = getAmount(cart, product);
     return new ProductAddingResponseDTO(cart.getId(), product.getId(), amount);
+  }
+
+  @Transactional
+  public MultipleProductsAddingResponseListDTO addMultipleProduct(User user, ProductAddingRequestDTO productDTO) {
+    Cart cart = user.getCart();
+    Product product = getProductById(productDTO.getProductId());
+    MultipleProductsAddingResponseListDTO itemsDTO = new MultipleProductsAddingResponseListDTO();
+    for (int i = 0; i < productDTO.getAmount(); i++) {
+      cart.addProduct(product);
+      cartRepository.save(cart);
+      itemsDTO.add(new MultipleProductsAddingResponseItemDTO((long) cart.getCartItems().size(), product.getId()));
+    }
+    return itemsDTO;
+  }
+
+  private Product getProductById(Long id) {
+    return productRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Product is not found"));
+  }
+
+  public boolean isEmptyAddRequest(ProductAddingRequestDTO productDTO) {
+    return productDTO == null || productDTO.getProductId() == null;
   }
 
   private int getAmount(Cart cart, Product product) {
@@ -64,21 +91,5 @@ public class CartServiceImp implements CartService {
       }
     }
     return count;
-  }
-
-  public boolean isEmptyMultipleAddRequest(MultipleProductsAddingRequestDTO productWithAmount) {
-    return productWithAmount == null || productWithAmount.getProductId() == null || productWithAmount.getAmount() == null;
-  }
-
-  public MultipleProductsAddingResponseListDTO addMultipleProduct(User user, Product product, Integer amount) {
-    Cart cart = user.getCart();
-    MultipleProductsAddingResponseListDTO itemsDTO = new MultipleProductsAddingResponseListDTO();
-
-    for (int i = 0; i < amount; i++) {
-      cart.addProduct(product);
-      cartRepository.save(cart);
-      itemsDTO.add(new MultipleProductsAddingResponseItemDTO((long) cart.getProductList().size(), product.getId()));
-    }
-    return itemsDTO;
   }
 }

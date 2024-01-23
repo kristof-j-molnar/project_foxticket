@@ -22,8 +22,12 @@ public class Cart {
       inverseJoinColumns = @JoinColumn(name = "product_id"))
   private List<Product> productList;
 
+  @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+  private List<CartItem> cartItems;
+
   public Cart() {
     productList = new ArrayList<>();
+    cartItems = new ArrayList<>();
   }
 
   public Long getId() {
@@ -46,8 +50,17 @@ public class Cart {
     this.productList = productList;
   }
 
+  public List<CartItem> getCartItems() {
+    return cartItems;
+  }
+
+  public void setCartItems(List<CartItem> cartItems) {
+    this.cartItems = cartItems;
+  }
+
   public void addProduct(Product product) {
     productList.add(product);
+    cartItems.add(new CartItem(product, this));
   }
 }
 
