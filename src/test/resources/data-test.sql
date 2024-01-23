@@ -1,9 +1,9 @@
+
 INSERT INTO CARTS(ID)
 VALUES (default),
        (default);
 
 INSERT INTO PRODUCT_TYPES (NAME)
-<<<<<<< HEAD
 VALUES ('ticket'),
        ('pass');
 
@@ -11,28 +11,16 @@ INSERT INTO PRODUCTS (NAME, PRICE, DURATION, DESCRIPTION, TYPE_ID)
 VALUES ('test ticket', 480, 90, 'test1',1),
        ('test pass 1', 4000, 9000, 'test2',2),
        ('test pass 2', 9500, 9000, 'test3',2);
-=======
 VALUES ('jegy'),
        ('bérlet');
 
-CREATE TABLE PRODUCTS
-(
-    ID          int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    NAME        varchar(100) DEFAULT NULL,
-    PRICE       int          DEFAULT NULL,
-    DURATION    int          DEFAULT NULL,
-    DESCRIPTION varchar(100) DEFAULT NULL,
-    TYPE_ID     int          DEFAULT NULL,
-    IS_DELETED  varchar(100) DEFAULT NULL;
-    CONSTRAINT FK_TYPE
-        FOREIGN KEY (TYPE_ID)
-            REFERENCES PRODUCT_TYPES (ID)
-);
 
-INSERT INTO PRODUCTS (NAME, PRICE, DURATION, DESCRIPTION, TYPE_ID, IS_DELETED)
+
+INSERT INTO PRODUCTS (NAME, PRICE, DURATION, DESCRIPTION, TYPE_ID, ISDELETED)
 VALUES ('teszt jegy 1', 480, 90, 'teszt1',1, false),
        ('teszt bérlet 1', 4000, 9000, 'teszt2',2, false),
        ('teszt bérlet 2', 9500, 9000, 'teszt3',2, false);
+
 
 CREATE TABLE USERS
 (
@@ -52,7 +40,7 @@ CREATE TABLE CART_PRODUCT
     CART_ID    int NOT NULL,
     PRODUCT_ID int NOT NULL
 );
->>>>>>> c2bea7d (Add implemetation setup for delet product)
+
 
 INSERT INTO CART_PRODUCT
 VALUES ((SELECT ID FROM CARTS LIMIT 1 OFFSET 1), (SELECT ID FROM PRODUCTS WHERE ID = 1)),
@@ -65,6 +53,7 @@ VALUES ('TestUser', 'user@user.hu', '$2a$12$z.fUhIuPpKbM2ikjf5YcbO31.yBSo0/GT4/1
 INSERT INTO USERS (NAME, EMAIL, PASSWORD, ROLE, CART_ID)
 VALUES ('TestAdmin', 'admin@admin.hu', '$2a$10$fAKsedEmk29iZlspbWX2fODzONubZQRVfWg5Wc4.gWLHupGHMC6LS',
         'ROLE_USER,ROLE_ADMIN', (SELECT ID FROM CARTS LIMIT 1 OFFSET 1));
+
 
 INSERT INTO ARTICLES (TITLE, CONTENT, PUBLISHDATE)
 VALUES ('News about tickets awesome', 'Ipsum Lorum', '2023-12-11');

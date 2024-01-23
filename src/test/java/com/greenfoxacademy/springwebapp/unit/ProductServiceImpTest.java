@@ -115,6 +115,7 @@ class ProductServiceImpTest {
     p1.setId(1L);
     ProductType t1 = new ProductType("Jegy");
     t1.addProduct(p1);
+    Mockito.when(productRepository.findById(p1.getId())).thenReturn(Optional.of(p1));
 
     Product expectedProduct = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!", true);
     Product actualProduct = productService.deleteProductById(p1.getId());
@@ -133,5 +134,19 @@ class ProductServiceImpTest {
         () -> productService.deleteProductById(p1.getId()));
 
     Assertions.assertEquals("The product does not exist!", exception.getMessage());
+  }
+
+  @Test
+  void deleteProductById_returnsCorrectErrorMessageWithAlreadyDeletedProduct() {
+    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!", true);
+    p1.setId(1L);
+    ProductType t1 = new ProductType("Jegy");
+    t1.addProduct(p1);
+    Mockito.when(productRepository.findById(p1.getId())).thenReturn(Optional.of(p1));
+
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> productService.deleteProductById(p1.getId()));
+
+    assertEquals("The product is already deleted!", exception.getMessage());
   }
 }

@@ -53,7 +53,7 @@ public class ProductController {
     try {
       productService.deleteProductById(productId);
       return ResponseEntity.status(200).build();
-    } catch (NoSuchElementException e) {
+    } catch (NoSuchElementException | IllegalArgumentException e) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }

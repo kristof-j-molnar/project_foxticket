@@ -46,8 +46,8 @@ public class AdminAuthorizationAPITest {
 
     mvc.perform(MockMvcRequestBuilders.get("/api/admin").header("Authorization", "Bearer " + jwt))
         .andExpect(status().isForbidden())
+        .andExpect(MockMvcResultMatchers.status().is(403))
         .andExpect(MockMvcResultMatchers.content().string("Unauthorized access"));
-
   }
 
 

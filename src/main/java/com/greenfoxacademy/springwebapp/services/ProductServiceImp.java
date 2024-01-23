@@ -136,6 +136,10 @@ public class ProductServiceImp implements ProductService {
   public Product deleteProductById(Long productId) {
     Product productToDelete = productRepository.findById(productId).orElseThrow(() -> new NoSuchElementException("The product does not exist!"));
 
+    if (productToDelete.isDeleted()) {
+      throw new IllegalArgumentException("The product is already deleted!");
+    }
+
     productToDelete.setDeleted(true);
     productRepository.save(productToDelete);
     return productToDelete;
