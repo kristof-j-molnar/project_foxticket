@@ -35,10 +35,11 @@ public class SecurityConfigurer {
 
     http.authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/api/admin", "/api/products/{userId}").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PATCH, "/api/users").hasRole("ADMIN") // ide admin role kell?
             .requestMatchers(HttpMethod.POST, "/api/news").hasRole("ADMIN")
-            .requestMatchers("/api/news", "/api/cart", "/api/products")
+            .requestMatchers("/api/news", "/api/cart/**", "/api/products")
             .authenticated()
-            .requestMatchers("/api/users/login")
+            .requestMatchers("/api/users/**")
             .permitAll())
         .httpBasic(basic -> basic.authenticationEntryPoint(((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), "no-no"))));
 

@@ -11,10 +11,7 @@ import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
 import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
-import com.greenfoxacademy.springwebapp.services.CartService;
-import com.greenfoxacademy.springwebapp.services.CartServiceImp;
-import com.greenfoxacademy.springwebapp.services.ProductService;
-import com.greenfoxacademy.springwebapp.services.ProductServiceImp;
+import com.greenfoxacademy.springwebapp.services.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,13 +32,16 @@ public class CartServiceImpTest {
 
   CartRepository cartRepository;
 
+  ProductTypeService productTypeService;
+
   @BeforeEach
   void init() {
     userRepository = Mockito.mock(UserRepository.class);
     cartRepository = Mockito.mock(CartRepository.class);
     productRepository = Mockito.mock(ProductRepository.class);
+    productTypeService = Mockito.mock(ProductTypeService.class);
     cartService = new CartServiceImp(cartRepository, userRepository);
-    productService = new ProductServiceImp(productRepository);
+    productService = new ProductServiceImp(productRepository, productTypeService);
   }
 
   @Test

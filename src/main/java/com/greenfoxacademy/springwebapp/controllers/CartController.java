@@ -1,5 +1,6 @@
 package com.greenfoxacademy.springwebapp.controllers;
 
+import com.greenfoxacademy.springwebapp.dtos.ConfirmationMessageDTO;
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
 import com.greenfoxacademy.springwebapp.models.Product;
@@ -56,6 +57,7 @@ public class CartController {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }
+
   @Transactional
   @RequestMapping(path = "/cart/{itemId}", method = RequestMethod.DELETE)
   public ResponseEntity<?> removeProductFromCart(@PathVariable Long itemId, Authentication auth) {
