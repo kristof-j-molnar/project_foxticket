@@ -30,10 +30,7 @@ public interface UserService {
 
   Boolean validatePassword(User user, UserLoginDTO userLoginDTO);
 
-  boolean checkEditableEmail(String email);
-
   User editUserInformation(String email, EditProfileDTO editProfileDTO);
 
   void validateEditProfileDTO(EditProfileDTO editProfileDTO);
 }
-
