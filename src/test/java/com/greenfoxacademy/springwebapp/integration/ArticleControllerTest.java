@@ -1,6 +1,7 @@
 package com.greenfoxacademy.springwebapp.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.greenfoxacademy.springwebapp.dtos.ArticleAddingRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -63,6 +64,62 @@ class ArticleControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$['articles']").exists())
         .andExpect(jsonPath("$['articles']").value(hasSize(2)));
+  }
+
+  @Test
+  public void addNews_withRequestBody_returnArticleAnd200() throws Exception {
+    ArticleAddingRequestDTO request = new ArticleAddingRequestDTO("Blah-blah", "test content");
+    String jwt = login();
+    mockMvc.perform(post("/api/news").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$['id']").value(3))
+        .andExpect(jsonPath("$['title']").value("Blah-blah"));
+  }
+
+  @Test
+  public void addNews_withEmptyRequestBodyTitle_returnErrorAnd404() throws Exception {
+    ArticleAddingRequestDTO request = new ArticleAddingRequestDTO(null, "test content");
+    String jwt = login();
+    mockMvc.perform(post("/api/news").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is(404))
+        .andExpect(jsonPath("$['error']").value("Title or content are required"));
+  }
+
+  @Test
+  public void addNews_withEmptyRequestBodyContent_returnErrorAnd404() throws Exception {
+    ArticleAddingRequestDTO request = new ArticleAddingRequestDTO("blah-blah", "");
+    String jwt = login();
+    mockMvc.perform(post("/api/news").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is(404))
+        .andExpect(jsonPath("$['error']").value("Title or content are required"));
+  }
+
+  @Test
+  public void addNews_withEmptyRequestBody_returnErrorAnd404() throws Exception {
+    ArticleAddingRequestDTO request = null;
+    String jwt = login();
+    mockMvc.perform(post("/api/news").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is(404))
+        .andExpect(jsonPath("$['error']").value("Title or content are required"));
+  }
+
+  @Test
+  public void addNews_withExistTitle_returnArticleAnd200() throws Exception {
+    ArticleAddingRequestDTO request = new ArticleAddingRequestDTO("Test Title", "Test content");
+    String jwt = login();
+    mockMvc.perform(post("/api/news").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is(404))
+        .andExpect(jsonPath("$['error']").value("News title already exists"));
   }
 
   private String login() throws Exception {
