@@ -12,8 +12,6 @@ public interface ProductService {
 
   ProductListResponseDTO getAvailableProductsInDTO();
 
-  Optional<Product> getProductById(Long productId);
-
   Optional<String> validateProductEditRequestDTO(ProductEditRequestDTO productEditRequestDTO);
 
   void save(Product product);

@@ -32,8 +32,10 @@ public class ArticleServiceImpl implements ArticleService {
     return new ArticlesDTO(matchingArticles);
   }
 
+  @Override
   public Article addNews(ArticleAddingRequestDTO articleRequest) {
-    if (articleRequest == null || articleRequest.getContent() == null || articleRequest.getContent().isEmpty() || articleRequest.getTitle() == null || articleRequest.getTitle().isEmpty()) {
+    if (articleRequest == null || articleRequest.getContent() == null || articleRequest.getContent().isEmpty()
+        || articleRequest.getTitle() == null || articleRequest.getTitle().isEmpty()) {
       throw new IllegalArgumentException("Title or content are required");
     }
     if (articleRepository.existsByTitle(articleRequest.getTitle())) {

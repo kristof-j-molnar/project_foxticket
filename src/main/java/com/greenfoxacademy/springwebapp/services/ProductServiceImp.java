@@ -67,11 +67,6 @@ public class ProductServiceImp implements ProductService {
   }
 
   @Override
-  public Optional<Product> getProductById(Long productId) {
-    return productRepository.findById(productId);
-  }
-
-  @Override
   public Optional<String> validateProductEditRequestDTO(ProductEditRequestDTO productEditRequestDTO) {
     List<String> missingFields = new ArrayList<>();
     if (productEditRequestDTO.getName() == null || productEditRequestDTO.getName().isBlank()) {
