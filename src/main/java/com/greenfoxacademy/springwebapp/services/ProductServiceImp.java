@@ -62,7 +62,7 @@ public class ProductServiceImp implements ProductService {
     List<Product> productList = productRepository.findAll();
     ProductListResponseDTO productDTOs = new ProductListResponseDTO();
     for (Product product : productList) {
-      productDTOs.add(new ProductDTO(product.getId(), product.getName(), product.getPrice(), product.getDuration(), product.getDescription(), product.getType().getName(), product.isDeleted()));
+      productDTOs.add(new ProductDTO(product));
     }
     return productDTOs;
   }
@@ -137,7 +137,7 @@ public class ProductServiceImp implements ProductService {
     Product productToDelete = productRepository.findById(productId).orElseThrow(() -> new NoSuchElementException("The product does not exist!"));
 
     if (productToDelete.isDeleted()) {
-      throw new IllegalArgumentException("The product is already deleted!");
+      return productToDelete;
     }
 
     productToDelete.setDeleted(true);

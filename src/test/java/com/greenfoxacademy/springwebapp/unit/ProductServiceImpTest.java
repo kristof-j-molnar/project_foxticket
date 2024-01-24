@@ -35,13 +35,14 @@ class ProductServiceImpTest {
 
   @Test
   void getAvailableProducts_ReturnProductListResponseDTO() {
-    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!", false);
+    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    p1.setId(1L);
     ProductType t1 = new ProductType("Jegy");
     t1.addProduct(p1);
     Mockito.when(productRepository.findAll()).thenReturn(List.of(p1));
 
     ProductListResponseDTO productDTOs = new ProductListResponseDTO();
-    productDTOs.add(new ProductDTO(1L, "Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!", "Jegy", false));
+    productDTOs.add(new ProductDTO(p1));
 
     String actual = productService.getAvailableProductsInDTO().getProducts().get(0).getName();
     assertEquals(productDTOs.getProducts().get(0).getName(), actual);
@@ -111,13 +112,14 @@ class ProductServiceImpTest {
 
   @Test
   void deleteProductById_setsProductToDeleted() {
-    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!", false);
+    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
     p1.setId(1L);
     ProductType t1 = new ProductType("Jegy");
     t1.addProduct(p1);
     Mockito.when(productRepository.findById(p1.getId())).thenReturn(Optional.of(p1));
 
-    Product expectedProduct = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!", true);
+    Product expectedProduct = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    expectedProduct.setDeleted(true);
     Product actualProduct = productService.deleteProductById(p1.getId());
     assertEquals(expectedProduct.isDeleted(), actualProduct.isDeleted());
   }
@@ -137,16 +139,20 @@ class ProductServiceImpTest {
   }
 
   @Test
-  void deleteProductById_returnsCorrectErrorMessageWithAlreadyDeletedProduct() {
-    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!", true);
+  void deleteProductById_returnsAlreadyDeletedProduct() {
+    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
     p1.setId(1L);
+    p1.setDeleted(true);
     ProductType t1 = new ProductType("Jegy");
     t1.addProduct(p1);
     Mockito.when(productRepository.findById(p1.getId())).thenReturn(Optional.of(p1));
 
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-        () -> productService.deleteProductById(p1.getId()));
 
-    assertEquals("The product is already deleted!", exception.getMessage());
+    Product expectedProduct = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    expectedProduct.setDeleted(true);
+    expectedProduct.setId(1L);
+    Product actualProduct = productService.deleteProductById(p1.getId());
+    assertEquals(expectedProduct.isDeleted(), actualProduct.isDeleted());
+    assertEquals(expectedProduct.getId(), actualProduct.getId());
   }
 }

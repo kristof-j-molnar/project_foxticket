@@ -19,6 +19,7 @@ public class Product {
 
   private String description;
 
+  @Column(columnDefinition = "boolean default false")
   private boolean isDeleted;
 
   @ManyToOne
@@ -27,12 +28,12 @@ public class Product {
   public Product() {
   }
 
-  public Product(String name, int price, int duration, String description, boolean isDeleted) {
+  public Product(String name, int price, int duration, String description) {
     this.name = name;
     this.price = price;
     this.duration = duration;
     this.description = description;
-    this.isDeleted = isDeleted;
+    this.isDeleted = false;
   }
 
   public boolean isDeleted() {

@@ -11,35 +11,6 @@ INSERT INTO PRODUCTS (NAME, PRICE, DURATION, DESCRIPTION, TYPE_ID)
 VALUES ('test ticket', 480, 90, 'test1',1),
        ('test pass 1', 4000, 9000, 'test2',2),
        ('test pass 2', 9500, 9000, 'test3',2);
-VALUES ('jegy'),
-       ('bérlet');
-
-
-
-INSERT INTO PRODUCTS (NAME, PRICE, DURATION, DESCRIPTION, TYPE_ID, ISDELETED)
-VALUES ('teszt jegy 1', 480, 90, 'teszt1',1, false),
-       ('teszt bérlet 1', 4000, 9000, 'teszt2',2, false),
-       ('teszt bérlet 2', 9500, 9000, 'teszt3',2, false);
-
-
-CREATE TABLE USERS
-(
-    ID       int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    NAME     varchar(100) DEFAULT NULL,
-    PASSWORD varchar(100) DEFAULT NULL,
-    EMAIL    varchar(100) DEFAULT NULL UNIQUE,
-    ROLE     varchar(100) DEFAULT NULL,
-    CART_ID  int NOT NULL,
-        CONSTRAINT IF NOT EXISTS FK_CART
-    FOREIGN KEY (CART_ID)
-        REFERENCES CARTS (ID)
-);
-
-CREATE TABLE CART_PRODUCT
-(
-    CART_ID    int NOT NULL,
-    PRODUCT_ID int NOT NULL
-);
 
 
 INSERT INTO CART_PRODUCT

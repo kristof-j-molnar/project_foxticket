@@ -9,13 +9,9 @@ import com.greenfoxacademy.springwebapp.exceptions.ProductNotFoundException;
 import com.greenfoxacademy.springwebapp.exceptions.ProductTypeNotFoundException;
 import com.greenfoxacademy.springwebapp.exceptions.UniqueNameViolationException;
 import com.greenfoxacademy.springwebapp.services.ProductService;
-import com.greenfoxacademy.springwebapp.services.UserAuthenticationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.NoSuchElementException;
 
@@ -23,11 +19,10 @@ import java.util.NoSuchElementException;
 @RequestMapping(path = "/api/products")
 public class ProductController {
   private final ProductService productService;
-  private UserAuthenticationService userAuthenticationService;
 
-  public ProductController(ProductService productService, UserAuthenticationService userAuthenticationService) {
+  @Autowired
+  public ProductController(ProductService productService) {
     this.productService = productService;
-    this.userAuthenticationService = userAuthenticationService;
   }
 
 
@@ -48,12 +43,12 @@ public class ProductController {
     }
   }
 
-  @RequestMapping(path = "/products/{productId}", method = RequestMethod.POST)
+  @RequestMapping(path = "/{productId}", method = RequestMethod.POST)
   public ResponseEntity<?> deleteProduct(@PathVariable Long productId) {
     try {
       productService.deleteProductById(productId);
       return ResponseEntity.status(200).build();
-    } catch (NoSuchElementException | IllegalArgumentException e) {
+    } catch (NoSuchElementException e) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }

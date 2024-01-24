@@ -48,7 +48,7 @@ class ProductControllerTest {
     String jwt = login(new UserLoginDTO("user@user.hu", "useruser"));
 
     mvc.perform(post("/api/products/1").header("Authorization", "Bearer " + jwt))
-        .andExpect(status().is(200));
+        .andExpect(status().is(403));
   }
 
   @Test
@@ -67,6 +67,7 @@ class ProductControllerTest {
         .andExpect(status().is(404))
         .andExpect(jsonPath("$['error']").value("The product does not exist!"));
   }
+
   @Test
   void editProduct_WithRequestDTOWithBlankName_ReturnErrorMessageDTO() throws Exception {
     String jwt = login(new UserLoginDTO("admin@admin.hu", "adminadmin"));
