@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping(path = "/api/products")
 public class ProductController {
@@ -22,6 +24,7 @@ public class ProductController {
   public ProductController(ProductService productService) {
     this.productService = productService;
   }
+
 
   @GetMapping
   public ResponseEntity<ProductListResponseDTO> getAvailableProducts() {
@@ -36,6 +39,16 @@ public class ProductController {
     } catch (EmptyFieldsException | UniqueNameViolationException e) {
       return ResponseEntity.status(400).body(new ErrorMessageDTO(e.getMessage()));
     } catch (ProductNotFoundException | ProductTypeNotFoundException e) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
+    }
+  }
+
+  @RequestMapping(path = "/{productId}", method = RequestMethod.POST)
+  public ResponseEntity<?> deleteProduct(@PathVariable Long productId) {
+    try {
+      productService.deleteProductById(productId);
+      return ResponseEntity.status(200).build();
+    } catch (NoSuchElementException e) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }
