@@ -1,11 +1,12 @@
 package com.greenfoxacademy.springwebapp.unit;
 
-import com.greenfoxacademy.springwebapp.dtos.ArticleAddingRequestDTO;
+import com.greenfoxacademy.springwebapp.dtos.ArticleRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ArticlesDTO;
 import com.greenfoxacademy.springwebapp.models.Article;
 import com.greenfoxacademy.springwebapp.repositories.ArticleRepository;
 import com.greenfoxacademy.springwebapp.services.ArticleService;
 import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
+import com.greenfoxacademy.springwebapp.services.LogicService;
 import jakarta.persistence.EntityExistsException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,11 +26,12 @@ class ArticleServiceImplTest {
   ArticleService articleService;
 
   ArticleRepository articleRepository;
+  LogicService logicService;
 
   @BeforeEach
   void init() {
     articleRepository = Mockito.mock(ArticleRepository.class);
-    articleService = new ArticleServiceImpl(articleRepository);
+    articleService = new ArticleServiceImpl(articleRepository, logicService);
   }
 
   @Test
@@ -89,7 +91,7 @@ class ArticleServiceImplTest {
     Article newArticle = new Article("Blah-blah", "test content for test article");
     Mockito.when(articleRepository.save(any())).thenReturn(newArticle);
 
-    Article actual = articleService.addNews(new ArticleAddingRequestDTO("Blah-blah", "test content for test article"));
+    Article actual = articleService.addNews(new ArticleRequestDTO("Blah-blah", "test content for test article"));
 
     assertEquals(newArticle.getTitle(), actual.getTitle());
   }
@@ -99,7 +101,7 @@ class ArticleServiceImplTest {
     Mockito.when(articleRepository.existsByTitle("Test Title")).thenReturn(true);
 
     EntityExistsException exception = assertThrows(EntityExistsException.class,
-        () -> articleService.addNews(new ArticleAddingRequestDTO("Test Title", "test content for test article")));
+        () -> articleService.addNews(new ArticleRequestDTO("Test Title", "test content for test article")));
 
     Assertions.assertEquals("News title already exists", exception.getMessage());
   }
@@ -107,7 +109,7 @@ class ArticleServiceImplTest {
   @Test
   void addNews_withEmptyRequestBodyTitle_returnError() {
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-        () -> articleService.addNews(new ArticleAddingRequestDTO(null, "test content for test article")));
+        () -> articleService.addNews(new ArticleRequestDTO(null, "test content for test article")));
 
     Assertions.assertEquals("Title or content are required", exception.getMessage());
   }
@@ -115,7 +117,7 @@ class ArticleServiceImplTest {
   @Test
   void addNews_withEmptyRequestBodyContent_returnError() {
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-        () -> articleService.addNews(new ArticleAddingRequestDTO("Test", null)));
+        () -> articleService.addNews(new ArticleRequestDTO("Test", null)));
 
     Assertions.assertEquals("Title or content are required", exception.getMessage());
   }

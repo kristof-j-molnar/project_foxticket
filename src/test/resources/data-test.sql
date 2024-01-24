@@ -24,6 +24,6 @@ VALUES ('TestAdmin', 'admin@admin.hu', '$2a$10$fAKsedEmk29iZlspbWX2fODzONubZQRVf
         'ROLE_USER,ROLE_ADMIN', (SELECT ID FROM CARTS LIMIT 1 OFFSET 1));
 
 INSERT INTO ARTICLES (TITLE, CONTENT, PUBLISHDATE)
-VALUES ('News about tickets awesome', 'Ipsum Lorum', '2023-12-11');
-INSERT INTO ARTICLES (TITLE, CONTENT, PUBLISHDATE)
-VALUES ('Test Title', 'Test Content', '2023-12-11');
+VALUES ('Test article 1', 'Ipsum Lorem', '2023-12-11'),
+       ('Test article 2', 'Test Content', '2023-12-11'),
+       ('Test article 3', 'Lorem Ipsum', '2024-01-27');
