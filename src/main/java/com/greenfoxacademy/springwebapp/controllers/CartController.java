@@ -48,7 +48,7 @@ public class CartController {
     }
     try {
       User user = userService.findUserByEmail(userAuthenticationService.getCurrentUserEmail(auth)).orElseThrow(() -> new EntityNotFoundException("User is invalid"));
-      Product product = productService.getProductById(productId.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product is not found"));
+      Product product = productService.findById(productId.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product is not found"));
       return ResponseEntity.status(200).body(cartService.addProduct(user, product));
     } catch (EntityNotFoundException e) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));

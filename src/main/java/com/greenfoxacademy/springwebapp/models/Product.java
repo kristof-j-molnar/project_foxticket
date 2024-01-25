@@ -19,6 +19,9 @@ public class Product {
 
   private String description;
 
+  @Column(columnDefinition = "boolean default false")
+  private boolean isDeleted;
+
   @ManyToOne
   private ProductType type;
 
@@ -30,6 +33,15 @@ public class Product {
     this.price = price;
     this.duration = duration;
     this.description = description;
+    this.isDeleted = false;
+  }
+
+  public boolean isDeleted() {
+    return isDeleted;
+  }
+
+  public void setDeleted(boolean deleted) {
+    isDeleted = deleted;
   }
 
   public Long getId() {

@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean isUserDTOValid(UserRequestDTO userDTO) {
-    return !userDTO.getName().isEmpty() || !userDTO.getEmail().isEmpty() || !userDTO.getPassword().isEmpty();
+    return isNameValid(userDTO) || isEmailValid(userDTO) || !userDTO.getPassword().isEmpty();
   }
 
   @Override
@@ -51,8 +51,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User generateUser(UserRequestDTO userRequestDTO) {
-    User newUser = new User(userRequestDTO.getName(), userRequestDTO.getEmail(), passwordEncoder.encode(userRequestDTO.getPassword()), "USER");
-    return newUser;
+    return new User(userRequestDTO.getName(), userRequestDTO.getEmail(), passwordEncoder.encode(userRequestDTO.getPassword()), "USER");
   }
 
   @Override
@@ -100,16 +99,6 @@ public class UserServiceImpl implements UserService {
       userRepository.save(editableUser);
     }
     return editableUser;
-  }
-
-  @Override
-  public boolean checkEditableEmail(String email) {
-    Optional<User> foundUser = userRepository.findUserByEmail(email);
-    if (foundUser.isEmpty()) {
-      return true;
-    } else {
-      throw new IllegalArgumentException("Email is already taken");
-    }
   }
 
   @Override

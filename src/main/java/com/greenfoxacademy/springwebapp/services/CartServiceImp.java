@@ -35,6 +35,7 @@ public class CartServiceImp implements CartService {
     this.userAuthenticationService = userAuthenticationService;
   }
 
+  @Override
   @Transactional
   public CartDTO getProductsInCartDTO(Integer id) {
     User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User is not found"));
@@ -50,14 +51,12 @@ public class CartServiceImp implements CartService {
     return cartDto;
   }
 
-  public void save(Cart cart) {
-    cartRepository.save(cart);
-  }
-
+  @Override
   public boolean isEmptyAddRequest(ProductAddingRequestDTO product) {
     return product == null || product.getProductId() == null;
   }
 
+  @Override
   public ProductAddingResponseDTO addProduct(User user, Product product) {
     Cart cart = user.getCart();
     cart.addProduct(product);

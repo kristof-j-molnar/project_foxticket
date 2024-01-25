@@ -32,19 +32,6 @@ class ProductControllerTest {
   @Autowired
   ProductRepository repo;
 
-  private String login(UserLoginDTO user) throws Exception {
-    String responseContent = mvc.perform(post("/api/users/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(user)))
-        .andExpect(status().is(200))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    Map<String, String> map = objectMapper.readValue(responseContent, Map.class);
-    return map.get("token");
-  }
-
   @Test
   void getAvailableProducts_ReturnAListAnd200() throws Exception {
     String jwt = login(new UserLoginDTO("admin@admin.hu", "adminadmin"));
@@ -60,8 +47,25 @@ class ProductControllerTest {
   void editProduct_ByNotAdminUser_Return403() throws Exception {
     String jwt = login(new UserLoginDTO("user@user.hu", "useruser"));
 
-    mvc.perform(patch("/api/products/1").header("Authorization", "Bearer " + jwt))
+    mvc.perform(post("/api/products/1").header("Authorization", "Bearer " + jwt))
         .andExpect(status().is(403));
+  }
+
+  @Test
+  void deleteProduct_returnsStatus200() throws Exception {
+    String jwt = login(new UserLoginDTO("admin@admin.hu", "adminadmin"));
+
+    mvc.perform(post("/api/products/1").header("Authorization", "Bearer " + jwt))
+        .andExpect(status().is(200));
+  }
+
+  @Test
+  void deleteProduct_throwsException_AndReturnStatus404() throws Exception {
+    String jwt = login(new UserLoginDTO("admin@admin.hu", "adminadmin"));
+
+    mvc.perform(post("/api/products/6").header("Authorization", "Bearer " + jwt))
+        .andExpect(status().is(404))
+        .andExpect(jsonPath("$['error']").value("The product does not exist!"));
   }
 
   @Test
@@ -180,5 +184,18 @@ class ProductControllerTest {
             .content(objectMapper.writeValueAsString(requestDTO)))
         .andExpect(status().is(200))
         .andExpect(content().string(objectMapper.writeValueAsString(responseDTO)));
+  }
+
+  private String login(UserLoginDTO user) throws Exception {
+    String responseContent = mvc.perform(post("/api/users/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(user)))
+        .andExpect(status().is(200))
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    Map<String, String> map = objectMapper.readValue(responseContent, Map.class);
+    return map.get("token");
   }
 }

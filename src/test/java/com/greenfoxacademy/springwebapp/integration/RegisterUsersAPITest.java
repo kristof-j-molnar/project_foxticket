@@ -73,7 +73,7 @@ public class RegisterUsersAPITest {
   }
 
   @Test
-  void checkEmailValidity_WithEmptyEmailInput_ShouldReturnCOrrectErrorMessage() throws Exception {
+  void checkEmailValidity_WithEmptyEmailInput_ShouldReturnCorrectErrorMessage() throws Exception {
     UserRequestDTO userRequestDTO = new UserRequestDTO("hfcfmjgc", "", "hgjhdfjhfcj", "USER");
 
     mockMvc.perform(post("/api/users")

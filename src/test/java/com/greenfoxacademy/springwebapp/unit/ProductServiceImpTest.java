@@ -9,13 +9,16 @@ import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import com.greenfoxacademy.springwebapp.services.ProductServiceImp;
 import com.greenfoxacademy.springwebapp.services.ProductTypeService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 class ProductServiceImpTest {
 
@@ -33,12 +36,13 @@ class ProductServiceImpTest {
   @Test
   void getAvailableProducts_ReturnProductListResponseDTO() {
     Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    p1.setId(1L);
     ProductType t1 = new ProductType("Jegy");
     t1.addProduct(p1);
     Mockito.when(productRepository.findAll()).thenReturn(List.of(p1));
 
     ProductListResponseDTO productDTOs = new ProductListResponseDTO();
-    productDTOs.add(new ProductDTO(1L, "Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!", "Jegy"));
+    productDTOs.add(new ProductDTO(p1));
 
     String actual = productService.getAvailableProductsInDTO().getProducts().get(0).getName();
     assertEquals(productDTOs.getProducts().get(0).getName(), actual);
@@ -104,5 +108,51 @@ class ProductServiceImpTest {
   void findById_WithNotExistingId_ReturnEmptyOptional() {
     Mockito.when(productRepository.findById(0L)).thenReturn(Optional.empty());
     assertEquals(Optional.empty(), productService.findById(0L));
+  }
+
+  @Test
+  void deleteProductById_setsProductToDeleted() {
+    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    p1.setId(1L);
+    ProductType t1 = new ProductType("Jegy");
+    t1.addProduct(p1);
+    Mockito.when(productRepository.findById(p1.getId())).thenReturn(Optional.of(p1));
+
+    Product expectedProduct = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    expectedProduct.setDeleted(true);
+    Product actualProduct = productService.deleteProductById(p1.getId());
+    assertEquals(expectedProduct.isDeleted(), actualProduct.isDeleted());
+  }
+
+  @Test
+  void deleteProductById_returnsCorrectErrorMessageWithNonExistentProduct() {
+    Product p1 = new Product();
+    p1.setId(2L);
+    ProductType t1 = new ProductType();
+    t1.addProduct(p1);
+    Mockito.when(productRepository.findById(p1.getId())).thenThrow(new NoSuchElementException("The product does not exist!"));
+
+    NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+        () -> productService.deleteProductById(p1.getId()));
+
+    Assertions.assertEquals("The product does not exist!", exception.getMessage());
+  }
+
+  @Test
+  void deleteProductById_returnsAlreadyDeletedProduct() {
+    Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    p1.setId(1L);
+    p1.setDeleted(true);
+    ProductType t1 = new ProductType("Jegy");
+    t1.addProduct(p1);
+    Mockito.when(productRepository.findById(p1.getId())).thenReturn(Optional.of(p1));
+
+
+    Product expectedProduct = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
+    expectedProduct.setDeleted(true);
+    expectedProduct.setId(1L);
+    Product actualProduct = productService.deleteProductById(p1.getId());
+    assertEquals(expectedProduct.isDeleted(), actualProduct.isDeleted());
+    assertEquals(expectedProduct.getId(), actualProduct.getId());
   }
 }
