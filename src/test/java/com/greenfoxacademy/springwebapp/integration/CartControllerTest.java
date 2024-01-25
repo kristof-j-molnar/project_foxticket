@@ -5,6 +5,8 @@ import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +33,8 @@ class CartControllerTest {
 
   ObjectMapper objectMapper = new ObjectMapper();
 
+  Logger log = LoggerFactory.getLogger(getClass());
+
   @Test
   void getProductsInCart_ReturnAListAnd200() throws Exception {
     String jwt = login();
@@ -52,7 +56,7 @@ class CartControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().is(200))
-        .andExpect(jsonPath("$['items'][0]['id']").value(4))
+        .andExpect(jsonPath("$['items']").value(hasSize(1)))
         .andExpect(jsonPath("$['items'][0]['productId']").value(1));
   }
 
@@ -102,7 +106,7 @@ class CartControllerTest {
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().is(200))
         .andExpect(jsonPath("$['items']").value(hasSize(2)))
-        .andExpect(jsonPath("$['items'][0]['id']").value(4));
+        .andExpect(jsonPath("$['items'][0]['productId']").value(1));
   }
 
   @Test

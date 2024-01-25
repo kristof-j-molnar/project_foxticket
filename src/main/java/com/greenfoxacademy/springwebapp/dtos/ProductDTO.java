@@ -1,5 +1,7 @@
 package com.greenfoxacademy.springwebapp.dtos;
 
+import com.greenfoxacademy.springwebapp.models.Product;
+
 public class ProductDTO {
 
   private Long id;
@@ -14,16 +16,19 @@ public class ProductDTO {
 
   private String type;
 
+  private boolean isDeleted;
+
   public ProductDTO() {
   }
 
-  public ProductDTO(Long id, String name, int price, int duration, String description, String type) {
-    this.id = id;
-    this.name = name;
-    this.price = price;
-    this.duration = duration;
-    this.description = description;
-    this.type = type;
+  public ProductDTO(Product product) {
+    this.id = product.getId();
+    this.name = product.getName();
+    this.price = product.getPrice();
+    this.duration = product.getDuration();
+    this.description = product.getDescription();
+    this.type = String.valueOf(product.getType());
+    this.isDeleted = product.isDeleted();
   }
 
   public Long getId() {

@@ -9,13 +9,15 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
 
   @Override
   public boolean hasRole(String role, Authentication authentication) {
-    return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase("ROLE_" + role));
+    return authentication.getAuthorities().stream()
+        .anyMatch(a -> a.getAuthority().equalsIgnoreCase("ROLE_" + role));
   }
 
+  @Override
   public String getCurrentUserEmail(Authentication authentication) {
     Object principal = authentication.getPrincipal();
-    if (principal instanceof SecurityUser myUserDetailsDTO) {
-      return myUserDetailsDTO.getEmail();
+    if (principal instanceof SecurityUser securityUser) {
+      return securityUser.getEmail();
     } else {
       throw new IllegalArgumentException("Authentication information in unexpected format");
     }

@@ -12,5 +12,5 @@ public interface CartService {
   boolean isEmptyAddRequest(ProductAddingRequestDTO productDTO);
 
   MultipleProductsAddingResponseListDTO addProduct(ProductAddingRequestDTO productDTO);
-
 }
+

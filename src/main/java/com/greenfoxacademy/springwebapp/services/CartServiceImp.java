@@ -2,7 +2,6 @@ package com.greenfoxacademy.springwebapp.services;
 
 import com.greenfoxacademy.springwebapp.dtos.*;
 import com.greenfoxacademy.springwebapp.models.Cart;
-import com.greenfoxacademy.springwebapp.models.CartItem;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
@@ -11,7 +10,6 @@ import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -36,6 +34,7 @@ public class CartServiceImp implements CartService {
     this.productRepository = productRepository;
   }
 
+  @Override
   @Transactional
   public CartDTO getProductsInCartDTO(Integer id) {
     User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User is not found"));

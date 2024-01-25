@@ -1,3 +1,4 @@
+
 INSERT INTO CARTS(ID)
 VALUES (default),
        (default);
@@ -28,6 +29,7 @@ VALUES ('TestUser', 'user@user.hu', '$2a$12$z.fUhIuPpKbM2ikjf5YcbO31.yBSo0/GT4/1
 INSERT INTO USERS (NAME, EMAIL, PASSWORD, ROLE, CART_ID)
 VALUES ('TestAdmin', 'admin@admin.hu', '$2a$10$fAKsedEmk29iZlspbWX2fODzONubZQRVfWg5Wc4.gWLHupGHMC6LS',
         'ROLE_USER,ROLE_ADMIN', (SELECT ID FROM CARTS LIMIT 1 OFFSET 1));
+
 
 INSERT INTO ARTICLES (TITLE, CONTENT, PUBLISHDATE)
 VALUES ('News about tickets awesome', 'Ipsum Lorum', '2023-12-11');
