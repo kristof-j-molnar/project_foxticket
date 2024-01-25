@@ -13,7 +13,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,7 +31,6 @@ public class CartController {
     this.userAuthenticationService = userAuthenticationService;
   }
 
-  @Transactional
   @RequestMapping(path = "/cart", method = RequestMethod.GET)
   public ResponseEntity<?> getProductsInCart(Authentication auth) {
     try {
@@ -43,7 +41,6 @@ public class CartController {
     }
   }
 
-  @Transactional
   @RequestMapping(path = "/cart", method = RequestMethod.POST)
   public ResponseEntity<?> addProductToTheCart(Authentication auth, @RequestBody(required = false) ProductAddingRequestDTO productId) {
     if (cartService.isEmptyAddRequest(productId)) {
@@ -58,17 +55,11 @@ public class CartController {
     }
   }
 
-  @Transactional
   @RequestMapping(path = "/cart/{itemId}", method = RequestMethod.DELETE)
   public ResponseEntity<?> removeProductFromCart(@PathVariable Long itemId, Authentication auth) {
     try {
-      User user = userService.findUserByEmail(userAuthenticationService.getCurrentUserEmail(auth))
-          .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
 
-      Product product = productService.getProductById(itemId)
-          .orElseThrow(() -> new EntityNotFoundException("Product not found in the cart"));
-
-      cartService.removeProduct(user, product);
+      cartService.removeProduct(itemId, auth);
 
       return ResponseEntity.status(200).body(new ConfirmationMessageDTO("Item removed from the shopping cart"));
     } catch (EntityNotFoundException e) {
@@ -76,7 +67,6 @@ public class CartController {
     }
   }
 
-  @Transactional
   @RequestMapping(path = "/cart", method = RequestMethod.DELETE)
   public ResponseEntity<?> clearCart(Authentication auth) {
     try {

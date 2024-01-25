@@ -4,14 +4,17 @@ import com.greenfoxacademy.springwebapp.dtos.CartDTO;
 import com.greenfoxacademy.springwebapp.dtos.CartItemDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductAddingResponseDTO;
+import com.greenfoxacademy.springwebapp.exceptions.CartEmptyException;
 import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
+import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +24,15 @@ public class CartServiceImp implements CartService {
 
   private final CartRepository cartRepository;
   private final UserRepository userRepository;
+  private final ProductRepository productRepository;
+  private final UserAuthenticationService userAuthenticationService;
 
   @Autowired
-  public CartServiceImp(CartRepository cartRepository, UserRepository userRepository) {
+  public CartServiceImp(CartRepository cartRepository, UserRepository userRepository, ProductRepository productRepository, UserAuthenticationService userAuthenticationService) {
     this.cartRepository = cartRepository;
     this.userRepository = userRepository;
+    this.productRepository = productRepository;
+    this.userAuthenticationService = userAuthenticationService;
   }
 
   @Transactional
@@ -70,14 +77,17 @@ public class CartServiceImp implements CartService {
   }
 
   @Override
-  public void removeProduct(User user, Product product) {
+  public void removeProduct(Long itemId, Authentication auth) {
+    User user = userRepository.findUserByEmail(userAuthenticationService.getCurrentUserEmail(auth))
+        .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
+    Product product = productRepository.findById(itemId)
+        .orElseThrow(() -> new EntityNotFoundException("Product not found in the cart"));
     Cart cart = user.getCart();
-
-    if (cart != null || !cart.getProductList().isEmpty()) {
-      cart.getProductList().remove(product);
-
-      cartRepository.save(cart);
+    if (cart == null || cart.getProductList().isEmpty()) {
+      throw new CartEmptyException("The user's cart is empty");
     }
+    cart.getProductList().remove(product);
+    cartRepository.save(cart);
   }
 
   @Override

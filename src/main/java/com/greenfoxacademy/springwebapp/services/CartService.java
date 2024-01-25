@@ -6,6 +6,7 @@ import com.greenfoxacademy.springwebapp.dtos.ProductAddingResponseDTO;
 import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.User;
+import org.springframework.security.core.Authentication;
 
 public interface CartService {
 
@@ -17,7 +18,7 @@ public interface CartService {
 
   ProductAddingResponseDTO addProduct(User user, Product product);
 
-  void removeProduct(User user, Product product);
+  void removeProduct(Long itemId, Authentication auth);
 
   void clearCart(User user);
 }
