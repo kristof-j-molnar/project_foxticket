@@ -52,9 +52,8 @@ class CartControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().is(200))
-        .andExpect(jsonPath("$['cartId']").value(2))
-        .andExpect(jsonPath("$['productId']").value(1))
-        .andExpect(jsonPath("$['amount']").value(2));
+        .andExpect(jsonPath("$['items'][0]['id']").value(4))
+        .andExpect(jsonPath("$['items'][0]['productId']").value(1));
   }
 
   @Test
@@ -77,7 +76,7 @@ class CartControllerTest {
     mvc.perform(post("/api/cart").header("Authorization", "Bearer " + jwt)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().is(404))
+        .andExpect(status().is(400))
         .andExpect(jsonPath("$['error']").value("Product ID is required"));
   }
 
@@ -89,7 +88,7 @@ class CartControllerTest {
     mvc.perform(post("/api/cart").header("Authorization", "Bearer " + jwt)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().is(404))
+        .andExpect(status().is(400))
         .andExpect(jsonPath("$['error']").value("Product ID is required"));
   }
 
@@ -114,7 +113,7 @@ class CartControllerTest {
     mvc.perform(post("/api/cart").header("Authorization", "Bearer " + jwt)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().is(404))
+        .andExpect(status().is(400))
         .andExpect(jsonPath("$['error']").value("Product ID is required"));
   }
 

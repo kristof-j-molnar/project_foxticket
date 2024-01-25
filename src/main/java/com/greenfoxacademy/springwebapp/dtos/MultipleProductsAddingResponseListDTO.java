@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultipleProductsAddingResponseListDTO {
-  private List<MultipleProductsAddingResponseItemDTO> items;
+  private List<ProductAddingResponseItemDTO> items;
 
   public MultipleProductsAddingResponseListDTO() {
     items = new ArrayList<>();
   }
 
-  public List<MultipleProductsAddingResponseItemDTO> getItems() {
+  public List<ProductAddingResponseItemDTO> getItems() {
     return items;
   }
 
-  public void add(MultipleProductsAddingResponseItemDTO product) {
+  public void add(ProductAddingResponseItemDTO product) {
     items.add(product);
   }
 }

@@ -83,4 +83,8 @@ public class User {
       cart.setUser(this);
     }
   }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
 }

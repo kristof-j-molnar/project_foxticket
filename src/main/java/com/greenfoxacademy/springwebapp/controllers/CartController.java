@@ -44,14 +44,10 @@ public class CartController {
   public ResponseEntity<?> addProductToTheCart(Authentication auth, @RequestBody(required = false) ProductAddingRequestDTO productDTO) {
     try {
       if (cartService.isEmptyAddRequest(productDTO)) {
-        throw new IllegalArgumentException("Product ID is required");
+        return ResponseEntity.status(400).body(new ErrorMessageDTO("Product ID is required"));
       }
-      User user = userService.findUserByEmail(userAuthenticationService.getCurrentUserEmail(auth)).orElseThrow(() -> new EntityNotFoundException("User is invalid"));
-      if (productDTO.getAmount() == null || productDTO.getAmount() == 1) {
-        return ResponseEntity.status(200).body(cartService.addProduct(user, productDTO));
-      }
-      return ResponseEntity.status(200).body(cartService.addMultipleProduct(user, productDTO));
-    } catch (EntityNotFoundException | IllegalArgumentException e) {
+      return ResponseEntity.status(200).body(cartService.addProduct(productDTO));
+    } catch (EntityNotFoundException e) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }

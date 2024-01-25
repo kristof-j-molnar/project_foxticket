@@ -1,15 +1,15 @@
 package com.greenfoxacademy.springwebapp.dtos;
 
-public class MultipleProductsAddingResponseItemDTO {
+public class ProductAddingResponseItemDTO {
 
   private Long id;
 
   private Long productId;
 
-  public MultipleProductsAddingResponseItemDTO() {
+  public ProductAddingResponseItemDTO() {
   }
 
-  public MultipleProductsAddingResponseItemDTO(Long id, Long productId) {
+  public ProductAddingResponseItemDTO(Long id, Long productId) {
     this.id = id;
     this.productId = productId;
   }

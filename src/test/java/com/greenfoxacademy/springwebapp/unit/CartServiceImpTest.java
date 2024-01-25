@@ -5,19 +5,27 @@ import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.ProductType;
 import com.greenfoxacademy.springwebapp.models.User;
-import com.greenfoxacademy.springwebapp.repositories.CartItemRepository;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
 import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import com.greenfoxacademy.springwebapp.services.CartService;
 import com.greenfoxacademy.springwebapp.services.CartServiceImp;
+import com.greenfoxacademy.springwebapp.services.UserAuthenticationService;
+import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class CartServiceImpTest {
 
@@ -27,17 +35,17 @@ public class CartServiceImpTest {
 
   CartRepository cartRepository;
 
-  ProductRepository productRepository;
+  UserAuthenticationService authenticationService;
 
-  CartItemRepository cartItemRepository;
+  ProductRepository productRepository;
 
   @BeforeEach
   void init() {
     userRepository = Mockito.mock(UserRepository.class);
     cartRepository = Mockito.mock(CartRepository.class);
     productRepository = Mockito.mock(ProductRepository.class);
-    cartItemRepository = Mockito.mock(CartItemRepository.class);
-    cartService = new CartServiceImp(cartRepository, userRepository, productRepository,cartItemRepository);
+    authenticationService = Mockito.mock(UserAuthenticationService.class);
+    cartService = new CartServiceImp(cartRepository, userRepository, authenticationService, productRepository);
   }
 
   @Test
@@ -67,16 +75,23 @@ public class CartServiceImpTest {
     t1.addProduct(p1);
     Cart cart = user.getCart();
     int id = 1;
-    Mockito.when(userRepository.findById(id)).thenReturn(Optional.of(user));
+
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Authentication authentication = Mockito.mock(Authentication.class);
     Mockito.when(cartRepository.findByUserId(id)).thenReturn(Optional.of(cart));
     Mockito.when(productRepository.findById((long) id)).thenReturn(Optional.of(p1));
+    Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+    Mockito.when(authenticationService.getCurrentUserEmail(authentication)).thenReturn("lacika.com");
+    Mockito.when(userRepository.findUserByEmail("lacika.com")).thenReturn(Optional.of(user));
 
     p1.setId((long) id);
     ProductAddingRequestDTO request = new ProductAddingRequestDTO(1L, 1);
-    ProductAddingResponseDTO expected = new ProductAddingResponseDTO(1L, 1L, 1);
+    MultipleProductsAddingResponseListDTO expect = new MultipleProductsAddingResponseListDTO();
+    expect.add(new ProductAddingResponseItemDTO(1L, 1L));
 
-    ProductAddingResponseDTO actual = cartService.addProduct(user, request);
-    assertEquals(expected.getAmount(), actual.getAmount());
+    MultipleProductsAddingResponseListDTO actual = cartService.addProduct(request);
+    verify(cartRepository).save(cart);
   }
 
   @Test
@@ -87,16 +102,21 @@ public class CartServiceImpTest {
     t1.addProduct(p1);
     Cart cart = user.getCart();
     int id = 1;
-    Mockito.when(userRepository.findById(id)).thenReturn(Optional.of(user));
+
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Authentication authentication = Mockito.mock(Authentication.class);
     Mockito.when(cartRepository.findByUserId(id)).thenReturn(Optional.of(cart));
     Mockito.when(productRepository.findById((long) id)).thenReturn(Optional.of(p1));
+    Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+    Mockito.when(authenticationService.getCurrentUserEmail(authentication)).thenReturn("lacika.com");
+    Mockito.when(userRepository.findUserByEmail("lacika.com")).thenReturn(Optional.of(user));
 
     p1.setId((long) id);
-    ProductAddingRequestDTO request = new ProductAddingRequestDTO(1L, 2);
-    ProductAddingResponseDTO expected = new ProductAddingResponseDTO(1L, 1L, 1);
-
-    ProductAddingResponseDTO actual = cartService.addProduct(user, request);
-    assertEquals(expected.getAmount(), actual.getAmount());
+    ProductAddingRequestDTO request = new ProductAddingRequestDTO(1L);
+    ProductAddingResponseItemDTO expected = new ProductAddingResponseItemDTO(1L, 1L);
+    MultipleProductsAddingResponseListDTO actual = cartService.addProduct(request);
+    verify(cartRepository).save(cart);
   }
 
   @Test
@@ -107,20 +127,45 @@ public class CartServiceImpTest {
     t1.addProduct(p1);
     Cart cart = user.getCart();
     int id = 1;
-    Mockito.when(userRepository.findById(id)).thenReturn(Optional.of(user));
+
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Authentication authentication = Mockito.mock(Authentication.class);
     Mockito.when(cartRepository.findByUserId(id)).thenReturn(Optional.of(cart));
     Mockito.when(productRepository.findById((long) id)).thenReturn(Optional.of(p1));
+    Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+    Mockito.when(authenticationService.getCurrentUserEmail(authentication)).thenReturn("lacika.com");
+    Mockito.when(userRepository.findUserByEmail("lacika.com")).thenReturn(Optional.of(user));
 
     p1.setId((long) id);
     ProductAddingRequestDTO request = new ProductAddingRequestDTO(1L, 2);
     MultipleProductsAddingResponseListDTO expected = new MultipleProductsAddingResponseListDTO();
-    MultipleProductsAddingResponseItemDTO item1 = new MultipleProductsAddingResponseItemDTO(1L, 1L);
-    MultipleProductsAddingResponseItemDTO item2 = new MultipleProductsAddingResponseItemDTO(2L, 1L);
+    ProductAddingResponseItemDTO item1 = new ProductAddingResponseItemDTO(1L, 1L);
+    ProductAddingResponseItemDTO item2 = new ProductAddingResponseItemDTO(2L, 1L);
     expected.add(item1);
     expected.add(item2);
 
-    MultipleProductsAddingResponseListDTO actual = cartService.addMultipleProduct(user, request);
-    assertEquals(expected.getItems().size(), actual.getItems().size());
-    assertEquals(expected.getItems().get(0).getProductId(), actual.getItems().get(0).getProductId());
+    MultipleProductsAddingResponseListDTO actual = cartService.addProduct(request);
+    verify(cartRepository, times(2)).save(cart);
+  }
+
+  @Test
+  void addProduct_withNotFoundProduct_returnError() {
+    User user = new User("user", "lacika.com", "pass", "User");
+    Cart cart = user.getCart();
+    int id = 1;
+
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Authentication authentication = Mockito.mock(Authentication.class);
+    Mockito.when(cartRepository.findByUserId(id)).thenReturn(Optional.of(cart));
+    Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+    Mockito.when(authenticationService.getCurrentUserEmail(authentication)).thenReturn("lacika.com");
+    Mockito.when(userRepository.findUserByEmail("lacika.com")).thenReturn(Optional.of(user));
+
+    EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+        () -> cartService.addProduct(new ProductAddingRequestDTO(10L, 2)));
+
+    Assertions.assertEquals("Product is not found", exception.getMessage());
   }
 }

@@ -1,4 +1,3 @@
-
 INSERT INTO CARTS(ID)
 VALUES (default),
        (default);
