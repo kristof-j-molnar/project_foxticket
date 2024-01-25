@@ -43,7 +43,7 @@ public class Cart {
   }
 
   public List<Product> getProductList() {
-    return productList;
+    return cartItems.stream().map(CartItem::getProduct).toList();
   }
 
   public void setProductList(List<Product> productList) {
@@ -59,7 +59,6 @@ public class Cart {
   }
 
   public void addProduct(Product product) {
-    productList.add(product);
     cartItems.add(new CartItem(product, this));
   }
 }

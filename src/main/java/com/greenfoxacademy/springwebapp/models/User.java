@@ -79,9 +79,6 @@ public class User {
 
   public void setCart(Cart cart) {
     this.cart = cart;
-    if (cart != null) {
-      cart.setUser(this);
-    }
   }
 
   public void setId(Integer id) {

@@ -61,17 +61,15 @@ public class CartServiceImp implements CartService {
     Cart cart = user.getCart();
     MultipleProductsAddingResponseListDTO itemsDTO = new MultipleProductsAddingResponseListDTO();
 
-    if (productDTO.getAmount() == null || productDTO.getAmount() == 1) {
+    if (productDTO.getAmount() == null) {
+      productDTO.setAmount(1);
+    }
+    for (int i = 0; i < productDTO.getAmount(); i++) {
       cart.addProduct(product);
       cartRepository.save(cart);
       itemsDTO.add(new ProductAddingResponseItemDTO(cart.getCartItems().get(cart.getCartItems().size() - 1).getId(), product.getId()));
-    } else {
-      for (int i = 0; i < productDTO.getAmount(); i++) {
-        cart.addProduct(product);
-        cartRepository.save(cart);
-        itemsDTO.add(new ProductAddingResponseItemDTO(cart.getCartItems().get(cart.getCartItems().size() - 1).getId(), product.getId()));
-      }
     }
+
     return itemsDTO;
   }
 
