@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartServiceImp implements CartService {
@@ -84,11 +85,8 @@ public class CartServiceImp implements CartService {
     if (cart == null || cart.getProductList().isEmpty()) {
       throw new CartEmptyException("The user's cart is already empty");
     }
-    Product productToRemove = cart.getProductFromCart(cart, itemId);
-    if (productToRemove == null) {
-      throw new EntityNotFoundException("Product not found in the cart");
-    }
 
+    Optional<Product> productToRemove = cart.getProductFromCart(cart, itemId);
     cart.removeProduct(productToRemove);
     cartRepository.save(cart);
   }
@@ -98,8 +96,8 @@ public class CartServiceImp implements CartService {
     User user = userRepository.findUserByEmail(userAuthenticationService.getCurrentUserEmail(auth))
         .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
     Cart cart = user.getCart();
-    if (cart == null || cart.getProductList().isEmpty()) {
-      throw new CartEmptyException("The user's cart is already empty");
+    if (cart.getProductList().isEmpty()) {
+      return;
     }
     cart.getProductList().clear();
     cartRepository.save(cart);
