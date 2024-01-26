@@ -2,7 +2,9 @@ package com.greenfoxacademy.springwebapp.services;
 
 import com.greenfoxacademy.springwebapp.dtos.ArticleRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ArticlesDTO;
+import com.greenfoxacademy.springwebapp.exceptions.ArticleNotFoundException;
 import com.greenfoxacademy.springwebapp.exceptions.EmptyFieldsException;
+import com.greenfoxacademy.springwebapp.exceptions.UniqueNameViolationException;
 import com.greenfoxacademy.springwebapp.models.Article;
 import com.greenfoxacademy.springwebapp.repositories.ArticleRepository;
 import jakarta.persistence.EntityExistsException;
@@ -15,12 +17,12 @@ import java.util.List;
 public class ArticleServiceImpl implements ArticleService {
 
   private final ArticleRepository articleRepository;
-  private final LogicService logicService;
+  private final ValidatorService validatorService;
 
   @Autowired
-  public ArticleServiceImpl(ArticleRepository articleRepository, LogicService logicService) {
+  public ArticleServiceImpl(ArticleRepository articleRepository, ValidatorService validatorService) {
     this.articleRepository = articleRepository;
-    this.logicService = logicService;
+    this.validatorService = validatorService;
   }
 
   @Override
@@ -48,10 +50,22 @@ public class ArticleServiceImpl implements ArticleService {
     return articleRepository.save(newArticle);
   }
 
-  public Article editNews(Long newsId, ArticleRequestDTO requestDTO) throws IllegalAccessException {
-    logicService.getErrorMessageByMissingFields(requestDTO).ifPresent(message -> {
+  @Override
+  public Article editNews(Long newsId, ArticleRequestDTO requestDTO) {
+    validatorService.validateArticleRequestDTO(requestDTO).ifPresent(message -> {
       throw new EmptyFieldsException(message);
     });
-    return null;
+    Article articleToEdit = articleRepository.findById(newsId)
+        .orElseThrow(() -> {
+          throw new ArticleNotFoundException("Article does not exist.");
+        });
+    if (articleToEdit.getTitle() != requestDTO.getTitle()
+        && articleRepository.existsByTitle(requestDTO.getTitle())) {
+      throw new UniqueNameViolationException("News title already exists.");
+    }
+
+    articleToEdit.setTitle(requestDTO.getTitle());
+    articleToEdit.setContent(requestDTO.getContent());
+    return articleRepository.save(articleToEdit);
   }
 }

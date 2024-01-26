@@ -11,4 +11,6 @@ public interface ArticleService {
   ArticlesDTO searchArticles(String search);
 
   Article addNews(ArticleRequestDTO articleRequest);
+
+  Article editNews(Long newsId, ArticleRequestDTO requestDTO);
 }

@@ -158,4 +158,39 @@ class ArticleControllerTest {
         .andExpect(status().is(400))
         .andExpect(jsonPath("$['error']").value("Content is required."));
   }
+
+  @Test
+  public void editNews_withExistingNewsTitle_returnErrorDTOWithCorrectMessage() throws Exception {
+    String jwt = login();
+    ArticleRequestDTO request = new ArticleRequestDTO("Test article 2", "some test content for fun");
+    mockMvc.perform(put("/api/news/1").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is(400))
+        .andExpect(jsonPath("$['error']").value("News title already exists."));
+  }
+
+  @Test
+  public void editNews_withInvalidId_returnErrorDTOWithCorrectMessage() throws Exception {
+    String jwt = login();
+    ArticleRequestDTO request = new ArticleRequestDTO("Test article", "some test content for fun");
+    mockMvc.perform(put("/api/news/0").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is(404))
+        .andExpect(jsonPath("$['error']").value("Article does not exist."));
+  }
+
+  @Test
+  public void editNews_withValidInput_return200AndArticle() throws Exception {
+    String jwt = login();
+    ArticleRequestDTO request = new ArticleRequestDTO("Test article", "some test content for fun");
+    mockMvc.perform(put("/api/news/1").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is(200))
+        .andExpect(jsonPath("$['id']").value(1))
+        .andExpect(jsonPath("$['title']").value("Test article"))
+        .andExpect(jsonPath("$['content']").value("some test content for fun"));
+  }
 }
