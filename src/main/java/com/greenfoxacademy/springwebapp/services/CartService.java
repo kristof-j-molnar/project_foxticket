@@ -17,5 +17,5 @@ public interface CartService {
 
   void removeProduct(Long itemId, Authentication auth);
 
-  void clearCart(User user);
+  void clearCart(Authentication auth);
 }

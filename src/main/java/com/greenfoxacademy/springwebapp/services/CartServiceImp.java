@@ -79,24 +79,29 @@ public class CartServiceImp implements CartService {
   public void removeProduct(Long itemId, Authentication auth) {
     User user = userRepository.findUserByEmail(userAuthenticationService.getCurrentUserEmail(auth))
         .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
-    Product product = productRepository.findById(itemId)
-        .orElseThrow(() -> new EntityNotFoundException("Product not found in the cart"));
+
     Cart cart = user.getCart();
     if (cart == null || cart.getProductList().isEmpty()) {
-      throw new CartEmptyException("The user's cart is empty");
+      throw new CartEmptyException("The user's cart is already empty");
     }
-    cart.getProductList().remove(product);
+    Product productToRemove = cart.getProductFromCart(cart, itemId);
+    if (productToRemove == null) {
+      throw new EntityNotFoundException("Product not found in the cart");
+    }
+
+    cart.removeProduct(productToRemove);
     cartRepository.save(cart);
   }
 
   @Override
-  public void clearCart(User user) {
+  public void clearCart(Authentication auth) {
+    User user = userRepository.findUserByEmail(userAuthenticationService.getCurrentUserEmail(auth))
+        .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
     Cart cart = user.getCart();
-
-    if (cart != null) {
-      cart.getProductList().clear();
-
-      cartRepository.save(cart);
+    if (cart == null || cart.getProductList().isEmpty()) {
+      throw new CartEmptyException("The user's cart is already empty");
     }
+    cart.getProductList().clear();
+    cartRepository.save(cart);
   }
 }

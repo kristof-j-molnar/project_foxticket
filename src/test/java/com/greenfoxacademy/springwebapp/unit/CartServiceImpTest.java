@@ -12,6 +12,7 @@ import com.greenfoxacademy.springwebapp.repositories.CartRepository;
 import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import com.greenfoxacademy.springwebapp.services.*;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -147,8 +148,7 @@ public class CartServiceImpTest {
     Mockito.when(cartRepository.findByUserId((int) id1)).thenReturn(Optional.of(cart));
     SecurityContextHolder.setContext(securityContext);
 
-    cartService.removeProduct(id2, auth);
-
+    assertThrows(EntityNotFoundException.class, () -> cartService.removeProduct(id2, auth));
     assertEquals(1, cart.getProductList().size());
     assertTrue(cart.getProductList().contains(p1));
   }
@@ -171,7 +171,7 @@ public class CartServiceImpTest {
     Mockito.when(cartRepository.findByUserId((int) id)).thenReturn(Optional.of(cart));
     SecurityContextHolder.setContext(securityContext);
 
-    cartService.clearCart(user);
+    cartService.clearCart(auth);
 
     assertTrue(cart.getProductList().isEmpty());
   }

@@ -49,5 +49,17 @@ public class Cart {
   public void addProduct(Product product) {
     productList.add(product);
   }
-}
 
+  public void removeProduct(Product product) {
+    productList.remove(product);
+  }
+
+  public Product getProductFromCart(Cart cart, Long productId) {
+    for (Product product : cart.getProductList()) {
+      if (product.getId().equals(productId)) {
+        return product;
+      }
+    }
+    return null;
+  }
+}
