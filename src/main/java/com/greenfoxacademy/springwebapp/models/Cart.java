@@ -51,11 +51,11 @@ public class Cart {
     productList.add(product);
   }
 
-  public void removeProduct(Optional<Product> product) {
-    if (product.isEmpty()) {
+  public void removeProduct(Product product) {
+    boolean couldRemoveProduct = productList.remove(product);
+    if (!couldRemoveProduct) {
       throw new EntityNotFoundException("Product not found in the cart");
     }
-    productList.remove(product.get());
   }
 
   public Optional<Product> getProductFromCart(Cart cart, Long productId) {

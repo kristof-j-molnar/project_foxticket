@@ -18,7 +18,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CartServiceImp implements CartService {
@@ -86,7 +85,8 @@ public class CartServiceImp implements CartService {
       throw new CartEmptyException("The user's cart is already empty");
     }
 
-    Optional<Product> productToRemove = cart.getProductFromCart(cart, itemId);
+    Product productToRemove = cart.getProductFromCart(cart, itemId)
+        .orElseThrow(() -> new EntityNotFoundException("No such product with the given ID"));
     cart.removeProduct(productToRemove);
     cartRepository.save(cart);
   }

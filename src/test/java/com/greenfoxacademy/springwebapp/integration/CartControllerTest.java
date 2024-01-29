@@ -95,12 +95,12 @@ class CartControllerTest {
 
   @Test
   @Transactional
-  void removeProductFromCart_ProductNotInCart_ReturnErrorMessageDTOAnd404() throws Exception {
+  void removeProductFromCart_NonExistingProductId_ReturnErrorMessageDTOAnd404() throws Exception {
     String jwt = login();
 
     mvc.perform(delete("/api/cart/10").header("Authorization", "Bearer " + jwt))
         .andExpect(status().is(404))
-        .andExpect(jsonPath("$.error").value("Product not found in the cart"));
+        .andExpect(jsonPath("$.error").value("No such product with the given ID"));
   }
 
   @Test
