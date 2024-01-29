@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Table(name = "carts")
@@ -56,14 +55,5 @@ public class Cart {
     if (!couldRemoveProduct) {
       throw new EntityNotFoundException("Product not found in the cart");
     }
-  }
-
-  public Optional<Product> getProductFromCart(Cart cart, Long productId) {
-    for (Product product : cart.getProductList()) {
-      if (product.getId().equals(productId)) {
-        return Optional.of(product);
-      }
-    }
-    return Optional.empty();
   }
 }

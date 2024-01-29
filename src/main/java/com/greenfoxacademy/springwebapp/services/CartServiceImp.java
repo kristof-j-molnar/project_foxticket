@@ -4,7 +4,6 @@ import com.greenfoxacademy.springwebapp.dtos.CartDTO;
 import com.greenfoxacademy.springwebapp.dtos.CartItemDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductAddingResponseDTO;
-import com.greenfoxacademy.springwebapp.exceptions.CartEmptyException;
 import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.User;
@@ -79,13 +78,8 @@ public class CartServiceImp implements CartService {
   public void removeProduct(Long itemId, Authentication auth) {
     User user = userRepository.findUserByEmail(userAuthenticationService.getCurrentUserEmail(auth))
         .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
-
     Cart cart = user.getCart();
-    if (cart == null || cart.getProductList().isEmpty()) {
-      throw new CartEmptyException("The user's cart is already empty");
-    }
-
-    Product productToRemove = cart.getProductFromCart(cart, itemId)
+    Product productToRemove = productRepository.findById(itemId)
         .orElseThrow(() -> new EntityNotFoundException("No such product with the given ID"));
     cart.removeProduct(productToRemove);
     cartRepository.save(cart);
