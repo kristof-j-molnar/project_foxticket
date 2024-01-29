@@ -1,17 +1,17 @@
 package com.greenfoxacademy.springwebapp.services;
 
-import com.greenfoxacademy.springwebapp.dtos.CartDTO;
-import com.greenfoxacademy.springwebapp.dtos.CartItemDTO;
-import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
-import com.greenfoxacademy.springwebapp.dtos.ProductAddingResponseDTO;
+import com.greenfoxacademy.springwebapp.dtos.*;
 import com.greenfoxacademy.springwebapp.models.Cart;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
+import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,10 +22,16 @@ public class CartServiceImp implements CartService {
   private final CartRepository cartRepository;
   private final UserRepository userRepository;
 
+  private UserAuthenticationService authenticationService;
+
+  private ProductRepository productRepository;
+
   @Autowired
-  public CartServiceImp(CartRepository cartRepository, UserRepository userRepository) {
+  public CartServiceImp(CartRepository cartRepository, UserRepository userRepository, UserAuthenticationService authenticationService, ProductRepository productRepository) {
     this.cartRepository = cartRepository;
     this.userRepository = userRepository;
+    this.authenticationService = authenticationService;
+    this.productRepository = productRepository;
   }
 
   @Override
@@ -44,27 +50,35 @@ public class CartServiceImp implements CartService {
     return cartDto;
   }
 
-  @Override
-  public boolean isEmptyAddRequest(ProductAddingRequestDTO product) {
-    return product == null || product.getProductId() == null;
-  }
-
-  @Override
-  public ProductAddingResponseDTO addProduct(User user, Product product) {
-    Cart cart = user.getCart();
-    cart.addProduct(product);
+  public void save(Cart cart) {
     cartRepository.save(cart);
-    int amount = getAmount(cart, product);
-    return new ProductAddingResponseDTO(cart.getId(), product.getId(), amount);
   }
 
-  private int getAmount(Cart cart, Product product) {
-    int count = 0;
-    for (Product p : cart.getProductList()) {
-      if (p.getId().equals(product.getId())) {
-        count++;
-      }
+  @Transactional
+  public MultipleProductsAddingResponseListDTO addProduct(ProductAddingRequestDTO productDTO) {
+    User user = getCurrentUser();
+    Product product = productRepository.findById(productDTO.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product is not found"));
+    Cart cart = user.getCart();
+    MultipleProductsAddingResponseListDTO itemsDTO = new MultipleProductsAddingResponseListDTO();
+
+    if (productDTO.getAmount() == null) {
+      productDTO.setAmount(1);
     }
-    return count;
+    for (int i = 0; i < productDTO.getAmount(); i++) {
+      cart.addProduct(product);
+      cartRepository.save(cart);
+      itemsDTO.add(new ProductAddingResponseItemDTO(cart.getCartItems().get(cart.getCartItems().size() - 1).getId(), product.getId()));
+    }
+
+    return itemsDTO;
+  }
+
+  private User getCurrentUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return userRepository.findUserByEmail(authenticationService.getCurrentUserEmail(authentication)).orElseThrow(() -> new EntityNotFoundException("User is not found"));
+  }
+
+  public boolean isEmptyAddRequest(ProductAddingRequestDTO productDTO) {
+    return productDTO == null || productDTO.getProductId() == null;
   }
 }

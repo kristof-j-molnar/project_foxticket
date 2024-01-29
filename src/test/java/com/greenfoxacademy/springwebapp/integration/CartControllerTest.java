@@ -44,7 +44,6 @@ class CartControllerTest {
   }
 
   @Test
-  @Transactional
   void addProductToCart_ReturnResponseDTOAnd200() throws Exception {
     String jwt = login();
     ProductAddingRequestDTO request = new ProductAddingRequestDTO(1L);
@@ -53,14 +52,12 @@ class CartControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().is(200))
-        .andExpect(jsonPath("$['cartId']").value(2))
-        .andExpect(jsonPath("$['productId']").value(1))
-        .andExpect(jsonPath("$['amount']").value(2));
+        .andExpect(jsonPath("$['items']").value(hasSize(1)))
+        .andExpect(jsonPath("$['items'][0]['productId']").value(1));
   }
 
   @Test
-  @Transactional
-  void addNotExistProductToCart_ReturnErrorDTOAnd404() throws Exception {
+  void addProductToCart_WithNotExistProduct_ReturnErrorDTOAnd404() throws Exception {
     String jwt = login();
     ProductAddingRequestDTO request = new ProductAddingRequestDTO(10L);
 
@@ -72,16 +69,64 @@ class CartControllerTest {
   }
 
   @Test
-  @Transactional
-  void addNoProductToCart_ReturnErrorDTOAnd404() throws Exception {
+  void addProductToCart_WithNullProduct_ReturnErrorDTOAnd404() throws Exception {
     String jwt = login();
     ProductAddingRequestDTO request = null;
 
     mvc.perform(post("/api/cart").header("Authorization", "Bearer " + jwt)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is(400))
+        .andExpect(jsonPath("$['error']").value("Product ID is required"));
+  }
+
+  @Test
+  void addProductToCart_WithEmptyID_ReturnErrorDTOAnd404() throws Exception {
+    String jwt = login();
+    ProductAddingRequestDTO request = new ProductAddingRequestDTO(null);
+
+    mvc.perform(post("/api/cart").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is(400))
+        .andExpect(jsonPath("$['error']").value("Product ID is required"));
+  }
+
+  @Test
+  void addMultipleProductToCart_ReturnResponseDTOAnd200() throws Exception {
+    String jwt = login();
+    ProductAddingRequestDTO request = new ProductAddingRequestDTO(1L, 2);
+
+    mvc.perform(post("/api/cart").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is(200))
+        .andExpect(jsonPath("$['items']").value(hasSize(2)))
+        .andExpect(jsonPath("$['items'][0]['productId']").value(1));
+  }
+
+  @Test
+  void addMultipleProductToCart_WithEmptyDTO_ReturnError() throws Exception {
+    String jwt = login();
+    ProductAddingRequestDTO request = null;
+
+    mvc.perform(post("/api/cart").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is(400))
+        .andExpect(jsonPath("$['error']").value("Product ID is required"));
+  }
+
+  @Test
+  void addMultipleProductToCart_WithNotFoundProduct_ReturnError() throws Exception {
+    String jwt = login();
+    ProductAddingRequestDTO request = new ProductAddingRequestDTO(10L, 2);
+
+    mvc.perform(post("/api/cart").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().is(404))
-        .andExpect(jsonPath("$['error']").value("Product ID is required."));
+        .andExpect(jsonPath("$['error']").value("Product is not found"));
   }
 
   private String login() throws Exception {
