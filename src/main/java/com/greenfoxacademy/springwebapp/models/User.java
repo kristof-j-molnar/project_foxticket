@@ -41,6 +41,10 @@ public class User {
     return id;
   }
 
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
   public String getName() {
     return name;
   }
@@ -79,9 +83,5 @@ public class User {
 
   public void setCart(Cart cart) {
     this.cart = cart;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
   }
 }
