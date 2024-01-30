@@ -11,7 +11,6 @@ VALUES ('single ticket', 480, 90, 'test1', 1),
        ('monthly student pass', 4000, 9000, 'test2', 2),
        ('monthly pass', 9500, 9000, 'test3', 2);
 
-
 INSERT INTO CART_PRODUCT(CART_ID, PRODUCT_ID)
 VALUES ((SELECT ID FROM CARTS WHERE ID = 1), (SELECT ID FROM PRODUCTS WHERE NAME LIKE 'single ticket'));
 
@@ -27,3 +26,8 @@ INSERT INTO ARTICLES (TITLE, CONTENT, PUBLISHDATE)
 VALUES ('News about tickets awesome', 'Ipsum Lorum', '2023-12-11');
 INSERT INTO ARTICLES (TITLE, CONTENT, PUBLISHDATE)
 VALUES ('Test Title', 'Test Content', '2023-12-11');
+
+INSERT INTO CARTITEMS(CART_ID, ID, PRODUCT_ID)
+VALUES (1, 1, 1),
+        (NULL, 2, 2),
+        (NULL, 3, 3);

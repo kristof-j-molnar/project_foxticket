@@ -1,19 +1,18 @@
 package com.greenfoxacademy.springwebapp.services;
 
-import com.greenfoxacademy.springwebapp.dtos.CartDTO;
-import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
-import com.greenfoxacademy.springwebapp.dtos.ProductAddingResponseDTO;
-import com.greenfoxacademy.springwebapp.models.Product;
-import com.greenfoxacademy.springwebapp.models.User;
 import org.springframework.security.core.Authentication;
+import com.greenfoxacademy.springwebapp.dtos.*;
+import com.greenfoxacademy.springwebapp.models.Cart;
 
 public interface CartService {
 
   CartDTO getProductsInCartDTO(Integer id);
 
-  boolean isEmptyAddRequest(ProductAddingRequestDTO productAddingRequestDTO);
+  void save(Cart cart);
 
-  ProductAddingResponseDTO addProduct(User user, Product product);
+  boolean isEmptyAddRequest(ProductAddingRequestDTO productDTO);
+
+  MultipleProductsAddingResponseListDTO addProduct(ProductAddingRequestDTO productDTO);
 
   void removeProduct(Long itemId, Authentication auth);
 
