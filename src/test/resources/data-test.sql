@@ -13,7 +13,7 @@ VALUES ('test ticket', 480, 90, 'test1',1),
        ('test pass 1', 4000, 9000, 'test2',2),
        ('test pass 2', 9500, 9000, 'test3',2);
 
-INSERT INTO CARTITEMS (CART_ID, ID, PRODUCT_ID)
+INSERT INTO CART_ITEMS (CART_ID, ID, PRODUCT_ID)
 VALUES (2, default, 1),
        (2, default, 2),
        (2, default, 3);
