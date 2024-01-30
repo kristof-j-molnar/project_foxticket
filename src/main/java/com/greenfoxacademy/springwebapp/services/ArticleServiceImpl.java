@@ -5,6 +5,7 @@ import com.greenfoxacademy.springwebapp.dtos.ArticlesDTO;
 import com.greenfoxacademy.springwebapp.models.Article;
 import com.greenfoxacademy.springwebapp.repositories.ArticleRepository;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,5 +44,12 @@ public class ArticleServiceImpl implements ArticleService {
     }
     Article newArticle = new Article(articleRequest.getTitle(), articleRequest.getContent());
     return articleRepository.save(newArticle);
+  }
+
+  @Override
+  public void deleteNewsById(Long articleId) {
+    Article articleToDelete = articleRepository.findById(articleId).orElseThrow(() -> new EntityNotFoundException("The article is not found"));
+    articleToDelete.setDeleted(true);
+    articleRepository.save(articleToDelete);
   }
 }

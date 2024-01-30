@@ -5,6 +5,7 @@ import com.greenfoxacademy.springwebapp.dtos.ArticlesDTO;
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,16 @@ public class ArticleController {
     try {
       return ResponseEntity.status(200).body(articleService.addNews(article));
     } catch (IllegalArgumentException | EntityExistsException e) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
+    }
+  }
+
+  @RequestMapping(path = "/{articleId}", method = RequestMethod.POST)
+  public ResponseEntity<?> deleteNews(@PathVariable Long articleId) {
+    try {
+      articleService.deleteNewsById(articleId);
+      return ResponseEntity.status(200).build();
+    } catch (EntityNotFoundException e) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }

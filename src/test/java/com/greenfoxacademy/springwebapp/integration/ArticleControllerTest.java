@@ -2,6 +2,7 @@ package com.greenfoxacademy.springwebapp.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenfoxacademy.springwebapp.dtos.ArticleAddingRequestDTO;
+import com.greenfoxacademy.springwebapp.dtos.ProductEditRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -120,6 +120,23 @@ class ArticleControllerTest {
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().is(404))
         .andExpect(jsonPath("$['error']").value("News title already exists"));
+  }
+
+  @Test
+  void deleteArNews_AndReturnErrorAnd404() throws Exception {
+    String jwt = login();
+
+    mockMvc.perform(post("/api/news/100").header("Authorization", "Bearer " + jwt))
+        .andExpect(status().is(404))
+        .andExpect(jsonPath("$['error']").value("The article is not found"));
+  }
+
+  @Test
+  void deleteNews_Return200() throws Exception {
+    String jwt = login();
+
+    mockMvc.perform(patch("/api/news/1").header("Authorization", "Bearer " + jwt))
+        .andExpect(status().is(200));
   }
 
   private String login() throws Exception {
