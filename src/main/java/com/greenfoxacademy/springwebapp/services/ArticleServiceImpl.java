@@ -47,9 +47,10 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public void deleteNewsById(Long articleId) {
+  public Article deleteNewsById(Long articleId) {
     Article articleToDelete = articleRepository.findById(articleId).orElseThrow(() -> new EntityNotFoundException("The article is not found"));
     articleToDelete.setDeleted(true);
     articleRepository.save(articleToDelete);
+    return articleToDelete;
   }
 }

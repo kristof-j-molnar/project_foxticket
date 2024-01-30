@@ -2,7 +2,6 @@ package com.greenfoxacademy.springwebapp.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenfoxacademy.springwebapp.dtos.ArticleAddingRequestDTO;
-import com.greenfoxacademy.springwebapp.dtos.ProductEditRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -123,10 +122,10 @@ class ArticleControllerTest {
   }
 
   @Test
-  void deleteArNews_AndReturnErrorAnd404() throws Exception {
+  void deleteNews_AndReturnErrorAnd404() throws Exception {
     String jwt = login();
 
-    mockMvc.perform(post("/api/news/100").header("Authorization", "Bearer " + jwt))
+    mockMvc.perform(delete("/api/news/100").header("Authorization", "Bearer " + jwt))
         .andExpect(status().is(404))
         .andExpect(jsonPath("$['error']").value("The article is not found"));
   }
@@ -135,7 +134,7 @@ class ArticleControllerTest {
   void deleteNews_Return200() throws Exception {
     String jwt = login();
 
-    mockMvc.perform(patch("/api/news/1").header("Authorization", "Bearer " + jwt))
+    mockMvc.perform(delete("/api/news/1").header("Authorization", "Bearer " + jwt))
         .andExpect(status().is(200));
   }
 

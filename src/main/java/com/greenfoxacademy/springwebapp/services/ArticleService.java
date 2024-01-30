@@ -12,5 +12,5 @@ public interface ArticleService {
 
   Article addNews(ArticleAddingRequestDTO articleRequest);
 
-  void deleteNewsById(Long articleId);
+  Article deleteNewsById(Long articleId);
 }

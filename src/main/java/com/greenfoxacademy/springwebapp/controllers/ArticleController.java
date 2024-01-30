@@ -44,7 +44,7 @@ public class ArticleController {
     }
   }
 
-  @RequestMapping(path = "/{articleId}", method = RequestMethod.POST)
+  @RequestMapping(path = "/{articleId}", method = RequestMethod.DELETE)
   public ResponseEntity<?> deleteNews(@PathVariable Long articleId) {
     try {
       articleService.deleteNewsById(articleId);

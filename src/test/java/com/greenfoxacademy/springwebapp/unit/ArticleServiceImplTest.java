@@ -7,6 +7,7 @@ import com.greenfoxacademy.springwebapp.repositories.ArticleRepository;
 import com.greenfoxacademy.springwebapp.services.ArticleService;
 import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -126,5 +128,33 @@ class ArticleServiceImplTest {
         () -> articleService.addNews(null));
 
     Assertions.assertEquals("Title or content are required", exception.getMessage());
+  }
+
+  @Test
+  void deleteNewsById_setIsDeleted_ReturnSuccess() {
+    Article article = new Article("Blah-blah", "test content for test article");
+    Mockito.when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
+
+    Article actual = articleService.deleteNewsById(1L);
+    assertTrue(actual.isDeleted());
+  }
+
+  @Test
+  void deleteNewsById_IsDeletedIsTrue_ReturnSuccess_() {
+    Article article = new Article("Blah-blah", "test content for test article");
+    article.setDeleted(true);
+    Mockito.when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
+
+    Article actual = articleService.deleteNewsById(1L);
+    assertTrue(actual.isDeleted());
+  }
+
+
+  @Test
+  void deleteNewsById_withWrongID_ThrowException() {
+    EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+        () -> articleService.deleteNewsById(10L));
+
+    Assertions.assertEquals("The article is not found", exception.getMessage());
   }
 }
