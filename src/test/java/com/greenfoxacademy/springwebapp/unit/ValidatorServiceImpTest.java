@@ -2,18 +2,20 @@ package com.greenfoxacademy.springwebapp.unit;
 
 import com.greenfoxacademy.springwebapp.dtos.ArticleRequestDTO;
 import com.greenfoxacademy.springwebapp.services.ValidatorService;
+import com.greenfoxacademy.springwebapp.services.ValidatorServiceImp;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ValidatorServiceTest {
+class ValidatorServiceImpTest {
 
-  ValidatorService validatorService = new ValidatorService();
+  ValidatorService validatorService = new ValidatorServiceImp();
 
   @Test
   void getErrorMessageByMissingFields_WithListSizeOf5_ReturnsCorrectStringOptional() {
@@ -50,39 +52,21 @@ class ValidatorServiceTest {
   @Test
   void validateField_withValidField_returnsEmptyOptional() {
     ArticleRequestDTO requestDTO = new ArticleRequestDTO("title", "content");
-    Optional<String> fieldIfValid = validatorService.validateField("title", requestDTO::getTitle, String::isBlank);
+    Optional<String> fieldIfValid = validatorService.validateField("title", requestDTO::getTitle, Predicate.not(String::isBlank));
     assertEquals(Optional.empty(), fieldIfValid);
   }
 
   @Test
   void validateField_withBlankField_returnsEmptyOptional() {
     ArticleRequestDTO requestDTO = new ArticleRequestDTO("    ", "content");
-    Optional<String> fieldIfValid = validatorService.validateField("title", requestDTO::getTitle, String::isBlank);
+    Optional<String> fieldIfValid = validatorService.validateField("title", requestDTO::getTitle, Predicate.not(String::isBlank));
     assertEquals(Optional.of("title"), fieldIfValid);
   }
 
   @Test
   void validateField_withNullField_returnsEmptyOptional() {
     ArticleRequestDTO requestDTO = new ArticleRequestDTO();
-    Optional<String> fieldIfValid = validatorService.validateField("title", requestDTO::getTitle, String::isBlank);
+    Optional<String> fieldIfValid = validatorService.validateField("title", requestDTO::getTitle, Predicate.not(String::isBlank));
     assertEquals(Optional.of("title"), fieldIfValid);
-  }
-
-  @Test
-  void validateArticleRequestDTO_WithEmptyFields_ReturnEmptyOptional() {
-    ArticleRequestDTO requestDTO = new ArticleRequestDTO();
-    assertEquals(Optional.of("Title and content are required."), validatorService.validateArticleRequestDTO(requestDTO));
-  }
-
-  @Test
-  void validateArticleRequestDTO_withEmptyContent_ReturnsCorrectStringOptional() {
-    ArticleRequestDTO requestDTO = new ArticleRequestDTO("title", "");
-    assertEquals(Optional.of("Content is required."), validatorService.validateArticleRequestDTO(requestDTO));
-  }
-
-  @Test
-  void validateArticleRequestDTO_withValidDTO_ReturnsCorrectStringOptional() {
-    ArticleRequestDTO requestDTO = new ArticleRequestDTO("title", "content");
-    assertEquals(Optional.empty(), validatorService.validateArticleRequestDTO(requestDTO));
   }
 }

@@ -11,7 +11,10 @@ import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -52,14 +55,14 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public Article editNews(Long newsId, ArticleRequestDTO requestDTO) {
-    validatorService.validateArticleRequestDTO(requestDTO).ifPresent(message -> {
+    validateArticleRequestDTO(requestDTO).ifPresent(message -> {
       throw new EmptyFieldsException(message);
     });
     Article articleToEdit = articleRepository.findById(newsId)
         .orElseThrow(() -> {
           throw new ArticleNotFoundException("Article does not exist.");
         });
-    if (articleToEdit.getTitle() != requestDTO.getTitle()
+    if (!articleToEdit.getTitle().equals(requestDTO.getTitle())
         && articleRepository.existsByTitle(requestDTO.getTitle())) {
       throw new UniqueNameViolationException("News title already exists.");
     }
@@ -67,5 +70,13 @@ public class ArticleServiceImpl implements ArticleService {
     articleToEdit.setTitle(requestDTO.getTitle());
     articleToEdit.setContent(requestDTO.getContent());
     return articleRepository.save(articleToEdit);
+  }
+
+  @Override
+  public Optional<String> validateArticleRequestDTO(ArticleRequestDTO requestDTO) {
+    List<String> missingFields = new ArrayList<>();
+    validatorService.validateField("title", requestDTO::getTitle, Predicate.not(String::isBlank)).ifPresent(missingFields::add);
+    validatorService.validateField("content", requestDTO::getContent, Predicate.not(String::isBlank)).ifPresent(missingFields::add);
+    return validatorService.getErrorMessageByMissingFields(missingFields);
   }
 }

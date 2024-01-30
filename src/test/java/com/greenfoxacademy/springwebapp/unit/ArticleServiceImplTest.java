@@ -9,7 +9,7 @@ import com.greenfoxacademy.springwebapp.models.Article;
 import com.greenfoxacademy.springwebapp.repositories.ArticleRepository;
 import com.greenfoxacademy.springwebapp.services.ArticleService;
 import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
-import com.greenfoxacademy.springwebapp.services.ValidatorService;
+import com.greenfoxacademy.springwebapp.services.ValidatorServiceImp;
 import jakarta.persistence.EntityExistsException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,12 +29,12 @@ class ArticleServiceImplTest {
 
   ArticleService articleService;
   ArticleRepository articleRepository;
-  ValidatorService validatorService;
+  ValidatorServiceImp validatorService;
 
   @BeforeEach
   void init() {
     articleRepository = Mockito.mock(ArticleRepository.class);
-    validatorService = Mockito.mock(ValidatorService.class);
+    validatorService = Mockito.mock(ValidatorServiceImp.class);
     articleService = new ArticleServiceImpl(articleRepository, validatorService);
   }
 
@@ -137,7 +137,7 @@ class ArticleServiceImplTest {
   @Test
   void editNews_WithEmptyArticleRequestDTO_throwsEmptyFieldsException() {
     ArticleRequestDTO requestDTO = new ArticleRequestDTO();
-    Mockito.when(validatorService.validateArticleRequestDTO(requestDTO))
+    Mockito.when(articleService.validateArticleRequestDTO(requestDTO))
         .thenReturn(Optional.of("Title and content are required."));
 
     Assertions.assertThrows(EmptyFieldsException.class,
@@ -148,7 +148,7 @@ class ArticleServiceImplTest {
   @Test
   void editNews_WithInvalidNewsId_throwsArticleNotFoundException() {
     ArticleRequestDTO requestDTO = new ArticleRequestDTO("test", "test");
-    Mockito.when(validatorService.validateArticleRequestDTO(requestDTO))
+    Mockito.when(articleService.validateArticleRequestDTO(requestDTO))
         .thenReturn(Optional.empty());
     Mockito.when(articleRepository.findById(0L)).thenReturn(Optional.empty());
 
@@ -159,7 +159,7 @@ class ArticleServiceImplTest {
   @Test
   void editNews_WithExistingArticleTitle_throwsUniqueNameViolationException() {
     ArticleRequestDTO requestDTO = new ArticleRequestDTO("test", "test");
-    Mockito.when(validatorService.validateArticleRequestDTO(requestDTO))
+    Mockito.when(articleService.validateArticleRequestDTO(requestDTO))
         .thenReturn(Optional.empty());
     Mockito.when(articleRepository.findById(1L)).thenReturn(Optional.of(new Article("test1", "test")));
     Mockito.when(articleRepository.existsByTitle("test")).thenReturn(true);
@@ -172,7 +172,7 @@ class ArticleServiceImplTest {
   void editNews_WithValidInput_returnsEditedArticle() {
     Long newsId = 1L;
     ArticleRequestDTO requestDTO = new ArticleRequestDTO("anything", "something");
-    Mockito.when(validatorService.validateArticleRequestDTO(requestDTO)).thenReturn(Optional.empty());
+    Mockito.when(articleService.validateArticleRequestDTO(requestDTO)).thenReturn(Optional.empty());
     Article articleToEdit = new Article("test1", "test");
     Mockito.when(articleRepository.findById(newsId)).thenReturn(Optional.of(articleToEdit));
     Mockito.when(articleRepository.existsByTitle("anything")).thenReturn(false);
@@ -184,5 +184,4 @@ class ArticleServiceImplTest {
     Assertions.assertEquals("anything", article.getTitle());
     Assertions.assertEquals("something", article.getContent());
   }
-  //mikor nem hívjuk meg az adott kódrészletet
 }

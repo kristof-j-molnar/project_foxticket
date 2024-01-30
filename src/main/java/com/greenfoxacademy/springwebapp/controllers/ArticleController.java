@@ -6,7 +6,7 @@ import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.exceptions.ArticleNotFoundException;
 import com.greenfoxacademy.springwebapp.exceptions.EmptyFieldsException;
 import com.greenfoxacademy.springwebapp.exceptions.UniqueNameViolationException;
-import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
+import com.greenfoxacademy.springwebapp.services.ArticleService;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/news")
 public class ArticleController {
 
-  private final ArticleServiceImpl articleService;
+  private final ArticleService articleService;
 
   @Autowired
-  public ArticleController(ArticleServiceImpl articleService) {
+  public ArticleController(ArticleService articleService) {
     this.articleService = articleService;
   }
 
@@ -47,8 +47,7 @@ public class ArticleController {
   }
 
   @PutMapping(path = "/{newsId}")
-  public ResponseEntity<?> editNews(@PathVariable Long newsId,
-                                    @RequestBody(required = false) ArticleRequestDTO articleRequestDTO) {
+  public ResponseEntity<?> editNews(@PathVariable Long newsId, @RequestBody ArticleRequestDTO articleRequestDTO) {
     try {
       return ResponseEntity.ok(articleService.editNews(newsId, articleRequestDTO));
     } catch (EmptyFieldsException | UniqueNameViolationException e) {

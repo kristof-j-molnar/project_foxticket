@@ -2,6 +2,7 @@ package com.greenfoxacademy.springwebapp.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenfoxacademy.springwebapp.dtos.ArticleRequestDTO;
+import com.greenfoxacademy.springwebapp.dtos.TokenDTO;
 import com.greenfoxacademy.springwebapp.dtos.UserLoginDTO;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -11,8 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -41,8 +40,8 @@ class ArticleControllerTest {
         .getResponse()
         .getContentAsString();
 
-    Map<String, String> map = objectMapper.readValue(responseContent, Map.class);
-    return map.get("token");
+    TokenDTO tokenDTO = objectMapper.readValue(responseContent, TokenDTO.class);
+    return tokenDTO.getToken();
   }
 
   @Test
@@ -182,7 +181,7 @@ class ArticleControllerTest {
   }
 
   @Test
-  public void editNews_withValidInput_return200AndArticle() throws Exception {
+  public void editNews_withAlteredTitleAndContent_return200AndArticle() throws Exception {
     String jwt = login();
     ArticleRequestDTO request = new ArticleRequestDTO("Test article", "some test content for fun");
     mockMvc.perform(put("/api/news/1").header("Authorization", "Bearer " + jwt)
@@ -191,6 +190,19 @@ class ArticleControllerTest {
         .andExpect(status().is(200))
         .andExpect(jsonPath("$['id']").value(1))
         .andExpect(jsonPath("$['title']").value("Test article"))
+        .andExpect(jsonPath("$['content']").value("some test content for fun"));
+  }
+
+  @Test
+  public void editNews_withSameTitleAndAlteredContent_return200AndArticle() throws Exception {
+    String jwt = login();
+    ArticleRequestDTO request = new ArticleRequestDTO("Test article 1", "some test content for fun");
+    mockMvc.perform(put("/api/news/1").header("Authorization", "Bearer " + jwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is(200))
+        .andExpect(jsonPath("$['id']").value(1))
+        .andExpect(jsonPath("$['title']").value("Test article 1"))
         .andExpect(jsonPath("$['content']").value("some test content for fun"));
   }
 }

@@ -4,6 +4,8 @@ import com.greenfoxacademy.springwebapp.dtos.ArticleRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ArticlesDTO;
 import com.greenfoxacademy.springwebapp.models.Article;
 
+import java.util.Optional;
+
 public interface ArticleService {
 
   ArticlesDTO generateArticlesDTO();
@@ -13,4 +15,6 @@ public interface ArticleService {
   Article addNews(ArticleRequestDTO articleRequest);
 
   Article editNews(Long newsId, ArticleRequestDTO requestDTO);
+
+  Optional<String> validateArticleRequestDTO(ArticleRequestDTO requestDTO);
 }
