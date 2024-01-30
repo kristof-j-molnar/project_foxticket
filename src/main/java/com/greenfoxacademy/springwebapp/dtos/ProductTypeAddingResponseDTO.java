@@ -1,5 +1,7 @@
 package com.greenfoxacademy.springwebapp.dtos;
 
+import com.greenfoxacademy.springwebapp.models.ProductType;
+
 public class ProductTypeAddingResponseDTO {
 
   private Long id;
@@ -9,9 +11,9 @@ public class ProductTypeAddingResponseDTO {
   public ProductTypeAddingResponseDTO() {
   }
 
-  public ProductTypeAddingResponseDTO(Long id, String name) {
-    this.id = id;
-    this.name = name;
+  public ProductTypeAddingResponseDTO(ProductType type) {
+    id = type.getId();
+    name = type.getName();
   }
 
   public Long getId() {

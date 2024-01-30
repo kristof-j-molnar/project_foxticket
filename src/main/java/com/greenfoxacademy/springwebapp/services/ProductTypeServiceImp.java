@@ -34,6 +34,6 @@ public class ProductTypeServiceImp implements ProductTypeService {
     }
     ProductType newType = new ProductType(request.getName());
     productTypeRepository.save(newType);
-    return new ProductTypeAddingResponseDTO(newType.getId(), newType.getName());
+    return new ProductTypeAddingResponseDTO(newType);
   }
 }
