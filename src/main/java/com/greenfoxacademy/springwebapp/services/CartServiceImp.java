@@ -2,6 +2,7 @@ package com.greenfoxacademy.springwebapp.services;
 
 import com.greenfoxacademy.springwebapp.dtos.*;
 import com.greenfoxacademy.springwebapp.models.Cart;
+import com.greenfoxacademy.springwebapp.models.CartItem;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
@@ -21,9 +22,7 @@ public class CartServiceImp implements CartService {
 
   private final CartRepository cartRepository;
   private final UserRepository userRepository;
-
   private final UserAuthenticationService authenticationService;
-
   private final ProductRepository productRepository;
 
   @Autowired
@@ -84,12 +83,20 @@ public class CartServiceImp implements CartService {
 
   @Override
   public void removeProduct(Long itemId, Authentication auth) {
+    Product searchedProduct = productRepository.findById(itemId)
+        .orElseThrow(() -> new EntityNotFoundException("No such product with the given ID"));
     User user = userRepository.findUserByEmail(authenticationService.getCurrentUserEmail(auth))
         .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
     Cart cart = user.getCart();
-    Product productToRemove = productRepository.findById(itemId)
-        .orElseThrow(() -> new EntityNotFoundException("No such product with the given ID"));
-    cart.removeProduct(productToRemove);
+
+    CartItem itemToRemove = null;
+    for (CartItem cartItem : cart.getCartItems()) {
+      if (cartItem.getProduct().getId().equals(itemId)) {
+        itemToRemove = cartItem;
+        break;
+      }
+    }
+    cart.removeProduct(itemToRemove);
     cartRepository.save(cart);
   }
 
@@ -98,10 +105,10 @@ public class CartServiceImp implements CartService {
     User user = userRepository.findUserByEmail(authenticationService.getCurrentUserEmail(auth))
         .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
     Cart cart = user.getCart();
-    if (cart.getProductList().isEmpty()) {
+    if (cart.isEmpty()) {
       return;
     }
-    cart.getProductList().clear();
+    cart.clear();
     cartRepository.save(cart);
   }
 }

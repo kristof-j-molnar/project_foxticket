@@ -1,10 +1,7 @@
 package com.greenfoxacademy.springwebapp.unit;
 
 import com.greenfoxacademy.springwebapp.dtos.*;
-import com.greenfoxacademy.springwebapp.models.Cart;
-import com.greenfoxacademy.springwebapp.models.Product;
-import com.greenfoxacademy.springwebapp.models.ProductType;
-import com.greenfoxacademy.springwebapp.models.User;
+import com.greenfoxacademy.springwebapp.models.*;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
 import com.greenfoxacademy.springwebapp.repositories.ProductRepository;
 import com.greenfoxacademy.springwebapp.repositories.UserRepository;
@@ -175,17 +172,16 @@ public class CartServiceImpTest {
     Product p1 = new Product("Vonaljegy", 480, 90, "90 perces vonaljegy BP-n!");
     Cart cart = user.getCart();
     long id = 1;
-    cart.addProduct(p1);
+    long cartItemId = 1;
     p1.setId(id);
+    cart.addProduct(p1);
 
     Authentication auth = Mockito.mock(Authentication.class);
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 
-    Mockito.when(userRepository.findUserByEmail("lacika.com")).thenReturn(Optional.of(user));
+    Mockito.when(userRepository.findUserByEmail(user.getEmail())).thenReturn(Optional.of(user));
     Mockito.when(productRepository.findById(id)).thenReturn(Optional.of(p1));
-    Mockito.when(authenticationService.getCurrentUserEmail(auth)).thenReturn("lacika.com");
-    Mockito.when(securityContext.getAuthentication()).thenReturn(auth);
-    Mockito.when(cartRepository.findByUserId((int) id)).thenReturn(Optional.of(cart));
+    Mockito.when(authenticationService.getCurrentUserEmail(auth)).thenReturn(user.getEmail());
     SecurityContextHolder.setContext(securityContext);
 
     cartService.removeProduct(id, auth);
@@ -208,11 +204,9 @@ public class CartServiceImpTest {
     Authentication auth = Mockito.mock(Authentication.class);
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 
-    Mockito.when(userRepository.findUserByEmail("lacika.com")).thenReturn(Optional.of(user));
+    Mockito.when(userRepository.findUserByEmail(user.getEmail())).thenReturn(Optional.of(user));
     Mockito.when(productRepository.findById(id2)).thenReturn(Optional.of(p2));
-    Mockito.when(authenticationService.getCurrentUserEmail(auth)).thenReturn("lacika.com");
-    Mockito.when(securityContext.getAuthentication()).thenReturn(auth);
-    Mockito.when(cartRepository.findByUserId((int) id1)).thenReturn(Optional.of(cart));
+    Mockito.when(authenticationService.getCurrentUserEmail(auth)).thenReturn(user.getEmail());
     SecurityContextHolder.setContext(securityContext);
 
     assertThrows(EntityNotFoundException.class, () -> cartService.removeProduct(id2, auth));
@@ -231,11 +225,9 @@ public class CartServiceImpTest {
     Authentication auth = Mockito.mock(Authentication.class);
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 
-    Mockito.when(userRepository.findUserByEmail("lacika.com")).thenReturn(Optional.of(user));
+    Mockito.when(userRepository.findUserByEmail(user.getEmail())).thenReturn(Optional.of(user));
     Mockito.when(productRepository.findById(id)).thenReturn(Optional.of(p1));
-    Mockito.when(authenticationService.getCurrentUserEmail(auth)).thenReturn("lacika.com");
-    Mockito.when(securityContext.getAuthentication()).thenReturn(auth);
-    Mockito.when(cartRepository.findByUserId((int) id)).thenReturn(Optional.of(cart));
+    Mockito.when(authenticationService.getCurrentUserEmail(auth)).thenReturn(user.getEmail());
     SecurityContextHolder.setContext(securityContext);
 
     cartService.clearCart(auth);
