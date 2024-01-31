@@ -50,8 +50,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
     Optional<Article> existingArticle = articleRepository.findByTitle(articleRequest.getTitle());
     if (existingArticle.isPresent() && !existingArticle.get().isDeleted()) {
-        throw new EntityExistsException("News title already exists");
-      }
+      throw new EntityExistsException("News title already exists");
+    }
     Article newArticle = new Article(articleRequest.getTitle(), articleRequest.getContent());
     return articleRepository.save(newArticle);
   }

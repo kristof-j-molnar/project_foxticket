@@ -14,8 +14,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
   @Query("SELECT a FROM articles a WHERE a.title LIKE %:title% OR a.content LIKE %:content%")
   List<Article> findByTitleContainingOrContentContaining(@Param("title") String title, @Param("content") String content);
 
-  boolean existsByTitle(String title);
-
   @Query("SELECT a FROM articles a WHERE a.title = :title")
   Optional<Article> findByTitle(String title);
 }

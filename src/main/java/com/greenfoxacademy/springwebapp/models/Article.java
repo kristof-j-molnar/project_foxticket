@@ -1,11 +1,13 @@
 package com.greenfoxacademy.springwebapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.Instant;
 
 @Entity(name = "articles")
+@JsonIgnoreProperties(value = {"deleted"})
 public class Article {
 
   @Id
