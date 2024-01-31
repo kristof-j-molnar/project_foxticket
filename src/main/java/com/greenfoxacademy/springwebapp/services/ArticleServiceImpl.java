@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -23,14 +25,21 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public ArticlesDTO generateArticlesDTO() {
-    List<Article> articles = articleRepository.findAll();
-    return new ArticlesDTO(articles);
+    List<Article> listNotDeleted = filterDeletedArticles(articleRepository.findAll());
+    return new ArticlesDTO(listNotDeleted);
   }
 
   @Override
   public ArticlesDTO searchArticles(String search) {
     List<Article> matchingArticles = articleRepository.findByTitleContainingOrContentContaining(search, search);
-    return new ArticlesDTO(matchingArticles);
+    List<Article> listNotDeleted = filterDeletedArticles(matchingArticles);
+    return new ArticlesDTO(listNotDeleted);
+  }
+
+  private List<Article> filterDeletedArticles(List<Article> articles) {
+    return articles.stream()
+        .filter(article -> !article.isDeleted())
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -39,9 +48,10 @@ public class ArticleServiceImpl implements ArticleService {
         || articleRequest.getTitle() == null || articleRequest.getTitle().isEmpty()) {
       throw new IllegalArgumentException("Title or content are required");
     }
-    if (articleRepository.existsByTitle(articleRequest.getTitle())) {
-      throw new EntityExistsException("News title already exists");
-    }
+    Optional<Article> existingArticle = articleRepository.findByTitle(articleRequest.getTitle());
+    if (existingArticle.isPresent() && !existingArticle.get().isDeleted()) {
+        throw new EntityExistsException("News title already exists");
+      }
     Article newArticle = new Article(articleRequest.getTitle(), articleRequest.getContent());
     return articleRepository.save(newArticle);
   }

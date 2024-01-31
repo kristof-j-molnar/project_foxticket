@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
@@ -14,4 +15,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
   List<Article> findByTitleContainingOrContentContaining(@Param("title") String title, @Param("content") String content);
 
   boolean existsByTitle(String title);
+
+  @Query("SELECT a FROM articles a WHERE a.title = :title")
+  Optional<Article> findByTitle(String title);
 }

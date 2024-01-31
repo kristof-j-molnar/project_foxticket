@@ -98,7 +98,9 @@ class ArticleServiceImplTest {
 
   @Test
   void addNews_withExistTitle_returnError() {
-    Mockito.when(articleRepository.existsByTitle("Test Title")).thenReturn(true);
+    Article a = new Article("Test Title", "ha-ha-ha");
+    a.setDeleted(false);
+    Mockito.when(articleRepository.findByTitle("Test Title")).thenReturn(Optional.of(a));
 
     EntityExistsException exception = assertThrows(EntityExistsException.class,
         () -> articleService.addNews(new ArticleAddingRequestDTO("Test Title", "test content for test article")));
