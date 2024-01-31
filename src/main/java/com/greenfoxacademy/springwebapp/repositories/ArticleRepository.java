@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-  @Query("SELECT a FROM Article a WHERE a.title LIKE %:title% OR a.content LIKE %:content%")
+  @Query("SELECT a FROM articles a WHERE a.title LIKE %:title% OR a.content LIKE %:content%")
   List<Article> findByTitleContainingOrContentContaining(@Param("title") String title, @Param("content") String content);
 
   boolean existsByTitle(String title);

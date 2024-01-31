@@ -2,8 +2,7 @@ package com.greenfoxacademy.springwebapp.models;
 
 import jakarta.persistence.*;
 
-@Entity
-@Table(name = "products")
+@Entity(name = "products")
 public class Product {
 
   @Id
