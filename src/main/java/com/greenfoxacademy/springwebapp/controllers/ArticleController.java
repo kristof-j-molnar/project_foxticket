@@ -42,7 +42,7 @@ public class ArticleController {
     try {
       return ResponseEntity.status(200).body(articleService.addNews(article));
     } catch (IllegalArgumentException | EntityExistsException e) {
-      return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
+      return ResponseEntity.status(400).body(new ErrorMessageDTO(e.getMessage()));
     }
   }
 

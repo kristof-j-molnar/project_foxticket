@@ -29,13 +29,11 @@ class ArticleServiceImplTest {
 
   ArticleService articleService;
   ArticleRepository articleRepository;
-  ValidatorServiceImp validatorService;
 
   @BeforeEach
   void init() {
     articleRepository = Mockito.mock(ArticleRepository.class);
-    validatorService = Mockito.mock(ValidatorServiceImp.class);
-    articleService = new ArticleServiceImpl(articleRepository, validatorService);
+    articleService = new ArticleServiceImpl(articleRepository, new ValidatorServiceImp());
   }
 
   @Test
@@ -136,20 +134,23 @@ class ArticleServiceImplTest {
 
   @Test
   void editNews_WithEmptyArticleRequestDTO_throwsEmptyFieldsException() {
-    ArticleRequestDTO requestDTO = new ArticleRequestDTO();
-    Mockito.when(articleService.validateArticleRequestDTO(requestDTO))
-        .thenReturn(Optional.of("Title and content are required."));
-
+    ArticleRequestDTO request = new ArticleRequestDTO();
     Assertions.assertThrows(EmptyFieldsException.class,
-        () -> articleService.editNews(1L, requestDTO));
+        () -> articleService.editNews(1L, request));
+    Mockito.verifyNoInteractions(articleRepository);
+  }
+
+  @Test
+  void editNews_WithBlankArticleRequestDTO_throwsEmptyFieldsException() {
+    ArticleRequestDTO request = new ArticleRequestDTO("", "  ");
+    Assertions.assertThrows(EmptyFieldsException.class,
+        () -> articleService.editNews(1L, request));
     Mockito.verifyNoInteractions(articleRepository);
   }
 
   @Test
   void editNews_WithInvalidNewsId_throwsArticleNotFoundException() {
     ArticleRequestDTO requestDTO = new ArticleRequestDTO("test", "test");
-    Mockito.when(articleService.validateArticleRequestDTO(requestDTO))
-        .thenReturn(Optional.empty());
     Mockito.when(articleRepository.findById(0L)).thenReturn(Optional.empty());
 
     Assertions.assertThrows(ArticleNotFoundException.class,
@@ -159,8 +160,6 @@ class ArticleServiceImplTest {
   @Test
   void editNews_WithExistingArticleTitle_throwsUniqueNameViolationException() {
     ArticleRequestDTO requestDTO = new ArticleRequestDTO("test", "test");
-    Mockito.when(articleService.validateArticleRequestDTO(requestDTO))
-        .thenReturn(Optional.empty());
     Mockito.when(articleRepository.findById(1L)).thenReturn(Optional.of(new Article("test1", "test")));
     Mockito.when(articleRepository.existsByTitle("test")).thenReturn(true);
 
@@ -172,7 +171,6 @@ class ArticleServiceImplTest {
   void editNews_WithValidInput_returnsEditedArticle() {
     Long newsId = 1L;
     ArticleRequestDTO requestDTO = new ArticleRequestDTO("anything", "something");
-    Mockito.when(articleService.validateArticleRequestDTO(requestDTO)).thenReturn(Optional.empty());
     Article articleToEdit = new Article("test1", "test");
     Mockito.when(articleRepository.findById(newsId)).thenReturn(Optional.of(articleToEdit));
     Mockito.when(articleRepository.existsByTitle("anything")).thenReturn(false);

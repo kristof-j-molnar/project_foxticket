@@ -72,8 +72,7 @@ public class ArticleServiceImpl implements ArticleService {
     return articleRepository.save(articleToEdit);
   }
 
-  @Override
-  public Optional<String> validateArticleRequestDTO(ArticleRequestDTO requestDTO) {
+  private Optional<String> validateArticleRequestDTO(ArticleRequestDTO requestDTO) {
     List<String> missingFields = new ArrayList<>();
     validatorService.validateField("title", requestDTO::getTitle, Predicate.not(String::isBlank)).ifPresent(missingFields::add);
     validatorService.validateField("content", requestDTO::getContent, Predicate.not(String::isBlank)).ifPresent(missingFields::add);

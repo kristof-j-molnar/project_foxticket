@@ -99,7 +99,7 @@ class ArticleControllerTest {
     mockMvc.perform(post("/api/news").header("Authorization", "Bearer " + jwt)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().is(404))
+        .andExpect(status().is(400))
         .andExpect(jsonPath("$['error']").value("Title or content are required"));
   }
 
@@ -110,7 +110,7 @@ class ArticleControllerTest {
     mockMvc.perform(post("/api/news").header("Authorization", "Bearer " + jwt)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().is(404))
+        .andExpect(status().is(400))
         .andExpect(jsonPath("$['error']").value("Title or content are required"));
   }
 
@@ -121,7 +121,7 @@ class ArticleControllerTest {
     mockMvc.perform(post("/api/news").header("Authorization", "Bearer " + jwt)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().is(404))
+        .andExpect(status().is(400))
         .andExpect(jsonPath("$['error']").value("Title or content are required"));
   }
 
@@ -132,7 +132,7 @@ class ArticleControllerTest {
     mockMvc.perform(post("/api/news").header("Authorization", "Bearer " + jwt)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().is(404))
+        .andExpect(status().is(400))
         .andExpect(jsonPath("$['error']").value("News title already exists"));
   }
 

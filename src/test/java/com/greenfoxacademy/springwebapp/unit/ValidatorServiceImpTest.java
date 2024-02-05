@@ -69,4 +69,28 @@ class ValidatorServiceImpTest {
     Optional<String> fieldIfValid = validatorService.validateField("title", requestDTO::getTitle, Predicate.not(String::isBlank));
     assertEquals(Optional.of("title"), fieldIfValid);
   }
+
+  @Test
+  void validateField_withIncorrectEmailInputCheckingAtCharacter_returnsOptionalOfFieldName() {
+    Optional<String> fieldIfValid = validatorService.validateField("e-mail", () -> "something.com", s -> s.contains("@"));
+    assertEquals(Optional.of("e-mail"), fieldIfValid);
+  }
+
+  @Test
+  void validateField_withCorrectEmailInputCheckingAtCharacter_returnsEmptyOptional() {
+    Optional<String> fieldIfValid = validatorService.validateField("e-mail", () -> "anything@something.com", s -> s.contains("@"));
+    assertEquals(Optional.empty(), fieldIfValid);
+  }
+
+  @Test
+  void validateField_withPasswordOf5CharactersCheckingLengthBiggerThan8_returnsOptionalOfFieldName() {
+    Optional<String> fieldIfValid = validatorService.validateField("password", () -> "short", s -> s.length() > 8);
+    assertEquals(Optional.of("password"), fieldIfValid);
+  }
+
+  @Test
+  void validateField_withPasswordOf9CharactersCheckingLengthBiggerThan8_returnsEmptyOptional() {
+    Optional<String> fieldIfValid = validatorService.validateField("password", () -> "something", s -> s.length() > 8);
+    assertEquals(Optional.empty(), fieldIfValid);
+  }
 }
