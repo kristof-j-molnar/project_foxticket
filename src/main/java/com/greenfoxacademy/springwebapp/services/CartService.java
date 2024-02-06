@@ -1,6 +1,8 @@
 package com.greenfoxacademy.springwebapp.services;
 
-import com.greenfoxacademy.springwebapp.dtos.*;
+import com.greenfoxacademy.springwebapp.dtos.CartDTO;
+import com.greenfoxacademy.springwebapp.dtos.MultipleProductsAddingResponseListDTO;
+import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
 import com.greenfoxacademy.springwebapp.models.Cart;
 
 public interface CartService {

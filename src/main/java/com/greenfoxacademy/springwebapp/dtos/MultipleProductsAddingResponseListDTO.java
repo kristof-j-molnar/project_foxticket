@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultipleProductsAddingResponseListDTO {
-  private List<ProductAddingResponseItemDTO> items;
+  private final List<ProductAddingResponseItemDTO> items;
 
   public MultipleProductsAddingResponseListDTO() {
     items = new ArrayList<>();

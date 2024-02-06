@@ -22,9 +22,9 @@ public class CartServiceImp implements CartService {
   private final CartRepository cartRepository;
   private final UserRepository userRepository;
 
-  private UserAuthenticationService authenticationService;
+  private final UserAuthenticationService authenticationService;
 
-  private ProductRepository productRepository;
+  private final ProductRepository productRepository;
 
   @Autowired
   public CartServiceImp(CartRepository cartRepository, UserRepository userRepository, UserAuthenticationService authenticationService, ProductRepository productRepository) {

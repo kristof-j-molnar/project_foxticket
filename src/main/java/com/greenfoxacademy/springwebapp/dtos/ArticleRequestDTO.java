@@ -1,15 +1,15 @@
 package com.greenfoxacademy.springwebapp.dtos;
 
-public class ArticleAddingRequestDTO {
+public class ArticleRequestDTO {
 
   private String title;
 
   private String content;
 
-  public ArticleAddingRequestDTO() {
+  public ArticleRequestDTO() {
   }
 
-  public ArticleAddingRequestDTO(String title, String content) {
+  public ArticleRequestDTO(String title, String content) {
     this.title = title;
     this.content = content;
   }
