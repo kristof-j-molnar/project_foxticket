@@ -51,11 +51,16 @@ public class Cart {
     cartItems.add(new CartItem(product, this));
   }
 
-  public void removeProduct(CartItem cartItem) {
-    boolean couldRemoveProduct = cartItems.remove(cartItem);
-    if (!couldRemoveProduct) {
-      throw new EntityNotFoundException("Product not found in the cart");
+  public void removeProductOnce(Product product) {
+    var it = cartItems.iterator();
+    while (it.hasNext()) {
+      var item = it.next();
+      if (item.getProduct().equals(product)) {
+        it.remove();
+        return;
+      }
     }
+    throw new EntityNotFoundException("Product not found in the cart");
   }
 
   public boolean isEmpty() {

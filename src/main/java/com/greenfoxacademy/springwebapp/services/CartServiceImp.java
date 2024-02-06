@@ -2,7 +2,6 @@ package com.greenfoxacademy.springwebapp.services;
 
 import com.greenfoxacademy.springwebapp.dtos.*;
 import com.greenfoxacademy.springwebapp.models.Cart;
-import com.greenfoxacademy.springwebapp.models.CartItem;
 import com.greenfoxacademy.springwebapp.models.Product;
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.repositories.CartRepository;
@@ -89,14 +88,8 @@ public class CartServiceImp implements CartService {
         .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
     Cart cart = user.getCart();
 
-    CartItem itemToRemove = null;
-    for (CartItem cartItem : cart.getCartItems()) {
-      if (cartItem.getProduct().getId().equals(itemId)) {
-        itemToRemove = cartItem;
-        break;
-      }
-    }
-    cart.removeProduct(itemToRemove);
+
+    cart.removeProductOnce(searchedProduct);
     cartRepository.save(cart);
   }
 
