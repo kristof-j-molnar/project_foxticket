@@ -21,7 +21,9 @@ public class CartServiceImp implements CartService {
 
   private final CartRepository cartRepository;
   private final UserRepository userRepository;
+
   private final UserAuthenticationService authenticationService;
+
   private final ProductRepository productRepository;
 
   @Autowired

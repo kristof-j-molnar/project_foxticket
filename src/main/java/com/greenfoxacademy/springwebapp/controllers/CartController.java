@@ -3,7 +3,6 @@ package com.greenfoxacademy.springwebapp.controllers;
 import com.greenfoxacademy.springwebapp.dtos.ConfirmationMessageDTO;
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
-
 import com.greenfoxacademy.springwebapp.models.User;
 import com.greenfoxacademy.springwebapp.services.CartService;
 import com.greenfoxacademy.springwebapp.services.UserAuthenticationService;
@@ -17,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "/api")
 public class CartController {
-  private CartService cartService;
-  private UserService userService;
-  private UserAuthenticationService userAuthenticationService;
+  private final CartService cartService;
+  private final UserService userService;
+  private final UserAuthenticationService userAuthenticationService;
 
   @Autowired
   public CartController(CartService cartService, UserService userService, UserAuthenticationService userAuthenticationService) {

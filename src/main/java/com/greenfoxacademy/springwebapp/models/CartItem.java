@@ -2,7 +2,8 @@ package com.greenfoxacademy.springwebapp.models;
 
 import jakarta.persistence.*;
 
-@Entity(name = "cartItems")
+@Entity(name = "cartitems")
+
 public class CartItem {
 
   @Id
