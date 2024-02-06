@@ -50,5 +50,24 @@ public class Cart {
   public void addProduct(Product product) {
     cartItems.add(new CartItem(product, this));
   }
-}
 
+  public void removeProductOnce(Product product) {
+    var it = cartItems.iterator();
+    while (it.hasNext()) {
+      var item = it.next();
+      if (item.getProduct().equals(product)) {
+        it.remove();
+        return;
+      }
+    }
+    throw new EntityNotFoundException("Product not found in the cart");
+  }
+
+  public boolean isEmpty() {
+    return cartItems.isEmpty();
+  }
+
+  public void clear() {
+    cartItems.clear();
+  }
+}

@@ -1,5 +1,6 @@
 package com.greenfoxacademy.springwebapp.controllers;
 
+import com.greenfoxacademy.springwebapp.dtos.ConfirmationMessageDTO;
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
 import com.greenfoxacademy.springwebapp.dtos.ProductAddingRequestDTO;
 import com.greenfoxacademy.springwebapp.models.User;
@@ -10,10 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -50,5 +48,24 @@ public class CartController {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }
-}
 
+  @RequestMapping(path = "/cart/{itemId}", method = RequestMethod.DELETE)
+  public ResponseEntity<?> removeProductFromCart(@PathVariable Long itemId, Authentication auth) {
+    try {
+      cartService.removeProduct(itemId, auth);
+      return ResponseEntity.status(200).body(new ConfirmationMessageDTO("Item removed from the shopping cart"));
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
+    }
+  }
+
+  @RequestMapping(path = "/cart", method = RequestMethod.DELETE)
+  public ResponseEntity<?> clearCart(Authentication auth) {
+    try {
+      cartService.clearCart(auth);
+      return ResponseEntity.status(200).body(new ConfirmationMessageDTO("All items removed from the shopping cart"));
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
+    }
+  }
+}

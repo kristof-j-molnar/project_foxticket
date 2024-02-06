@@ -27,6 +27,7 @@ public class User {
   }
 
   public User(User user) {
+    this();
     this.name = user.getName();
     this.email = user.getEmail();
     this.password = user.getPassword();
@@ -35,6 +36,7 @@ public class User {
 
   public User() {
     setCart(new Cart());
+    cart.setUser(this);
   }
 
   public Integer getId() {

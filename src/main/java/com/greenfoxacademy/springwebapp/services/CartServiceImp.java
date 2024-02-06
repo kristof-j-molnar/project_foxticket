@@ -81,4 +81,29 @@ public class CartServiceImp implements CartService {
   public boolean isEmptyAddRequest(ProductAddingRequestDTO productDTO) {
     return productDTO == null || productDTO.getProductId() == null;
   }
+
+  @Override
+  public void removeProduct(Long itemId, Authentication auth) {
+    Product searchedProduct = productRepository.findById(itemId)
+        .orElseThrow(() -> new EntityNotFoundException("No such product with the given ID"));
+    User user = userRepository.findUserByEmail(authenticationService.getCurrentUserEmail(auth))
+        .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
+    Cart cart = user.getCart();
+
+
+    cart.removeProductOnce(searchedProduct);
+    cartRepository.save(cart);
+  }
+
+  @Override
+  public void clearCart(Authentication auth) {
+    User user = userRepository.findUserByEmail(authenticationService.getCurrentUserEmail(auth))
+        .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
+    Cart cart = user.getCart();
+    if (cart.isEmpty()) {
+      return;
+    }
+    cart.clear();
+    cartRepository.save(cart);
+  }
 }
