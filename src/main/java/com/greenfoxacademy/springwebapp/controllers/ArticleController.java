@@ -1,9 +1,12 @@
 package com.greenfoxacademy.springwebapp.controllers;
 
-import com.greenfoxacademy.springwebapp.dtos.ArticleAddingRequestDTO;
+import com.greenfoxacademy.springwebapp.dtos.ArticleRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ArticlesDTO;
 import com.greenfoxacademy.springwebapp.dtos.ErrorMessageDTO;
-import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
+import com.greenfoxacademy.springwebapp.exceptions.ArticleNotFoundException;
+import com.greenfoxacademy.springwebapp.exceptions.EmptyFieldsException;
+import com.greenfoxacademy.springwebapp.exceptions.UniqueNameViolationException;
+import com.greenfoxacademy.springwebapp.services.ArticleService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/news")
 public class ArticleController {
 
-  private final ArticleServiceImpl articleService;
+  private final ArticleService articleService;
 
   @Autowired
-  public ArticleController(ArticleServiceImpl articleService) {
+  public ArticleController(ArticleService articleService) {
     this.articleService = articleService;
   }
 
@@ -36,10 +39,21 @@ public class ArticleController {
   }
 
   @PostMapping
-  public ResponseEntity<?> addNews(@RequestBody(required = false) ArticleAddingRequestDTO article) {
+  public ResponseEntity<?> addNews(@RequestBody(required = false) ArticleRequestDTO article) {
     try {
       return ResponseEntity.status(200).body(articleService.addNews(article));
     } catch (IllegalArgumentException | EntityExistsException e) {
+      return ResponseEntity.status(400).body(new ErrorMessageDTO(e.getMessage()));
+    }
+  }
+
+  @PutMapping(path = "/{newsId}")
+  public ResponseEntity<?> editNews(@PathVariable Long newsId, @RequestBody ArticleRequestDTO articleRequestDTO) {
+    try {
+      return ResponseEntity.ok(articleService.editNews(newsId, articleRequestDTO));
+    } catch (EmptyFieldsException | UniqueNameViolationException e) {
+      return ResponseEntity.status(400).body(new ErrorMessageDTO(e.getMessage()));
+    } catch (ArticleNotFoundException e) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }

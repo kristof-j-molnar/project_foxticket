@@ -35,7 +35,8 @@ public class SecurityConfigurer {
     http.csrf(AbstractHttpConfigurer::disable);
 
     http.authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/api/admin", "/api/products/{userId}").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PATCH, "/api/users").hasRole("ADMIN")
+            .requestMatchers("/api/admin", "/api/products/{userId}", "/api/news/{newsId}").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/news").hasRole("ADMIN")
             .requestMatchers(HttpMethod.DELETE, "/api/news/*").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/products/*").hasRole("ADMIN")

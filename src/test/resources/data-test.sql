@@ -13,7 +13,7 @@ VALUES ('test ticket', 480, 90, 'test1',1),
        ('test pass 1', 4000, 9000, 'test2',2),
        ('test pass 2', 9500, 9000, 'test3',2);
 
-INSERT INTO CART_ITEMS (CART_ID, ID, PRODUCT_ID)
+INSERT INTO CARTITEMS (CART_ID, ID, PRODUCT_ID)
 VALUES (2, default, 1),
        (2, default, 2),
        (2, default, 3);
@@ -27,6 +27,6 @@ VALUES ('TestAdmin', 'admin@admin.hu', '$2a$10$fAKsedEmk29iZlspbWX2fODzONubZQRVf
 
 
 INSERT INTO ARTICLES (TITLE, CONTENT, PUBLISHDATE)
-VALUES ('News about tickets awesome', 'Ipsum Lorum', '2023-12-11');
-INSERT INTO ARTICLES (TITLE, CONTENT, PUBLISHDATE)
-VALUES ('Test Title', 'Test Content', '2023-12-11');
+VALUES ('Test article 1', 'Ipsum Lorem', '2023-12-11'),
+       ('Test article 2', 'Test Content', '2023-12-11'),
+       ('Test article 3', 'Lorem Ipsum', '2024-01-27');

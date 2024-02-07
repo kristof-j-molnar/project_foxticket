@@ -1,7 +1,10 @@
 package com.greenfoxacademy.springwebapp.services;
 
-import com.greenfoxacademy.springwebapp.dtos.ArticleAddingRequestDTO;
+import com.greenfoxacademy.springwebapp.dtos.ArticleRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ArticlesDTO;
+import com.greenfoxacademy.springwebapp.exceptions.ArticleNotFoundException;
+import com.greenfoxacademy.springwebapp.exceptions.EmptyFieldsException;
+import com.greenfoxacademy.springwebapp.exceptions.UniqueNameViolationException;
 import com.greenfoxacademy.springwebapp.models.Article;
 import com.greenfoxacademy.springwebapp.repositories.ArticleRepository;
 import jakarta.persistence.EntityExistsException;
@@ -9,18 +12,22 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
   private final ArticleRepository articleRepository;
+  private final ValidatorService validatorService;
 
   @Autowired
-  public ArticleServiceImpl(ArticleRepository articleRepository) {
+  public ArticleServiceImpl(ArticleRepository articleRepository, ValidatorService validatorService) {
     this.articleRepository = articleRepository;
+    this.validatorService = validatorService;
   }
 
   @Override
@@ -43,7 +50,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public Article addNews(ArticleAddingRequestDTO articleRequest) {
+  public Article addNews(ArticleRequestDTO articleRequest) {
     if (articleRequest == null || articleRequest.getContent() == null || articleRequest.getContent().isEmpty()
         || articleRequest.getTitle() == null || articleRequest.getTitle().isEmpty()) {
       throw new IllegalArgumentException("Title or content are required");
@@ -62,5 +69,30 @@ public class ArticleServiceImpl implements ArticleService {
     articleToDelete.setDeleted(true);
     articleRepository.save(articleToDelete);
     return articleToDelete;
+  }
+
+  public Article editNews(Long newsId, ArticleRequestDTO requestDTO) {
+    validateArticleRequestDTO(requestDTO).ifPresent(message -> {
+      throw new EmptyFieldsException(message);
+    });
+    Article articleToEdit = articleRepository.findById(newsId)
+        .orElseThrow(() -> {
+          throw new ArticleNotFoundException("Article does not exist.");
+        });
+    if (!articleToEdit.getTitle().equals(requestDTO.getTitle())
+        && articleRepository.existsByTitle(requestDTO.getTitle())) {
+      throw new UniqueNameViolationException("News title already exists.");
+    }
+
+    articleToEdit.setTitle(requestDTO.getTitle());
+    articleToEdit.setContent(requestDTO.getContent());
+    return articleRepository.save(articleToEdit);
+  }
+
+  private Optional<String> validateArticleRequestDTO(ArticleRequestDTO requestDTO) {
+    List<String> missingFields = new ArrayList<>();
+    validatorService.validateField("title", requestDTO::getTitle, Predicate.not(String::isBlank)).ifPresent(missingFields::add);
+    validatorService.validateField("content", requestDTO::getContent, Predicate.not(String::isBlank)).ifPresent(missingFields::add);
+    return validatorService.getErrorMessageByMissingFields(missingFields);
   }
 }

@@ -16,4 +16,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
   @Query("SELECT a FROM articles a WHERE a.title = :title")
   Optional<Article> findByTitle(String title);
+
+  boolean existsByTitle(String title);
 }

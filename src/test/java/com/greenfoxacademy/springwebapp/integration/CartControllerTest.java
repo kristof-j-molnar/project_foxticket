@@ -15,8 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -127,6 +126,36 @@ class CartControllerTest {
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().is(404))
         .andExpect(jsonPath("$['error']").value("Product is not found"));
+  }
+
+  @Test
+  @Transactional
+  void removeProductFromCart_ProductExistsInCart_ReturnConfirmationMessageDTOAnd200() throws Exception {
+    String jwt = login();
+
+    mvc.perform(delete("/api/cart/1").header("Authorization", "Bearer " + jwt))
+        .andExpect(status().is(200))
+        .andExpect(jsonPath("$.confirmationMessage").value("Item removed from the shopping cart"));
+  }
+
+  @Test
+  @Transactional
+  void removeProductFromCart_NonExistingProductId_ReturnErrorMessageDTOAnd404() throws Exception {
+    String jwt = login();
+
+    mvc.perform(delete("/api/cart/10").header("Authorization", "Bearer " + jwt))
+        .andExpect(status().is(404))
+        .andExpect(jsonPath("$.error").value("No such product with the given ID"));
+  }
+
+  @Test
+  @Transactional
+  void clearCart_CartNotEmpty_ReturnConfirmationMessageDTOAnd200() throws Exception {
+    String jwt = login();
+
+    mvc.perform(delete("/api/cart").header("Authorization", "Bearer " + jwt))
+        .andExpect(status().is(200))
+        .andExpect(jsonPath("$.confirmationMessage").value("All items removed from the shopping cart"));
   }
 
   private String login() throws Exception {

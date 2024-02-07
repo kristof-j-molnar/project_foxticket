@@ -22,9 +22,9 @@ public class CartServiceImp implements CartService {
   private final CartRepository cartRepository;
   private final UserRepository userRepository;
 
-  private UserAuthenticationService authenticationService;
+  private final UserAuthenticationService authenticationService;
 
-  private ProductRepository productRepository;
+  private final ProductRepository productRepository;
 
   @Autowired
   public CartServiceImp(CartRepository cartRepository, UserRepository userRepository, UserAuthenticationService authenticationService, ProductRepository productRepository) {
@@ -80,5 +80,30 @@ public class CartServiceImp implements CartService {
 
   public boolean isEmptyAddRequest(ProductAddingRequestDTO productDTO) {
     return productDTO == null || productDTO.getProductId() == null;
+  }
+
+  @Override
+  public void removeProduct(Long itemId, Authentication auth) {
+    Product searchedProduct = productRepository.findById(itemId)
+        .orElseThrow(() -> new EntityNotFoundException("No such product with the given ID"));
+    User user = userRepository.findUserByEmail(authenticationService.getCurrentUserEmail(auth))
+        .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
+    Cart cart = user.getCart();
+
+
+    cart.removeProductOnce(searchedProduct);
+    cartRepository.save(cart);
+  }
+
+  @Override
+  public void clearCart(Authentication auth) {
+    User user = userRepository.findUserByEmail(authenticationService.getCurrentUserEmail(auth))
+        .orElseThrow(() -> new EntityNotFoundException("User is invalid"));
+    Cart cart = user.getCart();
+    if (cart.isEmpty()) {
+      return;
+    }
+    cart.clear();
+    cartRepository.save(cart);
   }
 }

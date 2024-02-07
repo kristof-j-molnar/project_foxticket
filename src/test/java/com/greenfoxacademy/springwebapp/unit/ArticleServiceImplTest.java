@@ -1,11 +1,15 @@
 package com.greenfoxacademy.springwebapp.unit;
 
-import com.greenfoxacademy.springwebapp.dtos.ArticleAddingRequestDTO;
+import com.greenfoxacademy.springwebapp.dtos.ArticleRequestDTO;
 import com.greenfoxacademy.springwebapp.dtos.ArticlesDTO;
+import com.greenfoxacademy.springwebapp.exceptions.ArticleNotFoundException;
+import com.greenfoxacademy.springwebapp.exceptions.EmptyFieldsException;
+import com.greenfoxacademy.springwebapp.exceptions.UniqueNameViolationException;
 import com.greenfoxacademy.springwebapp.models.Article;
 import com.greenfoxacademy.springwebapp.repositories.ArticleRepository;
 import com.greenfoxacademy.springwebapp.services.ArticleService;
 import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
+import com.greenfoxacademy.springwebapp.services.ValidatorServiceImp;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
@@ -25,13 +29,12 @@ import static org.mockito.ArgumentMatchers.any;
 class ArticleServiceImplTest {
 
   ArticleService articleService;
-
   ArticleRepository articleRepository;
 
   @BeforeEach
   void init() {
     articleRepository = Mockito.mock(ArticleRepository.class);
-    articleService = new ArticleServiceImpl(articleRepository);
+    articleService = new ArticleServiceImpl(articleRepository, new ValidatorServiceImp());
   }
 
   @Test
@@ -91,7 +94,7 @@ class ArticleServiceImplTest {
     Article newArticle = new Article("Blah-blah", "test content for test article");
     Mockito.when(articleRepository.save(any())).thenReturn(newArticle);
 
-    Article actual = articleService.addNews(new ArticleAddingRequestDTO("Blah-blah", "test content for test article"));
+    Article actual = articleService.addNews(new ArticleRequestDTO("Blah-blah", "test content for test article"));
 
     assertEquals(newArticle.getTitle(), actual.getTitle());
   }
@@ -103,7 +106,7 @@ class ArticleServiceImplTest {
     Mockito.when(articleRepository.findByTitle("Test Title")).thenReturn(Optional.of(a));
 
     EntityExistsException exception = assertThrows(EntityExistsException.class,
-        () -> articleService.addNews(new ArticleAddingRequestDTO("Test Title", "test content for test article")));
+        () -> articleService.addNews(new ArticleRequestDTO("Test Title", "test content for test article")));
 
     Assertions.assertEquals("News title already exists", exception.getMessage());
   }
@@ -111,7 +114,7 @@ class ArticleServiceImplTest {
   @Test
   void addNews_withEmptyRequestBodyTitle_returnError() {
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-        () -> articleService.addNews(new ArticleAddingRequestDTO(null, "test content for test article")));
+        () -> articleService.addNews(new ArticleRequestDTO(null, "test content for test article")));
 
     Assertions.assertEquals("Title or content are required", exception.getMessage());
   }
@@ -119,7 +122,7 @@ class ArticleServiceImplTest {
   @Test
   void addNews_withEmptyRequestBodyContent_returnError() {
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-        () -> articleService.addNews(new ArticleAddingRequestDTO("Test", null)));
+        () -> articleService.addNews(new ArticleRequestDTO("Test", null)));
 
     Assertions.assertEquals("Title or content are required", exception.getMessage());
   }
@@ -158,5 +161,56 @@ class ArticleServiceImplTest {
         () -> articleService.deleteNewsById(10L));
 
     Assertions.assertEquals("The article is not found", exception.getMessage());
+  }
+
+  @Test
+  void editNews_WithEmptyArticleRequestDTO_throwsEmptyFieldsException() {
+    ArticleRequestDTO request = new ArticleRequestDTO();
+    Assertions.assertThrows(EmptyFieldsException.class,
+        () -> articleService.editNews(1L, request));
+    Mockito.verifyNoInteractions(articleRepository);
+  }
+
+  @Test
+  void editNews_WithBlankArticleRequestDTO_throwsEmptyFieldsException() {
+    ArticleRequestDTO request = new ArticleRequestDTO("", "  ");
+    Assertions.assertThrows(EmptyFieldsException.class,
+        () -> articleService.editNews(1L, request));
+    Mockito.verifyNoInteractions(articleRepository);
+  }
+
+  @Test
+  void editNews_WithInvalidNewsId_throwsArticleNotFoundException() {
+    ArticleRequestDTO requestDTO = new ArticleRequestDTO("test", "test");
+    Mockito.when(articleRepository.findById(0L)).thenReturn(Optional.empty());
+
+    Assertions.assertThrows(ArticleNotFoundException.class,
+        () -> articleService.editNews(0L, requestDTO));
+  }
+
+  @Test
+  void editNews_WithExistingArticleTitle_throwsUniqueNameViolationException() {
+    ArticleRequestDTO requestDTO = new ArticleRequestDTO("test", "test");
+    Mockito.when(articleRepository.findById(1L)).thenReturn(Optional.of(new Article("test1", "test")));
+    Mockito.when(articleRepository.existsByTitle("test")).thenReturn(true);
+
+    Assertions.assertThrows(UniqueNameViolationException.class,
+        () -> articleService.editNews(1L, requestDTO));
+  }
+
+  @Test
+  void editNews_WithValidInput_returnsEditedArticle() {
+    Long newsId = 1L;
+    ArticleRequestDTO requestDTO = new ArticleRequestDTO("anything", "something");
+    Article articleToEdit = new Article("test1", "test");
+    Mockito.when(articleRepository.findById(newsId)).thenReturn(Optional.of(articleToEdit));
+    Mockito.when(articleRepository.existsByTitle("anything")).thenReturn(false);
+    articleToEdit.setTitle(requestDTO.getTitle());
+    articleToEdit.setContent(requestDTO.getContent());
+    Mockito.when(articleRepository.save(articleToEdit)).thenReturn(articleToEdit);
+
+    Article article = articleService.editNews(newsId, requestDTO);
+    Assertions.assertEquals("anything", article.getTitle());
+    Assertions.assertEquals("something", article.getContent());
   }
 }
