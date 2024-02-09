@@ -38,6 +38,7 @@ public class SecurityConfigurer {
             .requestMatchers(HttpMethod.PATCH, "/api/users").hasRole("ADMIN")
             .requestMatchers("/api/admin", "/api/products/{userId}", "/api/news/{newsId}").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/news").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/api/news/*").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/products/*").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/product-type").hasRole("ADMIN")
             .requestMatchers("/api/news", "/api/cart/**", "/api/products")

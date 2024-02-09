@@ -28,22 +28,6 @@ class ArticleControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
-  private String login() throws Exception {
-    UserLoginDTO user = new UserLoginDTO("admin@admin.hu", "adminadmin");
-    String responseContent = mockMvc.perform(post("/api/users/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(user)))
-        .andExpect(status().is(200))
-        .andExpect(jsonPath("$.status").value("ok"))
-        .andExpect(jsonPath("$.token").exists())
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    TokenDTO tokenDTO = objectMapper.readValue(responseContent, TokenDTO.class);
-    return tokenDTO.getToken();
-  }
-
   @Test
   public void getArticles_withSearchParam_returnsFilteredArticles() throws Exception {
     String jwt = login();
@@ -204,5 +188,38 @@ class ArticleControllerTest {
         .andExpect(jsonPath("$['id']").value(1))
         .andExpect(jsonPath("$['title']").value("Test article 1"))
         .andExpect(jsonPath("$['content']").value("some test content for fun"));
+  }
+
+  @Test
+  void deleteNews_AndReturnErrorAnd404() throws Exception {
+    String jwt = login();
+
+    mockMvc.perform(delete("/api/news/100").header("Authorization", "Bearer " + jwt))
+        .andExpect(status().is(404))
+        .andExpect(jsonPath("$['error']").value("The article is not found"));
+  }
+
+  @Test
+  void deleteNews_Return200() throws Exception {
+    String jwt = login();
+
+    mockMvc.perform(delete("/api/news/1").header("Authorization", "Bearer " + jwt))
+        .andExpect(status().is(200));
+  }
+
+  private String login() throws Exception {
+    UserLoginDTO user = new UserLoginDTO("admin@admin.hu", "adminadmin");
+    String responseContent = mockMvc.perform(post("/api/users/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(user)))
+        .andExpect(status().is(200))
+        .andExpect(jsonPath("$.status").value("ok"))
+        .andExpect(jsonPath("$.token").exists())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    TokenDTO tokenDTO = objectMapper.readValue(responseContent, TokenDTO.class);
+    return tokenDTO.getToken();
   }
 }

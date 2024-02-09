@@ -8,12 +8,14 @@ import com.greenfoxacademy.springwebapp.exceptions.UniqueNameViolationException;
 import com.greenfoxacademy.springwebapp.models.Article;
 import com.greenfoxacademy.springwebapp.repositories.ArticleRepository;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.function.Predicate;
 
 @Service
@@ -30,14 +32,21 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public ArticlesDTO generateArticlesDTO() {
-    List<Article> articles = articleRepository.findAll();
-    return new ArticlesDTO(articles);
+    List<Article> listNotDeleted = filterDeletedArticles(articleRepository.findAll());
+    return new ArticlesDTO(listNotDeleted);
   }
 
   @Override
   public ArticlesDTO searchArticles(String search) {
     List<Article> matchingArticles = articleRepository.findByTitleContainingOrContentContaining(search, search);
-    return new ArticlesDTO(matchingArticles);
+    List<Article> listNotDeleted = filterDeletedArticles(matchingArticles);
+    return new ArticlesDTO(listNotDeleted);
+  }
+
+  private List<Article> filterDeletedArticles(List<Article> articles) {
+    return articles.stream()
+        .filter(article -> !article.isDeleted())
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -46,7 +55,8 @@ public class ArticleServiceImpl implements ArticleService {
         || articleRequest.getTitle() == null || articleRequest.getTitle().isEmpty()) {
       throw new IllegalArgumentException("Title or content are required");
     }
-    if (articleRepository.existsByTitle(articleRequest.getTitle())) {
+    Optional<Article> existingArticle = articleRepository.findByTitle(articleRequest.getTitle());
+    if (existingArticle.isPresent() && !existingArticle.get().isDeleted()) {
       throw new EntityExistsException("News title already exists");
     }
     Article newArticle = new Article(articleRequest.getTitle(), articleRequest.getContent());
@@ -54,6 +64,13 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
+  public Article deleteNewsById(Long articleId) {
+    Article articleToDelete = articleRepository.findById(articleId).orElseThrow(() -> new EntityNotFoundException("The article is not found"));
+    articleToDelete.setDeleted(true);
+    articleRepository.save(articleToDelete);
+    return articleToDelete;
+  }
+
   public Article editNews(Long newsId, ArticleRequestDTO requestDTO) {
     validateArticleRequestDTO(requestDTO).ifPresent(message -> {
       throw new EmptyFieldsException(message);

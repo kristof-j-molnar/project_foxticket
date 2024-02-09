@@ -8,6 +8,7 @@ import com.greenfoxacademy.springwebapp.exceptions.EmptyFieldsException;
 import com.greenfoxacademy.springwebapp.exceptions.UniqueNameViolationException;
 import com.greenfoxacademy.springwebapp.services.ArticleService;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +54,16 @@ public class ArticleController {
     } catch (EmptyFieldsException | UniqueNameViolationException e) {
       return ResponseEntity.status(400).body(new ErrorMessageDTO(e.getMessage()));
     } catch (ArticleNotFoundException e) {
+      return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
+    }
+  }
+
+  @RequestMapping(path = "/{articleId}", method = RequestMethod.DELETE)
+  public ResponseEntity<?> deleteNews(@PathVariable Long articleId) {
+    try {
+      articleService.deleteNewsById(articleId);
+      return ResponseEntity.status(200).build();
+    } catch (EntityNotFoundException e) {
       return ResponseEntity.status(404).body(new ErrorMessageDTO(e.getMessage()));
     }
   }

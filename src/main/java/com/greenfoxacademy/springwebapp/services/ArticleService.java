@@ -10,7 +10,11 @@ public interface ArticleService {
 
   ArticlesDTO searchArticles(String search);
 
+
+  Article deleteNewsById(Long articleId);
+
   Article addNews(ArticleRequestDTO articleRequest);
 
   Article editNews(Long newsId, ArticleRequestDTO requestDTO);
+
 }

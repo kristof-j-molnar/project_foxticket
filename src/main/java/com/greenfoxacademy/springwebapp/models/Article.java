@@ -1,12 +1,13 @@
 package com.greenfoxacademy.springwebapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.Instant;
 
-@Entity
-@Table(name = "Articles")
+@Entity(name = "articles")
+@JsonIgnoreProperties(value = {"deleted"})
 public class Article {
 
   @Id
@@ -18,7 +19,11 @@ public class Article {
   @JsonProperty("publish_date")
   private Instant publishDate;
 
+  @Column(columnDefinition = "boolean default false")
+  private boolean isDeleted;
+
   public Article() {
+    isDeleted = false;
     this.publishDate = Instant.now();
   }
 
@@ -54,5 +59,13 @@ public class Article {
 
   public void setPublishDate(Instant publishDate) {
     this.publishDate = publishDate;
+  }
+
+  public boolean isDeleted() {
+    return isDeleted;
+  }
+
+  public void setDeleted(boolean deleted) {
+    isDeleted = deleted;
   }
 }

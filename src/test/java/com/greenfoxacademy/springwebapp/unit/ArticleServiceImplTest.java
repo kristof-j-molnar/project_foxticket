@@ -11,6 +11,7 @@ import com.greenfoxacademy.springwebapp.services.ArticleService;
 import com.greenfoxacademy.springwebapp.services.ArticleServiceImpl;
 import com.greenfoxacademy.springwebapp.services.ValidatorServiceImp;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -100,7 +101,9 @@ class ArticleServiceImplTest {
 
   @Test
   void addNews_withExistTitle_returnError() {
-    Mockito.when(articleRepository.existsByTitle("Test Title")).thenReturn(true);
+    Article a = new Article("Test Title", "ha-ha-ha");
+    a.setDeleted(false);
+    Mockito.when(articleRepository.findByTitle("Test Title")).thenReturn(Optional.of(a));
 
     EntityExistsException exception = assertThrows(EntityExistsException.class,
         () -> articleService.addNews(new ArticleRequestDTO("Test Title", "test content for test article")));
@@ -130,6 +133,34 @@ class ArticleServiceImplTest {
         () -> articleService.addNews(null));
 
     Assertions.assertEquals("Title or content are required", exception.getMessage());
+  }
+
+  @Test
+  void deleteNewsById_setIsDeleted_ReturnSuccess() {
+    Article article = new Article("Blah-blah", "test content for test article");
+    Mockito.when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
+
+    Article actual = articleService.deleteNewsById(1L);
+    assertTrue(actual.isDeleted());
+  }
+
+  @Test
+  void deleteNewsById_IsDeletedIsTrue_ReturnSuccess_() {
+    Article article = new Article("Blah-blah", "test content for test article");
+    article.setDeleted(true);
+    Mockito.when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
+
+    Article actual = articleService.deleteNewsById(1L);
+    assertTrue(actual.isDeleted());
+  }
+
+
+  @Test
+  void deleteNewsById_withWrongID_ThrowException() {
+    EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+        () -> articleService.deleteNewsById(10L));
+
+    Assertions.assertEquals("The article is not found", exception.getMessage());
   }
 
   @Test
