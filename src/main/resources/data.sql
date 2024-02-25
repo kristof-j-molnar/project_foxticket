@@ -21,7 +21,7 @@ VALUES ('News about tickets awesome', 'Ipsum Lorum', '2023-12-11');
 INSERT INTO ARTICLES (TITLE, CONTENT, PUBLISHDATE)
 VALUES ('Test Title', 'Test Content', '2023-12-11');
 
-INSERT INTO CART_ITEMS(CART_ID, ID, PRODUCT_ID)
+INSERT INTO CARTITEMS(CART_ID, ID, PRODUCT_ID)
 VALUES (1, 1, 1),
         (NULL, 2, 2),
         (NULL, 3, 3);
